@@ -31,4 +31,6 @@ protected:
 	afx_msg void OnPaint();
 	afx_msg HCURSOR OnQueryDragIcon();
 	DECLARE_MESSAGE_MAP()
+
+	COLORREF m_colorShowRegionBg;			                  // 顯示區背景初始顏色
 };

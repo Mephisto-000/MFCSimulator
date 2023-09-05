@@ -54,6 +54,7 @@ CMFCSimulatorDlg::CMFCSimulatorDlg(CWnd* pParent /*=nullptr*/)
 	: CDialogEx(IDD_MFCSIMULATOR_DIALOG, pParent)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
+	m_colorShowRegionBg = RGB(255, 255, 255);
 }
 
 void CMFCSimulatorDlg::DoDataExchange(CDataExchange* pDX)
@@ -143,6 +144,22 @@ void CMFCSimulatorDlg::OnPaint()
 	else
 	{
 		CDialogEx::OnPaint();
+
+		// 取得顯示區矩形資訊
+		CWnd* pShowRegion = GetDlgItem(IDC_STATIC_SHOW_REGION);
+		CRect rectShowRegion;
+		pShowRegion->GetClientRect(&rectShowRegion);
+
+		// 取得顯示區 dc
+		CPaintDC dcShowRegion(pShowRegion);
+		CBrush brushShowRegion;
+		CBrush* pOldbrushShowRegion = dcShowRegion.SelectObject(&brushShowRegion);
+
+		// 顯示區初始上色
+		brushShowRegion.CreateSolidBrush(m_colorShowRegionBg);
+		dcShowRegion.Rectangle(rectShowRegion);
+		dcShowRegion.FillRect(&rectShowRegion, &brushShowRegion);
+		dcShowRegion.SelectObject(pOldbrushShowRegion);
 	}
 }
 

@@ -55,17 +55,21 @@ CMFCSimulatorDlg::CMFCSimulatorDlg(CWnd* pParent /*=nullptr*/)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 	m_colorShowRegionBg = RGB(255, 255, 255);
+	m_strShowRegionImgBgPath = _T("");
 }
 
 void CMFCSimulatorDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
+	DDX_Control(pDX, IDC_STATIC_SHOW_REGION, m_staticShowRegion);
 }
 
 BEGIN_MESSAGE_MAP(CMFCSimulatorDlg, CDialogEx)
 	ON_WM_SYSCOMMAND()
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
+	ON_BN_CLICKED(IDC_BUTTON_BG_IMG, &CMFCSimulatorDlg::OnBnClickedButtonBgImg)
+	ON_BN_CLICKED(IDC_BUTTON_BG_COLOR, &CMFCSimulatorDlg::OnBnClickedButtonBgColor)
 END_MESSAGE_MAP()
 
 
@@ -160,6 +164,16 @@ void CMFCSimulatorDlg::OnPaint()
 		dcShowRegion.Rectangle(rectShowRegion);
 		dcShowRegion.FillRect(&rectShowRegion, &brushShowRegion);
 		dcShowRegion.SelectObject(pOldbrushShowRegion);
+
+		if (m_hBitmapImgBg)
+		{
+			CRect rectSHowRegion;
+			m_staticShowRegion.GetWindowRect(&rectShowRegion);
+
+			m_staticShowRegion.ModifyStyle(NULL, SS_BITMAP);
+			m_staticShowRegion.SetBitmap(m_hBitmapImgBg);
+			m_staticShowRegion.ShowWindow(SW_SHOW);
+		}
 	}
 }
 
@@ -170,3 +184,47 @@ HCURSOR CMFCSimulatorDlg::OnQueryDragIcon()
 	return static_cast<HCURSOR>(m_hIcon);
 }
 
+
+
+void CMFCSimulatorDlg::OnBnClickedButtonBgImg()
+{
+	// 打開選擇檔案的視窗
+	CFileDialog filesDlg(TRUE, NULL, NULL, OFN_FILEMUSTEXIST | OFN_PATHMUSTEXIST,
+		_T("Bitmap Files (*.bmp)|*.bmp||"), this);
+
+	if (IDOK == filesDlg.DoModal())
+	{
+		m_strShowRegionImgBgPath = filesDlg.GetPathName();
+
+		// 載入圖片
+		m_hBitmapImgBg = (HBITMAP)::LoadImage(NULL, m_strShowRegionImgBgPath, IMAGE_BITMAP, 0, 0,
+			LR_LOADFROMFILE | LR_DEFAULTSIZE | LR_CREATEDIBSECTION | LR_LOADTRANSPARENT);
+	}
+	Invalidate();
+	UpdateWindow();
+}
+
+
+void CMFCSimulatorDlg::OnBnClickedButtonBgColor()
+{
+	// 初始挑選顏色為紅色
+	COLORREF colorSelect = RGB(255, 0, 0);
+
+	// 建立顏色挑選視窗
+	CColorDialog colorDlg(colorSelect);
+
+
+	if (IDOK == colorDlg.DoModal())
+	{	// 顯示顏色挑選視窗，判斷是否按下確定
+
+		// 得到顏色挑選視窗中挑選的顏色值
+		colorSelect = colorDlg.GetColor();
+
+		// 設置背景顏色
+		m_colorShowRegionBg = colorSelect;
+	}
+
+	// 更新顯示區
+	Invalidate();
+	UpdateWindow();
+}

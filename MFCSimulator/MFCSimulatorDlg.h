@@ -32,5 +32,14 @@ protected:
 	afx_msg HCURSOR OnQueryDragIcon();
 	DECLARE_MESSAGE_MAP()
 
+public:
+	
 	COLORREF m_colorShowRegionBg;			                  // 顯示區背景初始顏色
+	CString m_strShowRegionImgBgPath;						  // 顯示區背景圖片路徑
+	HBITMAP m_hBitmapImgBg;
+
+	afx_msg void OnBnClickedButtonBgImg();                    // 調整顯示區背景圖片
+	afx_msg void OnBnClickedButtonBgColor();				  // 調整顯示區背景顏色
+	
+	CStatic m_staticShowRegion;
 };

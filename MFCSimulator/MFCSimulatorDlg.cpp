@@ -63,6 +63,7 @@ void CMFCSimulatorDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_STATIC_SHOW_REGION, m_staticShowRegion);
+	DDX_Control(pDX, IDC_BUTTON_IN, m_buttonIN);
 }
 
 BEGIN_MESSAGE_MAP(CMFCSimulatorDlg, CDialogEx)
@@ -71,6 +72,7 @@ BEGIN_MESSAGE_MAP(CMFCSimulatorDlg, CDialogEx)
 	ON_WM_QUERYDRAGICON()
 	ON_BN_CLICKED(IDC_BUTTON_BG_IMG, &CMFCSimulatorDlg::OnBnClickedButtonBgImg)
 	ON_BN_CLICKED(IDC_BUTTON_BG_COLOR, &CMFCSimulatorDlg::OnBnClickedButtonBgColor)
+	ON_BN_CLICKED(IDC_BUTTON_IN, &CMFCSimulatorDlg::OnBnClickedButtonIn)
 END_MESSAGE_MAP()
 
 
@@ -106,6 +108,8 @@ BOOL CMFCSimulatorDlg::OnInitDialog()
 	SetIcon(m_hIcon, FALSE);		// 設定小圖示
 
 	// TODO: 在此加入額外的初始設定
+
+
 
 	return TRUE;  // 傳回 TRUE，除非您對控制項設定焦點
 }
@@ -233,4 +237,37 @@ void CMFCSimulatorDlg::OnBnClickedButtonBgColor()
 	// 更新顯示區	
 	Invalidate();
 	UpdateWindow();
+}
+
+// 函數輸入鈕 "IN"
+void CMFCSimulatorDlg::OnBnClickedButtonIn()
+{
+	CButton* pNewButton = new CButton();
+	CString strButtonText = _T("IN");
+
+	DWORD dwStyle = WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON;
+	//CRect rect;
+	//m_staticShowRegion.GetClientRect(&rect);
+
+	CRect rectShowRegion;
+	GetDlgItem(IDC_STATIC_SHOW_REGION)->GetWindowRect(&rectShowRegion);
+	ScreenToClient(&rectShowRegion);
+
+	CRect rectNewInButtons;
+	GetDlgItem(IDC_BUTTON_IN)->GetWindowRect(&rectNewInButtons);
+
+	int iNewInButtonH = rectNewInButtons.Height();
+	int iNewInButtonW = rectNewInButtons.Width();
+
+	int iNewInButtonX = rectShowRegion.left + (rectShowRegion.Width() - iNewInButtonW) * 0.5;
+	int iNewInButtonY = rectShowRegion.top + (rectShowRegion.Height() - iNewInButtonH) * 0.5 + m_iInButtonsCount * 50;
+
+
+	pNewButton->Create(strButtonText, dwStyle, CRect(iNewInButtonX, iNewInButtonY, iNewInButtonX + iNewInButtonW, iNewInButtonY +iNewInButtonH)
+		, this, 100 + m_iInButtonsCount);
+
+	m_iInButtonsCount++;
+
+	pNewButton->ShowWindow(SW_SHOW);
+
 }

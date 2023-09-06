@@ -246,8 +246,6 @@ void CMFCSimulatorDlg::OnBnClickedButtonIn()
 	CString strButtonText = _T("IN");
 
 	DWORD dwStyle = WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON;
-	//CRect rect;
-	//m_staticShowRegion.GetClientRect(&rect);
 
 	CRect rectShowRegion;
 	GetDlgItem(IDC_STATIC_SHOW_REGION)->GetWindowRect(&rectShowRegion);

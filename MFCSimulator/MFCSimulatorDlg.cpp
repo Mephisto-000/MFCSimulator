@@ -12,6 +12,7 @@
 #define new DEBUG_NEW
 #endif
 
+BOOL g_bShowRegionBgImgChange = FALSE;
 
 // 對 App About 使用 CAboutDlg 對話方塊
 
@@ -165,15 +166,14 @@ void CMFCSimulatorDlg::OnPaint()
 		dcShowRegion.FillRect(&rectShowRegion, &brushShowRegion);
 		dcShowRegion.SelectObject(pOldbrushShowRegion);
 
-		if (m_hBitmapImgBg)
+		if (g_bShowRegionBgImgChange == TRUE)
 		{
-			CRect rectSHowRegion;
-			m_staticShowRegion.GetWindowRect(&rectShowRegion);
-
 			m_staticShowRegion.ModifyStyle(NULL, SS_BITMAP);
 			m_staticShowRegion.SetBitmap(m_hBitmapImgBg);
 			m_staticShowRegion.ShowWindow(SW_SHOW);
 		}
+
+		g_bShowRegionBgImgChange = FALSE;
 	}
 }
 
@@ -185,7 +185,7 @@ HCURSOR CMFCSimulatorDlg::OnQueryDragIcon()
 }
 
 
-
+// 設定操作視窗背景圖片
 void CMFCSimulatorDlg::OnBnClickedButtonBgImg()
 {
 	// 打開選擇檔案的視窗
@@ -196,15 +196,21 @@ void CMFCSimulatorDlg::OnBnClickedButtonBgImg()
 	{
 		m_strShowRegionImgBgPath = filesDlg.GetPathName();
 
-		// 載入圖片
-		m_hBitmapImgBg = (HBITMAP)::LoadImage(NULL, m_strShowRegionImgBgPath, IMAGE_BITMAP, 0, 0,
-			LR_LOADFROMFILE | LR_DEFAULTSIZE | LR_CREATEDIBSECTION | LR_LOADTRANSPARENT);
+		//// 載入圖片
+		CRect rectShowRegion;
+		m_staticShowRegion.GetWindowRect(&rectShowRegion);
+
+		m_hBitmapImgBg = (HBITMAP)::LoadImage(NULL, m_strShowRegionImgBgPath, IMAGE_BITMAP,
+			rectShowRegion.Width(), rectShowRegion.Height(), LR_LOADFROMFILE);
 	}
+
+	g_bShowRegionBgImgChange = TRUE;
+
 	Invalidate();
 	UpdateWindow();
 }
 
-
+// 設定操作視窗背景顏色
 void CMFCSimulatorDlg::OnBnClickedButtonBgColor()
 {
 	// 初始挑選顏色為紅色
@@ -224,7 +230,7 @@ void CMFCSimulatorDlg::OnBnClickedButtonBgColor()
 		m_colorShowRegionBg = colorSelect;
 	}
 
-	// 更新顯示區
+	// 更新顯示區	
 	Invalidate();
 	UpdateWindow();
 }

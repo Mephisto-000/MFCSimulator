@@ -12,7 +12,7 @@
 #define new DEBUG_NEW
 #endif
 
-BOOL g_bShowRegionBgImgChange = FALSE;
+BOOL g_bShowRegionBgImgChange = FALSE;                   // 操作視窗是否更換背景圖片狀態
 
 // 對 App About 使用 CAboutDlg 對話方塊
 
@@ -154,22 +154,23 @@ void CMFCSimulatorDlg::OnPaint()
 	{
 		CDialogEx::OnPaint();
 
-		// 取得顯示區矩形資訊
+		// 取得操作視窗矩形資訊
 		CWnd* pShowRegion = GetDlgItem(IDC_STATIC_SHOW_REGION);
 		CRect rectShowRegion;
 		pShowRegion->GetClientRect(&rectShowRegion);
 
-		// 取得顯示區 dc
+		// 取得操作視窗 dc
 		CPaintDC dcShowRegion(pShowRegion);
 		CBrush brushShowRegion;
 		CBrush* pOldbrushShowRegion = dcShowRegion.SelectObject(&brushShowRegion);
 
-		// 顯示區初始上色
+		// 操作視窗初始上色
 		brushShowRegion.CreateSolidBrush(m_colorShowRegionBg);
 		dcShowRegion.Rectangle(rectShowRegion);
 		dcShowRegion.FillRect(&rectShowRegion, &brushShowRegion);
 		dcShowRegion.SelectObject(pOldbrushShowRegion);
 
+		// 判斷是否更改操作視窗背景圖片，有的話就更新背景並顯示出來
 		if (g_bShowRegionBgImgChange == TRUE)
 		{
 			m_staticShowRegion.ModifyStyle(NULL, SS_BITMAP);
@@ -177,6 +178,7 @@ void CMFCSimulatorDlg::OnPaint()
 			m_staticShowRegion.ShowWindow(SW_SHOW);
 		}
 
+		// 更新操作視窗是否更換背景圖片狀態
 		g_bShowRegionBgImgChange = FALSE;
 	}
 }
@@ -206,19 +208,22 @@ void CMFCSimulatorDlg::OnBnClickedButtonBgImg()
 
 		m_hBitmapImgBg = (HBITMAP)::LoadImage(NULL, m_strShowRegionImgBgPath, IMAGE_BITMAP,
 			rectShowRegion.Width(), rectShowRegion.Height(), LR_LOADFROMFILE);
+	
+		// 更新操作視窗是否更換背景圖片狀態
+		g_bShowRegionBgImgChange = TRUE;
+
+		// 更新操作視窗	
+		Invalidate();
+		UpdateWindow();
+	
 	}
-
-	g_bShowRegionBgImgChange = TRUE;
-
-	Invalidate();
-	UpdateWindow();
 }
 
 // 設定操作視窗背景顏色
 void CMFCSimulatorDlg::OnBnClickedButtonBgColor()
 {
-	// 初始挑選顏色為紅色
-	COLORREF colorSelect = RGB(255, 0, 0);
+	// 初始挑選顏色為白色
+	COLORREF colorSelect = RGB(255, 255, 255);
 
 	// 建立顏色挑選視窗
 	CColorDialog colorDlg(colorSelect);
@@ -232,11 +237,11 @@ void CMFCSimulatorDlg::OnBnClickedButtonBgColor()
 
 		// 設置背景顏色
 		m_colorShowRegionBg = colorSelect;
-	}
 
-	// 更新顯示區	
-	Invalidate();
-	UpdateWindow();
+		// 更新操作視窗	
+		Invalidate();
+		UpdateWindow();
+	}
 }
 
  //函數輸入鈕 "IN"

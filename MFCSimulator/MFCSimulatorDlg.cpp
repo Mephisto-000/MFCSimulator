@@ -127,6 +127,33 @@ void CMFCSimulatorDlg::OnSysCommand(UINT nID, LPARAM lParam)
 	}
 }
 
+////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////
+// double 四捨五入轉型 int
+int RouundDoubleToInt(double dValue)
+{
+	return static_cast<int>(dValue + 0.5);
+}
+
+// 從元件舉行左上角位置來得到元件矩形
+CRect CMFCSimulatorDlg::GetUnitRect(CPoint ptLeftTop)
+{
+	CRect rectShowRegion;
+	
+	// 根據 IN 按鍵長寬來設計元件長寬
+	m_buttonIN.GetWindowRect(&rectShowRegion);
+	
+	int iWidthShowRegion = rectShowRegion.Width();
+	int iHeightShowRegion = rectShowRegion.Height();
+	CPoint ptRightButtom = (ptLeftTop.x + iWidthShowRegion, ptLeftTop.y + iHeightShowRegion);
+
+	return CRect(ptLeftTop, ptRightButtom);
+}
+
+
+
+////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////
 // 如果將最小化按鈕加入您的對話方塊，您需要下列的程式碼，
 // 以便繪製圖示。對於使用文件/檢視模式的 MFC 應用程式，
 // 框架會自動完成此作業。

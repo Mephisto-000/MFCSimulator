@@ -57,8 +57,6 @@ CMFCSimulatorDlg::CMFCSimulatorDlg(CWnd* pParent /*=nullptr*/)
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 	m_colorShowRegionBg = RGB(255, 255, 255);
 	m_strShowRegionImgBgPath = _T("");
-	m_bDragging = FALSE;
-	m_pDraggedButton = NULL;
 }
 
 void CMFCSimulatorDlg::DoDataExchange(CDataExchange* pDX)
@@ -75,9 +73,6 @@ BEGIN_MESSAGE_MAP(CMFCSimulatorDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_BUTTON_BG_IMG, &CMFCSimulatorDlg::OnBnClickedButtonBgImg)
 	ON_BN_CLICKED(IDC_BUTTON_BG_COLOR, &CMFCSimulatorDlg::OnBnClickedButtonBgColor)
 	ON_BN_CLICKED(IDC_BUTTON_IN, &CMFCSimulatorDlg::OnBnClickedButtonIn)
-	ON_WM_LBUTTONDOWN()
-	ON_WM_LBUTTONUP()
-	ON_WM_MOUSEMOVE()
 END_MESSAGE_MAP()
 
 
@@ -244,199 +239,12 @@ void CMFCSimulatorDlg::OnBnClickedButtonBgColor()
 	UpdateWindow();
 }
 
-// 函數輸入鈕 "IN"
-//void CMFCSimulatorDlg::OnBnClickedButtonIn()
-//{
-//	CButton* pNewButton = new CButton();
-//	CString strButtonText = _T("IN");
-//
-//	/*DWORD dwStyle = WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON;*/
-//
-//	DWORD dwStyle = WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON;
-//
-//	CRect rectShowRegion;
-//	GetDlgItem(IDC_STATIC_SHOW_REGION)->GetWindowRect(&rectShowRegion);
-//	ScreenToClient(&rectShowRegion);
-//
-//	CRect rectNewInButtons;
-//	GetDlgItem(IDC_BUTTON_IN)->GetWindowRect(&rectNewInButtons);
-//
-//	int iNewInButtonH = rectNewInButtons.Height();
-//	int iNewInButtonW = rectNewInButtons.Width();
-//
-//	int iNewInButtonX = rectShowRegion.left + (rectShowRegion.Width() - iNewInButtonW) * 0.5;
-//	int iNewInButtonY = rectShowRegion.top + (rectShowRegion.Height() - iNewInButtonH) * 0.5 + m_iInButtonsCount * 50;
-//
-//
-//	
-//
-//	pNewButton->Create(strButtonText, dwStyle, CRect(iNewInButtonX, iNewInButtonY, iNewInButtonX + iNewInButtonW, iNewInButtonY +iNewInButtonH)
-//		, this, 100 + m_iInButtonsCount);
-//
-//	m_iInButtonsCount++;
-//
-//	pNewButton->ShowWindow(SW_SHOW);
-//
-//}
-
-
-LRESULT CALLBACK CMFCSimulatorDlg::ButtonSubclassProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, UINT_PTR uIdSubclass, DWORD_PTR dwRefData)
-{
-	switch (uMsg)
-	{
-	case WM_LBUTTONDOWN:
-	{
-		// 得到 CMFCSimulatorDlg 的實例
-		CMFCSimulatorDlg* pDlg = (CMFCSimulatorDlg*)CWnd::FromHandle(::GetParent(hWnd));
-
-		if (pDlg)
-		{
-			// 調用 OnLButtonDown 函數處理拖曳邏輯
-			CPoint point(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
-			pDlg->OnLButtonDown(MK_LBUTTON, point);
-		}
-
-		break;
-	}
-	}
-
-	// Always call the original window procedure afterwards.
-	return DefSubclassProc(hWnd, uMsg, wParam, lParam);
-}
-
-
-
+ //函數輸入鈕 "IN"
 void CMFCSimulatorDlg::OnBnClickedButtonIn()
 {
-	CButton* pNewButton = new CButton();
-	CString strButtonText = _T("IN");
 
-	DWORD dwStyle = WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON;
-
-	CRect rectShowRegion;
-	GetDlgItem(IDC_STATIC_SHOW_REGION)->GetWindowRect(&rectShowRegion);
-	ScreenToClient(&rectShowRegion);
-
-	CRect rectNewInButtons;
-	GetDlgItem(IDC_BUTTON_IN)->GetWindowRect(&rectNewInButtons);
-
-	int iNewInButtonH = rectNewInButtons.Height();
-	int iNewInButtonW = rectNewInButtons.Width();
-
-	int iNewInButtonX = rectShowRegion.left + (rectShowRegion.Width() - iNewInButtonW) * 0.5;
-	int iNewInButtonY = rectShowRegion.top + (rectShowRegion.Height() - iNewInButtonH) * 0.5 + m_iInButtonsCount * 50;
-
-	pNewButton->Create(strButtonText, dwStyle, CRect(iNewInButtonX, iNewInButtonY, iNewInButtonX + iNewInButtonW, iNewInButtonY + iNewInButtonH)
-		, this, 100 + m_iInButtonsCount);
-
-	m_iInButtonsCount++;
-
-	pNewButton->ShowWindow(SW_SHOW);
-
-
-	SetWindowSubclass(pNewButton->m_hWnd, ButtonSubclassProc, 0, 0);
 
 }
 
 
 
-
-//void CMFCSimulatorDlg::OnLButtonDown(UINT nFlags, CPoint point)
-//{
-//	CWnd* pWnd = ChildWindowFromPoint(point);
-//
-//	if (pWnd && pWnd->IsKindOf(RUNTIME_CLASS(CButton)))
-//	{
-//		m_bDragging = TRUE;
-//		m_pDragButton = dynamic_cast<CButton*>(pWnd);
-//		m_ptLastMousePos = point;
-//
-//		SetCapture();
-//	}
-//
-//	CDialogEx::OnLButtonDown(nFlags, point);
-//}
-//
-//
-//void CMFCSimulatorDlg::OnLButtonUp(UINT nFlags, CPoint point)
-//{
-//	
-//	if (m_bDragging == TRUE)
-//	{
-//		ReleaseCapture();
-//
-//		m_bDragging = FALSE;
-//
-//		m_pDragButton = nullptr;
-//	}
-//
-//	CDialogEx::OnLButtonUp(nFlags, point);
-//}
-//
-//
-//void CMFCSimulatorDlg::OnMouseMove(UINT nFlags, CPoint point)
-//{
-//	
-//	if (m_bDragging && m_pDragButton)
-//	{
-//		CRect rectButton;
-//		m_pDragButton->GetWindowRect(&rectButton);
-//		ScreenToClient(&rectButton);
-//
-//		int iButtonX = point.x - m_ptLastMousePos.x;
-//		int iButtonY = point.y - m_ptLastMousePos.y;
-//
-//		rectButton.OffsetRect(iButtonX, iButtonY);
-//		m_pDragButton->MoveWindow(rectButton);
-//
-//
-//		m_ptLastMousePos = point;
-//	}
-//
-//	CDialogEx::OnMouseMove(nFlags, point);
-//}
-
-
-
-void CMFCSimulatorDlg::OnLButtonDown(UINT nFlags, CPoint point)
-{
-
-	//AfxMessageBox(_T("Clicked"));
-
-	CWnd* pWnd = ChildWindowFromPoint(point);
-	/*if (pWnd && pWnd != this && pWnd->IsKindOf(RUNTIME_CLASS(CButton)))*/
-	if (pWnd && pWnd != this)
-	{
-		m_pDraggedButton = dynamic_cast<CButton*>(pWnd);
-		if (m_pDraggedButton)
-		{
-			m_bDragging = TRUE;
-			m_ptLastMousePos = point;
-			SetCapture();
-		}
-	}
-}
-
-void CMFCSimulatorDlg::OnLButtonUp(UINT nFlags, CPoint point)
-{
-	if (m_bDragging)
-	{
-		m_bDragging = FALSE;
-		m_pDraggedButton = NULL;
-		ReleaseCapture();
-	}
-}
-
-void CMFCSimulatorDlg::OnMouseMove(UINT nFlags, CPoint point)
-{
-	if (m_bDragging && (nFlags & MK_LBUTTON))
-	{
-		CRect rcNew;
-		m_pDraggedButton->GetWindowRect(&rcNew);
-		ScreenToClient(&rcNew);
-		CPoint ptDiff = point - m_ptLastMousePos;
-		rcNew.OffsetRect(ptDiff);
-		m_pDraggedButton->MoveWindow(&rcNew);
-		m_ptLastMousePos = point;
-	}
-}

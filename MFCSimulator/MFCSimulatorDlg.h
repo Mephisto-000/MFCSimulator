@@ -43,21 +43,7 @@ public:
 	afx_msg void OnBnClickedButtonBgColor();				  // 調整顯示區背景顏色
 	afx_msg void OnBnClickedButtonIn();                       // 
 
-	CStatic m_staticShowRegion;								  //
-	CButton m_buttonIN;										  //
-
+	CStatic m_staticShowRegion;								  // 顯示區成員控件
+	CButton m_buttonIN;										  // 輸入函數元件 IN 
 	
-	BOOL m_bDragging;
-	CPoint m_ptLastMousePos;
-	/*CButton* m_pDragButton;*/
-
-	CButton* m_pDraggedButton;
-	
-
-	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
-	afx_msg void OnLButtonUp(UINT nFlags, CPoint point);
-	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
-
-
-	static LRESULT CALLBACK ButtonSubclassProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, UINT_PTR uIdSubclass, DWORD_PTR dwRefData);
 };

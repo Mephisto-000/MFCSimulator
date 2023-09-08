@@ -57,6 +57,7 @@ CMFCSimulatorDlg::CMFCSimulatorDlg(CWnd* pParent /*=nullptr*/)
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 	m_colorShowRegionBg = RGB(255, 255, 255);
 	m_strShowRegionImgBgPath = _T("");
+	m_bIsDragging = FALSE;
 }
 
 void CMFCSimulatorDlg::DoDataExchange(CDataExchange* pDX)
@@ -73,6 +74,9 @@ BEGIN_MESSAGE_MAP(CMFCSimulatorDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_BUTTON_BG_IMG, &CMFCSimulatorDlg::OnBnClickedButtonBgImg)
 	ON_BN_CLICKED(IDC_BUTTON_BG_COLOR, &CMFCSimulatorDlg::OnBnClickedButtonBgColor)
 	ON_BN_CLICKED(IDC_BUTTON_IN, &CMFCSimulatorDlg::OnBnClickedButtonIn)
+	ON_WM_LBUTTONDOWN()
+	ON_WM_MOUSEMOVE()
+	ON_WM_LBUTTONUP()
 END_MESSAGE_MAP()
 
 
@@ -135,21 +139,41 @@ int RouundDoubleToInt(double dValue)
 	return static_cast<int>(dValue + 0.5);
 }
 
-// 從元件舉行左上角位置來得到元件矩形
+
+// 從元件矩形左上角位置來得到元件矩形
 CRect CMFCSimulatorDlg::GetUnitRect(CPoint ptLeftTop)
 {
-	CRect rectShowRegion;
+	// 元件矩形
+	CRect rectUnit;
 	
 	// 根據 IN 按鍵長寬來設計元件長寬
-	m_buttonIN.GetWindowRect(&rectShowRegion);
+	m_buttonIN.GetWindowRect(&rectUnit);
 	
-	int iWidthShowRegion = rectShowRegion.Width();
-	int iHeightShowRegion = rectShowRegion.Height();
-	CPoint ptRightButtom = (ptLeftTop.x + iWidthShowRegion, ptLeftTop.y + iHeightShowRegion);
+	int iWidthUnit = rectUnit.Width();
+	int iHeightUnit = rectUnit.Height();
+
+	CPoint ptRightButtom(ptLeftTop.x + iWidthUnit, ptLeftTop.y + iHeightUnit);
 
 	return CRect(ptLeftTop, ptRightButtom);
 }
 
+// 從元件矩形左上角位置來得到讓滑鼠在元件上時有 Focus 效果的矩形
+CRect CMFCSimulatorDlg::GetUnitRectIdentifyRect(CPoint ptLeftTop)
+{
+	// 感應矩形
+	CRect rectUnitBg;
+
+	// 根據 IN 按鍵長寬來設計矩形長寬
+	m_buttonIN.GetWindowRect(&rectUnitBg);
+
+	int iWidthUnitBg = rectUnitBg.Width();
+	int iHeightUnitBg = rectUnitBg.Height();
+	
+	CPoint ptLeftTopBg(ptLeftTop.x - 10, ptLeftTop.y - 10);
+	CPoint ptRightButtomBg(ptLeftTop.x + iWidthUnitBg + 10, ptLeftTop.y + iHeightUnitBg + 10);
+
+	return CRect(ptLeftTopBg, ptRightButtomBg);
+}
 
 
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -188,6 +212,8 @@ void CMFCSimulatorDlg::OnPaint()
 
 		// 取得操作視窗 dc
 		CPaintDC dcShowRegion(pShowRegion);
+
+
 		CBrush brushShowRegion;
 		CBrush* pOldbrushShowRegion = dcShowRegion.SelectObject(&brushShowRegion);
 
@@ -204,11 +230,27 @@ void CMFCSimulatorDlg::OnPaint()
 			m_staticShowRegion.SetBitmap(m_hBitmapImgBg);
 			m_staticShowRegion.ShowWindow(SW_SHOW);
 		}
+		 
+		CBrush brushInRect;
+		brushInRect.CreateSolidBrush(RGB(139, 69, 19));
 
-		// 更新操作視窗是否更換背景圖片狀態
-		g_bShowRegionBgImgChange = FALSE;
+		dcShowRegion.SelectObject(&brushInRect);
+
+		POSITION pos = m_listInUnit.GetHeadPosition();
+		while (pos)
+		{
+			CRect& rect = m_listInUnit.GetNext(pos);
+
+			dcShowRegion.Rectangle(rect);
+			dcShowRegion.FillRect(&rect, &brushInRect);
+		}
+
 	}
 }
+
+
+
+
 
 // 當使用者拖曳最小化視窗時，
 // 系統呼叫這個功能取得游標顯示。
@@ -241,8 +283,7 @@ void CMFCSimulatorDlg::OnBnClickedButtonBgImg()
 
 		// 更新操作視窗	
 		Invalidate();
-		UpdateWindow();
-	
+		UpdateWindow();	
 	}
 }
 
@@ -265,6 +306,9 @@ void CMFCSimulatorDlg::OnBnClickedButtonBgColor()
 		// 設置背景顏色
 		m_colorShowRegionBg = colorSelect;
 
+		//更新操作視窗是否更換背景圖片狀態
+		g_bShowRegionBgImgChange = FALSE;
+
 		// 更新操作視窗	
 		Invalidate();
 		UpdateWindow();
@@ -274,9 +318,142 @@ void CMFCSimulatorDlg::OnBnClickedButtonBgColor()
  //函數輸入鈕 "IN"
 void CMFCSimulatorDlg::OnBnClickedButtonIn()
 {
+	// 操作視窗矩形
+	CRect rectShowRegion;
+	// 元件矩形
+	CRect rectUnit;
+
+	// 得到操作視窗矩形長寬資訊
+	m_staticShowRegion.GetWindowRect(&rectShowRegion);
+
+	int iWidthShowRegion = rectShowRegion.Width();
+	int iHeightShowRegion = rectShowRegion.Height();
+
+	// 得到元件矩形長寬資訊
+	m_buttonIN.GetWindowRect(&rectUnit);
+
+	int iWidthUnit = rectUnit.Width();
+	int iHeightUnit = rectUnit.Height();
+
+	// 元件矩形初始位置
+	int iUnitLeftPos = RouundDoubleToInt(0.5 * (iWidthShowRegion - iWidthUnit));
+	int iUniteTopPos = RouundDoubleToInt(0.5 * (iHeightShowRegion - iHeightUnit));
+
+	CPoint ptUnitInitPos(iUnitLeftPos, iUniteTopPos);
+
+	CRect rectInitUnit = GetUnitRect(ptUnitInitPos);
+	CRect rectInitUnitBg = GetUnitRectIdentifyRect(ptUnitInitPos);
+
+	m_listInUnit.AddTail(rectInitUnit);
+	m_listInUnitBg.AddTail(rectInitUnitBg);
 
 
+	//// 更新操作視窗	
+	Invalidate();
+	UpdateWindow();
 }
 
+
+
+void CMFCSimulatorDlg::OnLButtonDown(UINT nFlags, CPoint point)
+{
+	CRect rectShowRegion;
+	GetDlgItem(IDC_STATIC_SHOW_REGION)->GetWindowRect(&rectShowRegion);
+	ScreenToClient(&rectShowRegion);
+
+	point.x = point.x - rectShowRegion.left;
+	point.y = point.y - rectShowRegion.top;
+
+	POSITION pos = m_listInUnit.GetHeadPosition();
+
+	SetCapture();
+
+	while (pos)
+	{
+		CRect& rect = m_listInUnit.GetNext(pos);
+		if (rect.PtInRect(point))
+		{
+			SetCursor(LoadCursor(NULL, IDC_SIZEALL));
+
+			m_bIsDragging = TRUE;
+			m_ptInUnitStartPos = point;
+
+
+			break;
+		}
+	}
+
+
+
+	CDialogEx::OnLButtonDown(nFlags, point);
+}
+
+
+
+
+void CMFCSimulatorDlg::OnMouseMove(UINT nFlags, CPoint point)
+{
+
+	CRect rectShowRegion;
+	GetDlgItem(IDC_STATIC_SHOW_REGION)->GetWindowRect(&rectShowRegion);
+	ScreenToClient(&rectShowRegion);
+
+	point.x = point.x - rectShowRegion.left;
+	point.y = point.y - rectShowRegion.top;
+	
+	if (m_bIsDragging == TRUE)
+	{
+		int iOffsetX = point.x - m_ptInUnitStartPos.x;
+		int iOffsetY = point.y -m_ptInUnitStartPos.y;
+
+
+		POSITION pos = m_listInUnit.GetHeadPosition();
+		while (pos)
+		{
+			CRect& rect = m_listInUnit.GetNext(pos);
+			if (rect.PtInRect(m_ptInUnitStartPos))
+			{
+				rect.OffsetRect(iOffsetX, iOffsetY);
+				break;
+			}
+		}
+		Invalidate();
+		UpdateWindow();
+
+		m_ptInUnitStartPos = point;
+	}
+
+
+	CDialogEx::OnMouseMove(nFlags, point);
+}
+
+
+
+void CMFCSimulatorDlg::OnLButtonUp(UINT nFlags, CPoint point)
+{
+
+
+
+	CRect rectShowRegion;
+	GetDlgItem(IDC_STATIC_SHOW_REGION)->GetWindowRect(&rectShowRegion);
+	ScreenToClient(&rectShowRegion);
+
+	point.x = point.x - rectShowRegion.left;
+	point.y = point.y - rectShowRegion.top;
+
+	if (m_bIsDragging)
+	{ 
+	
+		point = NULL;
+
+		m_bIsDragging = FALSE;
+
+		ReleaseCapture();
+
+
+	}
+
+	CDialogEx::OnLButtonUp(nFlags, point);
+}
 
 

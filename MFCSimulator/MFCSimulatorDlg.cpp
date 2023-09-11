@@ -203,51 +203,175 @@ void CMFCSimulatorDlg::OnPaint()
 	}
 	else
 	{
+		//CDialogEx::OnPaint();
+
+		//// 取得操作視窗矩形資訊
+		//CWnd* pShowRegion = GetDlgItem(IDC_STATIC_SHOW_REGION);
+		//CRect rectShowRegion;
+		//pShowRegion->GetClientRect(&rectShowRegion);
+
+		//// 取得操作視窗 dc
+		//CPaintDC dcShowRegion(pShowRegion);
+
+
+		//CBrush brushShowRegion;
+		//CBrush* pOldbrushShowRegion = dcShowRegion.SelectObject(&brushShowRegion);
+
+		//// 操作視窗初始上色
+		//brushShowRegion.CreateSolidBrush(m_colorShowRegionBg);
+		//dcShowRegion.Rectangle(rectShowRegion);
+		//dcShowRegion.FillRect(&rectShowRegion, &brushShowRegion);
+		//dcShowRegion.SelectObject(pOldbrushShowRegion);
+
+		//// 判斷是否更改操作視窗背景圖片，有的話就更新背景並顯示出來
+		//if (g_bShowRegionBgImgChange == TRUE)
+		//{
+		//	m_staticShowRegion.ModifyStyle(NULL, SS_BITMAP);
+		//	m_staticShowRegion.SetBitmap(m_hBitmapImgBg);
+		//	m_staticShowRegion.ShowWindow(SW_SHOW);
+		//}
+		// 
+		//CBrush brushInRect;
+		//brushInRect.CreateSolidBrush(RGB(139, 69, 19));
+
+		//dcShowRegion.SelectObject(&brushInRect);
+
+		//POSITION pos = m_listInUnit.GetHeadPosition();
+		//while (pos)
+		//{
+		//	CRect& rect = m_listInUnit.GetNext(pos);
+
+		//	dcShowRegion.Rectangle(rect);
+		//	dcShowRegion.FillRect(&rect, &brushInRect);
+		//}
+
+
+
+
 		CDialogEx::OnPaint();
+
 
 		// 取得操作視窗矩形資訊
 		CWnd* pShowRegion = GetDlgItem(IDC_STATIC_SHOW_REGION);
 		CRect rectShowRegion;
+
 		pShowRegion->GetClientRect(&rectShowRegion);
+		int iWidthShowRegion = rectShowRegion.Width();
+		int iHeightShowRegion = rectShowRegion.Height();
+
 
 		// 取得操作視窗 dc
-		CPaintDC dcShowRegion(pShowRegion);
+		//CPaintDC dcShowRegion(pShowRegion);
+		CDC* pdcShowRegion = pShowRegion->GetDC();
+		pShowRegion->UpdateWindow();
+		CDC memDC;
+		CBitmap memBitmap;
 
 
-		CBrush brushShowRegion;
-		CBrush* pOldbrushShowRegion = dcShowRegion.SelectObject(&brushShowRegion);
+		memDC.CreateCompatibleDC(pdcShowRegion);
+		memBitmap.CreateCompatibleBitmap(pdcShowRegion, iWidthShowRegion, iHeightShowRegion);
+		CBitmap* pOldMemBitMap = memDC.SelectObject(&memBitmap);
 
-		// 操作視窗初始上色
-		brushShowRegion.CreateSolidBrush(m_colorShowRegionBg);
-		dcShowRegion.Rectangle(rectShowRegion);
-		dcShowRegion.FillRect(&rectShowRegion, &brushShowRegion);
-		dcShowRegion.SelectObject(pOldbrushShowRegion);
+		DrawToBuffer(&memDC);
 
+
+				/*CBrush brushShowRegion;
+		CBrush* pOldbrushShowRegion = pdcShowRegion->SelectObject(&brushShowRegion);*/
+
+		//// 操作視窗初始上色
+		//brushShowRegion.CreateSolidBrush(m_colorShowRegionBg);
+		//dcShowRegion.Rectangle(rectShowRegion);
+		//dcShowRegion.FillRect(&rectShowRegion, &brushShowRegion);
+		//dcShowRegion.SelectObject(pOldbrushShowRegion);
+
+
+
+		pdcShowRegion->BitBlt(0, 0, iWidthShowRegion, iHeightShowRegion, &memDC, 0, 0, SRCCOPY);
+
+
+		memDC.SelectObject(pOldMemBitMap);
 		// 判斷是否更改操作視窗背景圖片，有的話就更新背景並顯示出來
 		if (g_bShowRegionBgImgChange == TRUE)
 		{
-			m_staticShowRegion.ModifyStyle(NULL, SS_BITMAP);
+			m_staticShowRegion.ModifyStyle(1, SS_BITMAP);
 			m_staticShowRegion.SetBitmap(m_hBitmapImgBg);
 			m_staticShowRegion.ShowWindow(SW_SHOW);
 		}
-		 
-		CBrush brushInRect;
-		brushInRect.CreateSolidBrush(RGB(139, 69, 19));
+		memBitmap.DeleteObject();
+		memDC.DeleteDC();
 
-		dcShowRegion.SelectObject(&brushInRect);
-
-		POSITION pos = m_listInUnit.GetHeadPosition();
-		while (pos)
-		{
-			CRect& rect = m_listInUnit.GetNext(pos);
-
-			dcShowRegion.Rectangle(rect);
-			dcShowRegion.FillRect(&rect, &brushInRect);
-		}
+		//// 判斷是否更改操作視窗背景圖片，有的話就更新背景並顯示出來
+		//if (g_bShowRegionBgImgChange == TRUE)
+		//{
+		//	m_staticShowRegion.ModifyStyle(NULL, SS_BITMAP);
+		//	m_staticShowRegion.SetBitmap(m_hBitmapImgBg);
+		//	m_staticShowRegion.ShowWindow(SW_SHOW);
+		//}
 
 	}
+
 }
 
+
+void CMFCSimulatorDlg::DrawToBuffer(CDC* pDC)
+{
+
+
+	CWnd* pShowRegion = GetDlgItem(IDC_STATIC_SHOW_REGION);
+	CRect rectShowRegion;
+
+	pShowRegion->GetClientRect(&rectShowRegion);
+	int iWidthShowRegion = rectShowRegion.Width();
+	int iHeightShowRegion = rectShowRegion.Height();
+
+
+
+
+
+	CBrush brushShowRegion;
+	CBrush* pOldbrushShowRegion = pDC->SelectObject(&brushShowRegion);
+
+
+	//// 操作視窗初始上色
+	//brushShowRegion.CreateSolidBrush(m_colorShowRegionBg);
+	//pDC->Rectangle(rectShowRegion);
+	//pDC->FillRect(&rectShowRegion, &brushShowRegion);
+	//pDC->SelectObject(pOldbrushShowRegion);
+
+	if (g_bShowRegionBgImgChange == FALSE)
+	{
+		// 操作視窗初始上色
+		brushShowRegion.CreateSolidBrush(m_colorShowRegionBg);
+		pDC->Rectangle(rectShowRegion);
+		pDC->FillRect(&rectShowRegion, &brushShowRegion);
+		pDC->SelectObject(pOldbrushShowRegion);
+	}
+
+	//// 判斷是否更改操作視窗背景圖片，有的話就更新背景並顯示出來
+	//if (g_bShowRegionBgImgChange == TRUE)
+	//{
+	//	m_staticShowRegion.ModifyStyle(1, SS_BITMAP);
+	//	m_staticShowRegion.SetBitmap(m_hBitmapImgBg);
+	//	m_staticShowRegion.ShowWindow(SW_SHOW);
+	//}
+
+
+	CBrush brushInRect;
+	brushInRect.CreateSolidBrush(RGB(139, 69, 19));
+
+	pDC->SelectObject(&brushInRect);
+
+	POSITION pos = m_listInUnit.GetHeadPosition();
+	while (pos)
+	{
+		CRect& rect = m_listInUnit.GetNext(pos);
+
+		pDC->Rectangle(rect);
+		pDC->FillRect(&rect, &brushInRect);
+	}
+
+
+}
 
 
 
@@ -280,6 +404,7 @@ void CMFCSimulatorDlg::OnBnClickedButtonBgImg()
 	
 		// 更新操作視窗是否更換背景圖片狀態
 		g_bShowRegionBgImgChange = TRUE;
+
 
 		// 更新操作視窗	
 		Invalidate();
@@ -417,8 +542,9 @@ void CMFCSimulatorDlg::OnMouseMove(UINT nFlags, CPoint point)
 				break;
 			}
 		}
-		Invalidate();
-		UpdateWindow();
+		/*Invalidate();
+		UpdateWindow();*/
+		OnPaint();
 
 		m_ptInUnitStartPos = point;
 	}

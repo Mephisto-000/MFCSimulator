@@ -1,32 +1,37 @@
 #pragma once
+
+#include <vector>
+
 class UnitBase
 {
 
 private:
-	class Node {
-	public:
-		CPoint ptUnitLocation;
-		int iUnitHeight;
-		int iUnitWidth;
-		
-		Node* prior;
-		Node* next;
-	};
+	
+	UnitBase* m_ptPreUnit;
+	UnitBase* m_ptNextUnit;
+	std::vector<UnitBase*> m_arrPtsPreUnit;
+	std::vector<UnitBase*> m_arrPtsNextUnit;
 
-	Node* head;
-	int iLength = 0;
 
 public:
 
-	UnitBase();
+	CPoint pointUnitLocation;
+	int iUnitHeight;
+	int iUnitWidth;
 
-	void Show();
+	UnitBase (int iWidthShowRegion, int iHeightShowRegion, int iWidthUnit, int iHeightUnit);
 
-	void Create(int n);
+	~UnitBase ();
 
+	// 刪除元件之間的元件
+	// unitBaseHeadRef : 頭節點指標
+	// del : 標記節點全部刪除的指標
+	void DeleteUnit (UnitBase** ptUnitBaseHeadRef, UnitBase* ptDel);
 
+	void InorderTraversal(UnitBase* unitBase);
 
-
+	// 元件之間插入元件
+	void InsertUnit(UnitBase* unitBase, int iNewShowRegW, int iNewShowRegH, int iNewButtonW, int iNewButtonH);
 
 
 };

@@ -88,7 +88,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -184,7 +184,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="framework.h" />
-    <ClInclude Include="InUnit.h" />
+    <ClInclude Include="UnitFunDlg.h" />
+    <ClInclude Include="UnitIn.h" />
     <ClInclude Include="MFCSimulator.h" />
     <ClInclude Include="MFCSimulatorDlg.h" />
     <ClInclude Include="pch.h" />
@@ -193,12 +194,14 @@
     <ClInclude Include="UnitAnd.h" />
     <ClInclude Include="UnitBase.h" />
     <ClInclude Include="UnitFun.h" />
+    <ClInclude Include="UnitInDlg.h" />
     <ClInclude Include="UnitNOT.h" />
     <ClInclude Include="UnitOR.h" />
     <ClInclude Include="UnitOUT.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="InUnit.cpp" />
+    <ClCompile Include="UnitFunDlg.cpp" />
+    <ClCompile Include="UnitIn.cpp" />
     <ClCompile Include="MFCSimulator.cpp" />
     <ClCompile Include="MFCSimulatorDlg.cpp" />
     <ClCompile Include="pch.cpp">
@@ -210,6 +213,7 @@
     <ClCompile Include="UnitAnd.cpp" />
     <ClCompile Include="UnitBase.cpp" />
     <ClCompile Include="UnitFun.cpp" />
+    <ClCompile Include="UnitInDlg.cpp" />
     <ClCompile Include="UnitNOT.cpp" />
     <ClCompile Include="UnitOR.cpp" />
     <ClCompile Include="UnitOUT.cpp" />

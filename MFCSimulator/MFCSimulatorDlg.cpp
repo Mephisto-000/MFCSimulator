@@ -7,6 +7,7 @@
 #include "MFCSimulator.h"
 #include "MFCSimulatorDlg.h"
 #include "afxdialogex.h"
+#include "UnitInDlg.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -32,6 +33,8 @@ public:
 // 程式碼實作
 protected:
 	DECLARE_MESSAGE_MAP()
+public:
+	virtual BOOL OnInitDialog();
 };
 
 CAboutDlg::CAboutDlg() : CDialogEx(IDD_ABOUTBOX)
@@ -48,7 +51,6 @@ END_MESSAGE_MAP()
 
 
 // CMFCSimulatorDlg 對話方塊
-
 
 
 CMFCSimulatorDlg::CMFCSimulatorDlg(CWnd* pParent /*=nullptr*/)
@@ -426,6 +428,7 @@ void CMFCSimulatorDlg::OnLButtonDown(UINT nFlags, CPoint point)
 			m_bIsDragging = TRUE;
 			m_ptInUnitStartPos = point;
 
+			
 
 			break;
 		}
@@ -465,8 +468,7 @@ void CMFCSimulatorDlg::OnMouseMove(UINT nFlags, CPoint point)
 				break;
 			}
 		}
-		/*Invalidate();
-		UpdateWindow();*/
+
 		OnPaint();
 
 		m_ptInUnitStartPos = point;
@@ -504,3 +506,15 @@ void CMFCSimulatorDlg::OnLButtonUp(UINT nFlags, CPoint point)
 }
 
 
+// 開啟視窗
+
+
+BOOL CAboutDlg::OnInitDialog()
+{
+	CDialogEx::OnInitDialog();
+
+	// TODO:  在此加入額外的初始化
+
+	return TRUE;  // return TRUE unless you set the focus to a control
+	// EXCEPTION: OCX 屬性頁應傳回 FALSE
+}

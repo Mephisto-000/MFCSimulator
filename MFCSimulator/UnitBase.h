@@ -5,34 +5,43 @@
 class UnitBase
 {
 
-private:
+protected:
 	
-	UnitBase* m_ptPreUnit;
-	UnitBase* m_ptNextUnit;
-	std::vector<UnitBase*> m_arrPtsPreUnit;
-	std::vector<UnitBase*> m_arrPtsNextUnit;
+	std::vector<UnitBase*> m_arrPtsPreUnit;               // 指向前一個元件的指標陣列
+	std::vector<UnitBase*> m_arrPtsNextUnit;              // 指向下一個元件的指標陣列
+														  
+	CString m_UnitID;                                     // 確認是哪一種元件
+														  
+public:													  
+														  
+	CPoint pointUnitLocation;                             // 元件位置
+	std::vector<CPoint> m_pointLineLocation;              // 線段連接點位置
+	BOOL m_bConnectPoint;                                 // 確認是否被連接
+	int m_iUnitHeight;                                    // 元件長
+	int m_iUnitWidth;                                     // 元件寬
+	double m_dOutValue;                                   // 輸出的數值
+	
 
 
-public:
 
-	CPoint pointUnitLocation;
-	int iUnitHeight;
-	int iUnitWidth;
 
-	UnitBase (int iWidthShowRegion, int iHeightShowRegion, int iWidthUnit, int iHeightUnit);
+	// 建構子
+	UnitBase (UnitBase* ptPreUnit, CString strUnitID, CRect rectShowRegion, CRect rectButton);
 
+	// 解構子
 	~UnitBase ();
 
-	// 刪除元件之間的元件
-	// unitBaseHeadRef : 頭節點指標
-	// del : 標記節點全部刪除的指標
-	void DeleteUnit (UnitBase** ptUnitBaseHeadRef, UnitBase* ptDel);
 
-	void InorderTraversal(UnitBase* unitBase);
 
 	// 元件之間插入元件
-	void InsertUnit(UnitBase* unitBase, int iNewShowRegW, int iNewShowRegH, int iNewButtonW, int iNewButtonH);
+	void InsertUnit(UnitBase* ptPreUnit, CString strUnitID, CRect rectButton);
 
 
+
+	//// 記錄線段資料
+	//void InsertLineData();
+
+	//// 記錄線段點資料
+	//void InsertDotData();
 };
 

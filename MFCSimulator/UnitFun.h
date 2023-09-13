@@ -1,6 +1,12 @@
 #pragma once
-class UnitFun :
-    public UnitBase
+
+#include "UnitBase.h"
+
+class UnitFun : public UnitBase
 {
+
+
+
+
 };
 

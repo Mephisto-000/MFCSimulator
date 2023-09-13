@@ -36,7 +36,7 @@
     <ClInclude Include="UnitBase.h">
       <Filter>標頭檔</Filter>
     </ClInclude>
-    <ClInclude Include="InUnit.h">
+    <ClInclude Include="UnitIn.h">
       <Filter>標頭檔</Filter>
     </ClInclude>
     <ClInclude Include="UnitFun.h">
@@ -54,6 +54,12 @@
     <ClInclude Include="UnitOUT.h">
       <Filter>標頭檔</Filter>
     </ClInclude>
+    <ClInclude Include="UnitInDlg.h">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
+    <ClInclude Include="UnitFunDlg.h">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MFCSimulator.cpp">
@@ -68,7 +74,7 @@
     <ClCompile Include="UnitBase.cpp">
       <Filter>來源檔案</Filter>
     </ClCompile>
-    <ClCompile Include="InUnit.cpp">
+    <ClCompile Include="UnitIn.cpp">
       <Filter>來源檔案</Filter>
     </ClCompile>
     <ClCompile Include="UnitFun.cpp">
@@ -84,6 +90,12 @@
       <Filter>來源檔案</Filter>
     </ClCompile>
     <ClCompile Include="UnitOUT.cpp">
+      <Filter>來源檔案</Filter>
+    </ClCompile>
+    <ClCompile Include="UnitInDlg.cpp">
+      <Filter>來源檔案</Filter>
+    </ClCompile>
+    <ClCompile Include="UnitFunDlg.cpp">
       <Filter>來源檔案</Filter>
     </ClCompile>
   </ItemGroup>

@@ -6,19 +6,34 @@
 
 
 // UnitBase 建構子
-UnitBase::UnitBase(int iShowRegW, int iShowRegH, int iButtonWidth, int iButtonHeight)
+UnitBase::UnitBase(UnitBase* ptPreUnit, CString strUnitID, CRect rectShowRegion, CRect rectButton)
 {
-	// 初始化指標
-	m_ptPreUnit = nullptr;
-	m_ptNextUnit = nullptr;
 
 	// 初始化指標陣列
-	m_arrPtsPreUnit.clear();
-	m_arrPtsNextUnit.clear();
+	m_arrPtsPreUnit.push_back(ptPreUnit);
+
+	// 確認元件種類
+	m_UnitID = strUnitID;
+
+	// 新建立時沒有連接
+	m_bConnectPoint = FALSE;
+
+	// 元件生成位置在操作畫面中
+	// 取得操作畫面長寬
+	int iShowRegH = rectShowRegion.Height();
+	int iShowRegW = rectShowRegion.Width();
+
+	// 取得元件長寬
+	int iButtonH = rectButton.Height();
+	int iButtonW = rectButton.Height();
+
 
 	pointUnitLocation = CPoint(iShowRegW * 0.5, iShowRegH * 0.5);
-	iUnitWidth = iButtonWidth;
-	iUnitHeight = iButtonHeight;
+	m_iUnitWidth = iButtonW;
+	m_iUnitHeight = iButtonH;
+
+
+	m_dOutValue = 0.0;
 
 }
 
@@ -26,98 +41,36 @@ UnitBase::UnitBase(int iShowRegW, int iShowRegH, int iButtonWidth, int iButtonHe
 // UnitBase 解構子
 UnitBase::~UnitBase()
 {
-	//UnitBase* ptCurUnit = 
-	
-	
+
+	if (m_arrPtsPreUnit.empty() != TRUE)
+	{
+		// 釋放陣列內的指標記憶體
+		for (int i = 0; i < m_arrPtsPreUnit.size(); i++)
+		{
+			UnitBase* ptTemp = m_arrPtsPreUnit[i];
+			delete ptTemp;
+		}
+
+		// 清空陣列元素，再宣告一個空陣列與其做交換釋放記憶體
+		m_arrPtsPreUnit.clear();
+		std::vector<UnitBase*>().swap(m_arrPtsPreUnit);
+	}
+
+
+	if (m_arrPtsNextUnit.empty() != TRUE)
+	{
+		// 釋放陣列內的指標記憶體
+		for (int i = 0; i < m_arrPtsNextUnit.size(); i++)
+		{
+			UnitBase* ptTemp = m_arrPtsNextUnit[i];
+			delete ptTemp;
+		}
+
+		// 清空陣列元素，再宣告一個空陣列與其做交換釋放記憶體
+		m_arrPtsNextUnit.clear();
+		std::vector<UnitBase*>().swap(m_arrPtsNextUnit);
+	}
 
 }
 
 
-// 遞迴刪除指標陣列
-void UnitBase::DeleteUnit (UnitBase** ptUnitBaseHeadRef, UnitBase* ptDel)
-{
-	if ((*ptUnitBaseHeadRef == nullptr) || (ptDel == nullptr))
-	{
-		return;
-	}
-
-	if (*ptUnitBaseHeadRef == ptDel)
-	{
-		*ptUnitBaseHeadRef = ptDel->m_ptNextUnit;
-	}
-
-	if (ptDel->m_ptNextUnit != nullptr)
-	{
-		ptDel->m_ptNextUnit->m_ptPreUnit = ptDel->m_ptPreUnit;
-	}
-
-	if (ptDel->m_ptPreUnit != nullptr)
-	{
-		ptDel->m_ptPreUnit->m_ptNextUnit = ptDel->m_ptNextUnit;
-	}
-
-	free(ptDel);
-	return;
-
-	//for (UnitBase* unit : unitBase->m_arrPtsNextUnit)
-	//{
-	//	DeleteUnitTree(unit);
-	//}
-	//delete unitBase; 
-}
-
-
-void UnitBase::InorderTraversal(UnitBase* unitBase)
-{
-	if (unitBase == nullptr)
-	{
-		return;
-	}
-
-	//for (size_t i = 0; i < unitBase->m_arrPtsNext.size(); i++)
-	//{
-	//	InorderTraversal(unitBase->m_arrPtsNext[i]);
-	//	
-	//	//if (i == unitBase->ptsNext.size() / 2)
-	//	//{
-	//	//	
-	//	//}
-	//}
-
-	//if (unitBase->ptsNext.empty())
-	//{
-
-	//}
-}
-
-
-void UnitBase::InsertUnit(UnitBase* unitBase, int iNewShowRegW, int iNewShowRegH, int iNewButtonW, int iNewButtonH)
-{
-	// 配置新的元件
-	UnitBase* ptNewUnitBase = new UnitBase(iNewShowRegW, iNewShowRegH, iNewButtonW, iNewButtonH);
-
-	// 放入新的元件資訊
-	ptNewUnitBase->iUnitWidth = iNewButtonW;
-	ptNewUnitBase->iUnitHeight = iNewButtonH;
-	ptNewUnitBase->pointUnitLocation = CPoint(iNewShowRegW * 0.5, iNewShowRegH * 0.5);
-
-	// 將新元件的 Next 指標設為前一個 Unit 的 Next 指標
-	ptNewUnitBase->m_ptNextUnit = unitBase->m_ptNextUnit;
-
-	// 將前一個 Unit 的 Next 指標設為新的 Unit
-	unitBase->m_ptNextUnit = ptNewUnitBase;
-
-	// 將前一個 Unit 設為新 Unit 的 Pre 指標
-	ptNewUnitBase->m_ptPreUnit = unitBase;
-
-	// 更新新 Unit 的 Next 指標
-	if (ptNewUnitBase->m_ptNextUnit != nullptr)
-	{
-		ptNewUnitBase->m_ptNextUnit->m_ptPreUnit = ptNewUnitBase;
-	}
-
-
-	m_arrPtsPreUnit.push_back(ptNewUnitBase->m_ptPreUnit);
-	m_arrPtsNextUnit.push_back(ptNewUnitBase->m_ptNextUnit);
-
-}

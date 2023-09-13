@@ -67,4 +67,7 @@ public:
 
 	void DrawToBuffer(CDC* pDC);							// 雙緩衝更新區域函數
 
+	
+	void UnitInWindow();                                    // 開啟函數選擇視窗
+
 };

@@ -7,6 +7,8 @@
 #define IDS_ABOUTBOX                    101
 #define IDD_MFCSIMULATOR_DIALOG         102
 #define IDR_MAINFRAME                   128
+#define IDD_DIALOG_UNIT_IN              130
+#define IDD_DIALOG_UNIT_FUN             132
 #define IDC_BUTTON_IN                   1001
 #define IDC_BUTTON_AND                  1002
 #define IDC_BUTTON_OUT                  1003
@@ -20,14 +22,23 @@
 #define IDC_BUTTON_OPEN                 1011
 #define IDC_BUTTON_SAVE                 1012
 #define IDC_STATIC_SHOW_REGION          1013
+#define IDC_EDIT1                       1014
+#define IDC_BUTTON_IN_FALSE             1015
+#define IDC_BUTTON_IN_TRUE              1016
+#define IDC_BUTTON_FUN_PLUS             1016
+#define IDC_BUTTON_IN_SIN               1017
+#define IDC_BUTTON_FUN_MINUS            1017
+#define IDC_BUTTON_IN_COS               1018
+#define IDC_BUTTON_FUN_DIVISION         1018
+#define IDC_BUTTON_FUN_MULTIPLY         1019
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        130
+#define _APS_NEXT_RESOURCE_VALUE        134
 #define _APS_NEXT_COMMAND_VALUE         32771
-#define _APS_NEXT_CONTROL_VALUE         1014
+#define _APS_NEXT_CONTROL_VALUE         1017
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

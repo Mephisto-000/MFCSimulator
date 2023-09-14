@@ -42,8 +42,14 @@ public:
 	CList<CRect, CRect&> m_listInUnit;                      // 記錄生成的 IN 元件
 	CList<CRect, CRect&> m_listInUnitBg;					// 記錄生成的 IN 元件背景矩形
 
+	CList<CRect, CRect&> m_listOutUnit;
+	CList<CRect, CRect&> m_listOutUnitBg;
 
-	CPoint m_ptInUnitStartPos;								// IN 元件被拖動的起始點
+
+	CPoint m_pointInUnitStartPos;						    // IN 元件被拖動的起始點
+	CPoint m_pointOutUnitStartPos;                          // OUT 元件被拖動的起始點
+
+
 	BOOL m_bIsDragging;                                     // 記錄元件是否被拖動
 
 
@@ -53,11 +59,15 @@ public:
 
 
 	CRect GetUnitRect(CPoint ptLeftTop);                    // 得到元件矩形
-	CRect GetUnitRectIdentifyRect(CPoint ptLeftTop);		// 得到讓滑鼠在元件上時有 Focus 效果的背景矩形
 
 	CStatic m_staticShowRegion;								// 顯示區成員控件
 
 	CButton m_buttonIN;										// 輸入函數元件 IN 
+	CButton m_buttonOUT;
+	CButton m_buttonAND;
+	CButton m_buttonOR;
+	CButton m_buttonNOT;
+	CButton m_buttonFUN;
 	
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
 	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
@@ -69,5 +79,12 @@ public:
 
 	
 	void UnitInWindow();                                    // 開啟函數選擇視窗
+
+	afx_msg void OnBnClickedButtonOut();
+	afx_msg void OnBnClickedButtonAnd();
+	afx_msg void OnBnClickedButtonOr();
+	afx_msg void OnBnClickedButtonNot();
+	afx_msg void OnBnClickedButtonFun();
+	afx_msg void OnBnClickedButtonLine();
 
 };

@@ -1,19 +1,12 @@
 #include "pch.h"
 #include "UnitBase.h"
-#include <cstddef>  // for size_t
 
 
 
 
 // UnitBase 建構子
-UnitBase::UnitBase(UnitBase* ptPreUnit, CString strUnitID, CRect rectShowRegion, CRect rectButton)
+UnitBase::UnitBase(CRect rectShowRegion, CRect rectButton)
 {
-
-	// 初始化指標陣列
-	m_arrPtsPreUnit.push_back(ptPreUnit);
-
-	// 確認元件種類
-	m_UnitID = strUnitID;
 
 	// 新建立時沒有連接
 	m_bConnectPoint = FALSE;
@@ -27,12 +20,12 @@ UnitBase::UnitBase(UnitBase* ptPreUnit, CString strUnitID, CRect rectShowRegion,
 	int iButtonH = rectButton.Height();
 	int iButtonW = rectButton.Height();
 
-
-	pointUnitLocation = CPoint(iShowRegW * 0.5, iShowRegH * 0.5);
+	// 元件初始生成的位置於畫面中央
 	m_iUnitWidth = iButtonW;
 	m_iUnitHeight = iButtonH;
+	pointUnitLocation = CPoint((iShowRegW - iButtonW) * 0.5, (iShowRegH - iButtonH) * 0.5);
 
-
+	// 輸出值為 0.0
 	m_dOutValue = 0.0;
 
 }

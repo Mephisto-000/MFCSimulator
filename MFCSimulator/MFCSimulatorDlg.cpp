@@ -9,6 +9,14 @@
 #include "afxdialogex.h"
 #include "UnitInDlg.h"
 
+#include "UnitIn.h"
+#include "UnitOUT.h"
+#include "UnitAnd.h"
+#include "UnitOR.h"
+#include "UnitNOT.h"
+#include "UnitFun.h"
+
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -67,6 +75,11 @@ void CMFCSimulatorDlg::DoDataExchange(CDataExchange* pDX)
 	CDialogEx::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_STATIC_SHOW_REGION, m_staticShowRegion);
 	DDX_Control(pDX, IDC_BUTTON_IN, m_buttonIN);
+	DDX_Control(pDX, IDC_BUTTON_OUT, m_buttonOUT);
+	DDX_Control(pDX, IDC_BUTTON_AND, m_buttonAND);
+	DDX_Control(pDX, IDC_BUTTON_OR, m_buttonOR);
+	DDX_Control(pDX, IDC_BUTTON_NOT, m_buttonNOT);
+	DDX_Control(pDX, IDC_BUTTON_FUN, m_buttonFUN);
 }
 
 BEGIN_MESSAGE_MAP(CMFCSimulatorDlg, CDialogEx)
@@ -79,6 +92,12 @@ BEGIN_MESSAGE_MAP(CMFCSimulatorDlg, CDialogEx)
 	ON_WM_LBUTTONDOWN()
 	ON_WM_MOUSEMOVE()
 	ON_WM_LBUTTONUP()
+	ON_BN_CLICKED(IDC_BUTTON_OUT, &CMFCSimulatorDlg::OnBnClickedButtonOut)
+	ON_BN_CLICKED(IDC_BUTTON_AND, &CMFCSimulatorDlg::OnBnClickedButtonAnd)
+	ON_BN_CLICKED(IDC_BUTTON_OR, &CMFCSimulatorDlg::OnBnClickedButtonOr)
+	ON_BN_CLICKED(IDC_BUTTON_NOT, &CMFCSimulatorDlg::OnBnClickedButtonNot)
+	ON_BN_CLICKED(IDC_BUTTON_FUN, &CMFCSimulatorDlg::OnBnClickedButtonFun)
+	ON_BN_CLICKED(IDC_BUTTON_LINE, &CMFCSimulatorDlg::OnBnClickedButtonLine)
 END_MESSAGE_MAP()
 
 
@@ -159,23 +178,6 @@ CRect CMFCSimulatorDlg::GetUnitRect(CPoint ptLeftTop)
 	return CRect(ptLeftTop, ptRightButtom);
 }
 
-// 從元件矩形左上角位置來得到讓滑鼠在元件上時有 Focus 效果的矩形
-CRect CMFCSimulatorDlg::GetUnitRectIdentifyRect(CPoint ptLeftTop)
-{
-	// 感應矩形
-	CRect rectUnitBg;
-
-	// 根據 IN 按鍵長寬來設計矩形長寬
-	m_buttonIN.GetWindowRect(&rectUnitBg);
-
-	int iWidthUnitBg = rectUnitBg.Width();
-	int iHeightUnitBg = rectUnitBg.Height();
-	
-	CPoint ptLeftTopBg(ptLeftTop.x - 10, ptLeftTop.y - 10);
-	CPoint ptRightButtomBg(ptLeftTop.x + iWidthUnitBg + 10, ptLeftTop.y + iHeightUnitBg + 10);
-
-	return CRect(ptLeftTopBg, ptRightButtomBg);
-}
 
 
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -282,19 +284,34 @@ void CMFCSimulatorDlg::DrawToBuffer(CDC* pDC)
 
 
 	CBrush brushInRect;
-	brushInRect.CreateSolidBrush(RGB(139, 69, 19));
+	brushInRect.CreateSolidBrush(RGB(192, 192, 192));
 
+	pDC->SetTextColor(RGB(0, 0, 0));
 	pDC->SelectObject(&brushInRect);
 
-	POSITION pos = m_listInUnit.GetHeadPosition();
-	while (pos)
+	POSITION posIN = m_listInUnit.GetHeadPosition();
+	while (posIN)
 	{
-		CRect& rect = m_listInUnit.GetNext(pos);
+		CRect& rect = m_listInUnit.GetNext(posIN);
 
 		pDC->Rectangle(rect);
 		pDC->FillRect(&rect, &brushInRect);
+		pDC->SetBkMode(TRANSPARENT);
+		pDC->TextOut((rect.left + rect.right)*0.5 - 5, (rect.top + rect.bottom)*0.5 - 5, _T("IN"));
 	}
 
+	
+	POSITION posOUT = m_listOutUnit.GetHeadPosition();
+	while (posOUT)
+	{
+
+		CRect& rect = m_listOutUnit.GetNext(posOUT);
+
+		pDC->Rectangle(rect);
+		pDC->FillRect(&rect, &brushInRect);
+		pDC->SetBkMode(TRANSPARENT);
+		pDC->TextOut((rect.left + rect.right) * 0.5 - 5, (rect.top + rect.bottom) * 0.5 - 5, _T("OUT"));
+	}
 
 }
 
@@ -365,6 +382,14 @@ void CMFCSimulatorDlg::OnBnClickedButtonBgColor()
 	}
 }
 
+
+
+
+
+
+
+
+
  //函數輸入鈕 "IN"
 void CMFCSimulatorDlg::OnBnClickedButtonIn()
 {
@@ -385,23 +410,99 @@ void CMFCSimulatorDlg::OnBnClickedButtonIn()
 	int iWidthUnit = rectUnit.Width();
 	int iHeightUnit = rectUnit.Height();
 
+	// 新建一個新 IN 元件
+	UnitIn* ptNewUnitIn = new UnitIn(rectShowRegion, rectUnit);
+
+
+
+
 	// 元件矩形初始位置
-	int iUnitLeftPos = RouundDoubleToInt(0.5 * (iWidthShowRegion - iWidthUnit));
-	int iUniteTopPos = RouundDoubleToInt(0.5 * (iHeightShowRegion - iHeightUnit));
+	CRect rectInitUnit = GetUnitRect(ptNewUnitIn->pointUnitLocation);
 
-	CPoint ptUnitInitPos(iUnitLeftPos, iUniteTopPos);
-
-	CRect rectInitUnit = GetUnitRect(ptUnitInitPos);
-	CRect rectInitUnitBg = GetUnitRectIdentifyRect(ptUnitInitPos);
 
 	m_listInUnit.AddTail(rectInitUnit);
-	m_listInUnitBg.AddTail(rectInitUnitBg);
 
 
 	//// 更新操作視窗	
 	Invalidate();
 	UpdateWindow();
 }
+
+
+//函數輸入鈕 "OUT"
+void CMFCSimulatorDlg::OnBnClickedButtonOut()
+{
+	// 操作視窗矩形
+	CRect rectShowRegion;
+	// 元件矩形
+	CRect rectUnit;
+
+	// 得到操作視窗矩形長寬資訊
+	m_staticShowRegion.GetWindowRect(&rectShowRegion);
+
+	int iWidthShowRegion = rectShowRegion.Width();
+	int iHeightShowRegion = rectShowRegion.Height();
+
+	// 得到元件矩形長寬資訊
+	m_buttonOUT.GetWindowRect(&rectUnit);
+
+	int iWidthUnit = rectUnit.Width();
+	int iHeightUnit = rectUnit.Height();
+
+	// 新建一個新元件
+	UnitOUT* ptNewUnitOut = new UnitOUT(rectShowRegion, rectUnit);
+
+
+	// 元件矩形初始位置
+	CRect rectInitUnit = GetUnitRect(ptNewUnitOut->pointUnitLocation);
+
+	m_listOutUnit.AddTail(rectInitUnit);
+
+
+	//// 更新操作視窗	
+	Invalidate();
+	UpdateWindow();
+}
+
+
+//函數輸入鈕 "AND"
+void CMFCSimulatorDlg::OnBnClickedButtonAnd()
+{
+	// TODO: 在此加入控制項告知處理常式程式碼
+}
+
+
+// 函數輸入紐 "OR"
+void CMFCSimulatorDlg::OnBnClickedButtonOr()
+{
+	// TODO: 在此加入控制項告知處理常式程式碼
+}
+
+
+// 函數輸入紐 "NOT"
+void CMFCSimulatorDlg::OnBnClickedButtonNot()
+{
+	// TODO: 在此加入控制項告知處理常式程式碼
+}
+
+
+// 函數輸入紐 "FUN"
+void CMFCSimulatorDlg::OnBnClickedButtonFun()
+{
+	// TODO: 在此加入控制項告知處理常式程式碼
+}
+
+
+// 開啟連線模式
+void CMFCSimulatorDlg::OnBnClickedButtonLine()
+{
+	// TODO: 在此加入控制項告知處理常式程式碼
+}
+
+
+
+
+
 
 
 
@@ -414,21 +515,34 @@ void CMFCSimulatorDlg::OnLButtonDown(UINT nFlags, CPoint point)
 	point.x = point.x - rectShowRegion.left;
 	point.y = point.y - rectShowRegion.top;
 
-	POSITION pos = m_listInUnit.GetHeadPosition();
+	POSITION posIn = m_listInUnit.GetHeadPosition();
+	POSITION posOut = m_listOutUnit.GetHeadPosition();
 
 	SetCapture();
 
-	while (pos)
+	while (posIn)
 	{
-		CRect& rect = m_listInUnit.GetNext(pos);
+		CRect& rect = m_listInUnit.GetNext(posIn);
 		if (rect.PtInRect(point))
 		{
 			SetCursor(LoadCursor(NULL, IDC_SIZEALL));
 
 			m_bIsDragging = TRUE;
-			m_ptInUnitStartPos = point;
+			m_pointInUnitStartPos = point;
 
-			
+			break;
+		}
+	}
+
+	while (posOut)
+	{
+		CRect& rect = m_listOutUnit.GetNext(posOut);
+		if (rect.PtInRect(point))
+		{
+			SetCursor(LoadCursor(NULL, IDC_SIZEALL));
+
+			m_bIsDragging = TRUE;
+			m_pointOutUnitStartPos = point;
 
 			break;
 		}
@@ -454,24 +568,44 @@ void CMFCSimulatorDlg::OnMouseMove(UINT nFlags, CPoint point)
 	
 	if (m_bIsDragging == TRUE)
 	{
-		int iOffsetX = point.x - m_ptInUnitStartPos.x;
-		int iOffsetY = point.y -m_ptInUnitStartPos.y;
+		int iOffsetInX = point.x - m_pointInUnitStartPos.x;
+		int iOffsetInY = point.y - m_pointInUnitStartPos.y;
+
+		int iOffsetOutX = point.x - m_pointOutUnitStartPos.x;
+		int iOffsetOutY = point.y - m_pointOutUnitStartPos.y;
 
 
-		POSITION pos = m_listInUnit.GetHeadPosition();
-		while (pos)
+		POSITION posIn = m_listInUnit.GetHeadPosition();
+		POSITION posOut = m_listOutUnit.GetHeadPosition();
+
+
+		while (posIn)
 		{
-			CRect& rect = m_listInUnit.GetNext(pos);
-			if (rect.PtInRect(m_ptInUnitStartPos))
+			CRect& rect = m_listInUnit.GetNext(posIn);
+			if (rect.PtInRect(m_pointInUnitStartPos))
 			{
-				rect.OffsetRect(iOffsetX, iOffsetY);
+				rect.OffsetRect(iOffsetInX, iOffsetInY);
 				break;
 			}
 		}
 
+		while (posOut)
+		{
+			CRect& rect = m_listInUnit.GetNext(posOut);
+			if (rect.PtInRect(m_pointOutUnitStartPos))
+			{
+				rect.OffsetRect(iOffsetOutX, iOffsetOutY);
+				break;
+			}
+		}
+
+
 		OnPaint();
 
-		m_ptInUnitStartPos = point;
+		m_pointInUnitStartPos = point;
+
+		m_pointOutUnitStartPos = point;
+
 	}
 
 
@@ -506,9 +640,21 @@ void CMFCSimulatorDlg::OnLButtonUp(UINT nFlags, CPoint point)
 }
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // 開啟視窗
-
-
 BOOL CAboutDlg::OnInitDialog()
 {
 	CDialogEx::OnInitDialog();
@@ -518,3 +664,6 @@ BOOL CAboutDlg::OnInitDialog()
 	return TRUE;  // return TRUE unless you set the focus to a control
 	// EXCEPTION: OCX 屬性頁應傳回 FALSE
 }
+
+
+

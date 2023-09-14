@@ -2,35 +2,60 @@
 #include "UnitIn.h"
 
 
-double UnitIn::FunctionChoose (double dValue)
+
+
+UnitIn::UnitIn(CRect rectShowRegion, CRect rectButton) : UnitBase (rectShowRegion, rectButton)
 {
-	if (m_strFunction == "sin(t)")
+
+
+}
+
+
+
+void UnitIn::SetFuncOrOpera(CString strChoose)
+{
+	m_strFuncOrOpera = strChoose;
+}
+
+
+// 將要連接 FUN 或 OUT 元件的指標存入陣列
+void UnitIn::InsertUnit(UnitBase* ptNewUnit)
+{
+	
+	if (ptNewUnit->m_UnitID == "FUN")
 	{
-		return sin(dValue);
+		m_arrPtsNextUnit.push_back(ptNewUnit);
 	}
-	else if (m_strFunction == "cos(t)")
+	else if (ptNewUnit->m_UnitID == "OUT")
 	{
-		return cos(dValue);
+		m_arrPtsNextUnit.push_back(ptNewUnit);
 	}
-	else if (m_strFunction == "True")
-	{	// True
-		return 1;
+
+}
+
+
+void UnitIn::UpdateDotData(CPoint pointNewLocation)
+{
+	m_arrConnectPt.push_back(pointNewLocation);
+}
+
+
+void UnitIn::Result(double dRealTimeValue)
+{
+	if (m_strFuncOrOpera == "sin")
+	{
+		m_dOutValue = sin(dRealTimeValue);
+	}
+	else if (m_strFuncOrOpera == "cos")
+	{
+		m_dOutValue = cos(dRealTimeValue);
+	}
+	else if (m_strFuncOrOpera == "True")
+	{
+		m_dOutValue = 1;
 	}
 	else
-	{	// False
-		return 0;
+	{
+		m_dOutValue = 0;
 	}
-
-	
 }
-
-
-void InsertDotData()
-{
-
-
-
-}
-
-
-

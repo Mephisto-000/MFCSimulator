@@ -185,15 +185,15 @@
   <ItemGroup>
     <ClInclude Include="framework.h" />
     <ClInclude Include="UnitFunDlg.h" />
-    <ClInclude Include="UnitIn.h" />
+    <ClInclude Include="UnitIN.h" />
     <ClInclude Include="MFCSimulator.h" />
     <ClInclude Include="MFCSimulatorDlg.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="targetver.h" />
-    <ClInclude Include="UnitAnd.h" />
+    <ClInclude Include="UnitAND.h" />
     <ClInclude Include="UnitBase.h" />
-    <ClInclude Include="UnitFun.h" />
+    <ClInclude Include="UnitFUN.h" />
     <ClInclude Include="UnitInDlg.h" />
     <ClInclude Include="UnitNOT.h" />
     <ClInclude Include="UnitOR.h" />
@@ -201,7 +201,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="UnitFunDlg.cpp" />
-    <ClCompile Include="UnitIn.cpp" />
+    <ClCompile Include="UnitIN.cpp" />
     <ClCompile Include="MFCSimulator.cpp" />
     <ClCompile Include="MFCSimulatorDlg.cpp" />
     <ClCompile Include="pch.cpp">
@@ -210,9 +210,9 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="UnitAnd.cpp" />
+    <ClCompile Include="UnitAND.cpp" />
     <ClCompile Include="UnitBase.cpp" />
-    <ClCompile Include="UnitFun.cpp" />
+    <ClCompile Include="UnitFUN.cpp" />
     <ClCompile Include="UnitInDlg.cpp" />
     <ClCompile Include="UnitNOT.cpp" />
     <ClCompile Include="UnitOR.cpp" />

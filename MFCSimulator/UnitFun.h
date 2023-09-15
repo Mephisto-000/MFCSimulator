@@ -2,11 +2,11 @@
 
 #include "UnitBase.h"
 
-class UnitFun : public UnitBase
+class UnitFUN : public UnitBase
 {
 public:
 
-
+    UnitFUN(CRect rectShowRegion, CRect rectButton);
 
     // ³]¸m¨ç¼Æ
     virtual void SetFuncOrOpera(CString strChoose) override;

@@ -2,8 +2,11 @@
 // MFCSimulatorDlg.h: 標頭檔
 //
 
+#include "math.h"
+
 #pragma once
 
+#include "UnitBase.h"
 
 // CMFCSimulatorDlg 對話方塊
 class CMFCSimulatorDlg : public CDialogEx
@@ -46,8 +49,14 @@ public:
 	CList<CRect, CRect&> m_listOutUnitBg;
 
 
-	CPoint m_pointInUnitStartPos;						    // IN 元件被拖動的起始點
-	CPoint m_pointOutUnitStartPos;                          // OUT 元件被拖動的起始點
+	CList<UnitBase*, UnitBase*> m_listUnitPointers;         // 紀錄已生成的元件
+	UnitBase* m_ptMovingUnit;                                // 紀錄正在被滑鼠拖曳的指標
+
+
+	//CPoint m_pointInUnitStartPos;						    // IN 元件被拖動的起始點
+	//CPoint m_pointOutUnitStartPos;                        // OUT 元件被拖動的起始點
+
+	CPoint m_pointMouseStartPos;                            // 紀錄滑鼠按下左鍵當下位置 
 
 
 	BOOL m_bIsDragging;                                     // 記錄元件是否被拖動
@@ -55,10 +64,9 @@ public:
 
 	afx_msg void OnBnClickedButtonBgImg();					// 調整顯示區背景圖片
 	afx_msg void OnBnClickedButtonBgColor();				// 調整顯示區背景顏色
-	afx_msg void OnBnClickedButtonIn();						// 新增 IN 元件按鈕
 
 
-	CRect GetUnitRect(CPoint ptLeftTop);                    // 得到元件矩形
+	CRect GetUnitRect(CPoint ptLeftTop);                    // 經由左上角點定位，得到元件矩形
 
 	CStatic m_staticShowRegion;								// 顯示區成員控件
 
@@ -80,11 +88,13 @@ public:
 	
 	void UnitInWindow();                                    // 開啟函數選擇視窗
 
-	afx_msg void OnBnClickedButtonOut();
-	afx_msg void OnBnClickedButtonAnd();
-	afx_msg void OnBnClickedButtonOr();
-	afx_msg void OnBnClickedButtonNot();
-	afx_msg void OnBnClickedButtonFun();
-	afx_msg void OnBnClickedButtonLine();
+
+	afx_msg void OnBnClickedButtonIn();						// 新增 IN 元件按鈕
+	afx_msg void OnBnClickedButtonOut();                    // 新增 OUT 元件按鈕
+	afx_msg void OnBnClickedButtonAnd();                    // 新增 AND 元件按鈕
+	afx_msg void OnBnClickedButtonOr();                     // 新增 OR 元件按鈕
+	afx_msg void OnBnClickedButtonNot();                    // 新增 NOT 元件按鈕
+	afx_msg void OnBnClickedButtonFun();                    // 新增 FUN 元件按鈕
+	afx_msg void OnBnClickedButtonLine();                   // 新增連線模式按鈕
 
 };

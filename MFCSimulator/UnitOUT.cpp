@@ -5,7 +5,7 @@
 
 UnitOUT::UnitOUT(CRect rectShowRegion, CRect rectButton) : UnitBase(rectShowRegion, rectButton)
 {
-
+	m_strUnitID = _T("OUT");
 
 }
 

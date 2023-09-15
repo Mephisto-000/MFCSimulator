@@ -9,12 +9,12 @@
 #include "afxdialogex.h"
 #include "UnitInDlg.h"
 
-#include "UnitIn.h"
+#include "UnitIN.h"
 #include "UnitOUT.h"
-#include "UnitAnd.h"
+#include "UnitAND.h"
 #include "UnitOR.h"
 #include "UnitNOT.h"
-#include "UnitFun.h"
+#include "UnitFUN.h"
 
 
 #ifdef _DEBUG
@@ -66,7 +66,7 @@ CMFCSimulatorDlg::CMFCSimulatorDlg(CWnd* pParent /*=nullptr*/)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 	m_colorShowRegionBg = RGB(255, 255, 255);
-	m_strShowRegionImgBgPath = _T("");
+	m_strShowRegionImgBgPath = _T("test1.bmp");
 	m_bIsDragging = FALSE;
 }
 
@@ -219,6 +219,9 @@ void CMFCSimulatorDlg::OnPaint()
 		int iWidthShowRegion = rectShowRegion.Width();
 		int iHeightShowRegion = rectShowRegion.Height();
 
+		m_hBitmapImgBg = (HBITMAP)::LoadImage(NULL, m_strShowRegionImgBgPath, IMAGE_BITMAP,
+			rectShowRegion.Width(), rectShowRegion.Height(), LR_LOADFROMFILE);
+
 
 		// 取得操作視窗 dc
 		//CPaintDC dcShowRegion(pShowRegion);
@@ -227,21 +230,27 @@ void CMFCSimulatorDlg::OnPaint()
 		CDC memDC;
 		CBitmap memBitmap;
 
+		//if (m_hBitmapImgBg != nullptr)
+		//{
+		//	memBitmap.Attach(m_hBitmapImgBg);
+		//	BITMAP bmp;
+		//	memBitmap.GetBitmap(&bmp);
+		//}
+
+
 
 		memDC.CreateCompatibleDC(pdcShowRegion);
 		memBitmap.CreateCompatibleBitmap(pdcShowRegion, iWidthShowRegion, iHeightShowRegion);
+
 		CBitmap* pOldMemBitMap = memDC.SelectObject(&memBitmap);
+		
 
 		DrawToBuffer(&memDC);
-
-
+		
 		pdcShowRegion->BitBlt(0, 0, iWidthShowRegion, iHeightShowRegion, &memDC, 0, 0, SRCCOPY);
-
-
 		memDC.SelectObject(pOldMemBitMap);
 		memBitmap.DeleteObject();
 		memDC.DeleteDC();
-
 
 	}
 
@@ -263,6 +272,7 @@ void CMFCSimulatorDlg::DrawToBuffer(CDC* pDC)
 	CBrush* pOldbrushShowRegion = pDC->SelectObject(&brushShowRegion);
 
 
+
 	if (g_bShowRegionBgImgChange == FALSE)
 	{
 		// 操作視窗初始上色
@@ -277,40 +287,44 @@ void CMFCSimulatorDlg::DrawToBuffer(CDC* pDC)
 	// 判斷是否更改操作視窗背景圖片，有的話就更新背景並顯示出來
 	if (g_bShowRegionBgImgChange == TRUE)
 	{
+		//m_staticShowRegion.ModifyStyle(1, SS_BITMAP);
+		//m_staticShowRegion.SetBitmap(m_hBitmapImgBg);
+		//m_staticShowRegion.ShowWindow(SW_SHOW);
+
+
 		m_staticShowRegion.ModifyStyle(1, SS_BITMAP);
 		m_staticShowRegion.SetBitmap(m_hBitmapImgBg);
 		m_staticShowRegion.ShowWindow(SW_SHOW);
+
 	}
+	
 
 
+
+	// 元件矩形顏色 : 
 	CBrush brushInRect;
-	brushInRect.CreateSolidBrush(RGB(192, 192, 192));
+	brushInRect.CreateSolidBrush(RGB(192, 192, 192));  // 灰色
 
 	pDC->SetTextColor(RGB(0, 0, 0));
 	pDC->SelectObject(&brushInRect);
 
-	POSITION posIN = m_listInUnit.GetHeadPosition();
-	while (posIN)
-	{
-		CRect& rect = m_listInUnit.GetNext(posIN);
 
-		pDC->Rectangle(rect);
-		pDC->FillRect(&rect, &brushInRect);
-		pDC->SetBkMode(TRANSPARENT);
-		pDC->TextOut((rect.left + rect.right)*0.5 - 5, (rect.top + rect.bottom)*0.5 - 5, _T("IN"));
-	}
+	POSITION posiUnit = m_listUnitPointers.GetHeadPosition();
 
-	
-	POSITION posOUT = m_listOutUnit.GetHeadPosition();
-	while (posOUT)
+	while (posiUnit != nullptr)
 	{
 
-		CRect& rect = m_listOutUnit.GetNext(posOUT);
+		UnitBase* ptUnit = m_listUnitPointers.GetNext(posiUnit);
 
-		pDC->Rectangle(rect);
-		pDC->FillRect(&rect, &brushInRect);
+		CPoint pointUnitLeftTop = ptUnit->m_pointUnitLocation;
+		
+		CRect rectUnit = GetUnitRect(pointUnitLeftTop);
+
+		pDC->Rectangle(rectUnit);
+		pDC->FillRect(&rectUnit, &brushInRect);
 		pDC->SetBkMode(TRANSPARENT);
-		pDC->TextOut((rect.left + rect.right) * 0.5 - 5, (rect.top + rect.bottom) * 0.5 - 5, _T("OUT"));
+		pDC->TextOut((rectUnit.left + rectUnit.right) * 0.5 - 8, (rectUnit.top + rectUnit.bottom) * 0.5 - 8, 
+			ptUnit->m_strUnitID);
 	}
 
 }
@@ -395,37 +409,35 @@ void CMFCSimulatorDlg::OnBnClickedButtonIn()
 {
 	// 操作視窗矩形
 	CRect rectShowRegion;
+
 	// 元件矩形
 	CRect rectUnit;
 
-	// 得到操作視窗矩形長寬資訊
+	// 得到操作視窗矩形
 	m_staticShowRegion.GetWindowRect(&rectShowRegion);
 
-	int iWidthShowRegion = rectShowRegion.Width();
-	int iHeightShowRegion = rectShowRegion.Height();
 
-	// 得到元件矩形長寬資訊
+	// 操作視窗長、寬
+	int iHeightShowRegion = rectShowRegion.Height();
+	int iWidthShowRegion = rectShowRegion.Width();
+
+	// 得到元件矩形
 	m_buttonIN.GetWindowRect(&rectUnit);
 
+	// 元件矩形長寬
 	int iWidthUnit = rectUnit.Width();
 	int iHeightUnit = rectUnit.Height();
 
 	// 新建一個新 IN 元件
-	UnitIn* ptNewUnitIn = new UnitIn(rectShowRegion, rectUnit);
+	UnitIN* ptNewUnitIN = new UnitIN(rectShowRegion, rectUnit);
 
+	// 放進紀錄 Pointer 的串列結構
+	m_listUnitPointers.AddHead(ptNewUnitIN);
 
-
-
-	// 元件矩形初始位置
-	CRect rectInitUnit = GetUnitRect(ptNewUnitIn->pointUnitLocation);
-
-
-	m_listInUnit.AddTail(rectInitUnit);
-
-
-	//// 更新操作視窗	
+	// 更新操作視窗	
 	Invalidate();
 	UpdateWindow();
+
 }
 
 
@@ -434,32 +446,31 @@ void CMFCSimulatorDlg::OnBnClickedButtonOut()
 {
 	// 操作視窗矩形
 	CRect rectShowRegion;
+
 	// 元件矩形
 	CRect rectUnit;
 
-	// 得到操作視窗矩形長寬資訊
+	// 得到操作視窗矩形
 	m_staticShowRegion.GetWindowRect(&rectShowRegion);
 
-	int iWidthShowRegion = rectShowRegion.Width();
+	// 操作視窗長、寬
 	int iHeightShowRegion = rectShowRegion.Height();
+	int iWidthShowRegion = rectShowRegion.Width();
 
-	// 得到元件矩形長寬資訊
+	// 得到元件矩形
 	m_buttonOUT.GetWindowRect(&rectUnit);
 
+	// 元件矩形長寬
 	int iWidthUnit = rectUnit.Width();
 	int iHeightUnit = rectUnit.Height();
 
 	// 新建一個新元件
-	UnitOUT* ptNewUnitOut = new UnitOUT(rectShowRegion, rectUnit);
+	UnitOUT* ptNewUnitOUT = new UnitOUT(rectShowRegion, rectUnit);
 
+	// 放進紀錄 Pointer 的串列結構
+	m_listUnitPointers.AddHead(ptNewUnitOUT);
 
-	// 元件矩形初始位置
-	CRect rectInitUnit = GetUnitRect(ptNewUnitOut->pointUnitLocation);
-
-	m_listOutUnit.AddTail(rectInitUnit);
-
-
-	//// 更新操作視窗	
+	// 更新操作視窗	
 	Invalidate();
 	UpdateWindow();
 }
@@ -468,28 +479,140 @@ void CMFCSimulatorDlg::OnBnClickedButtonOut()
 //函數輸入鈕 "AND"
 void CMFCSimulatorDlg::OnBnClickedButtonAnd()
 {
-	// TODO: 在此加入控制項告知處理常式程式碼
+	// 操作視窗矩形
+	CRect rectShowRegion;
+
+	// 元件矩形
+	CRect rectUnit;
+
+	// 得到操作視窗矩形
+	m_staticShowRegion.GetWindowRect(&rectShowRegion);
+
+	// 操作視窗長、寬
+	int iHeightShowRegion = rectShowRegion.Height();
+	int iWidthShowRegion = rectShowRegion.Width();
+
+	// 得到元件矩形
+	m_buttonAND.GetWindowRect(&rectUnit);
+
+	// 元件矩形長寬
+	int iWidthUnit = rectUnit.Width();
+	int iHeightUnit = rectUnit.Height();
+
+	// 新建一個新元件
+	UnitAND* ptNewUnitAND = new UnitAND(rectShowRegion, rectUnit);
+
+	// 放進紀錄 Pointer 的串列結構
+	m_listUnitPointers.AddHead(ptNewUnitAND);
+
+	// 更新操作視窗	
+	Invalidate();
+	UpdateWindow();
 }
 
 
 // 函數輸入紐 "OR"
 void CMFCSimulatorDlg::OnBnClickedButtonOr()
 {
-	// TODO: 在此加入控制項告知處理常式程式碼
+	// 操作視窗矩形
+	CRect rectShowRegion;
+
+	// 元件矩形
+	CRect rectUnit;
+
+	// 得到操作視窗矩形
+	m_staticShowRegion.GetWindowRect(&rectShowRegion);
+
+	// 操作視窗長、寬
+	int iHeightShowRegion = rectShowRegion.Height();
+	int iWidthShowRegion = rectShowRegion.Width();
+
+	// 得到元件矩形
+	m_buttonOR.GetWindowRect(&rectUnit);
+
+	// 元件矩形長寬
+	int iWidthUnit = rectUnit.Width();
+	int iHeightUnit = rectUnit.Height();
+
+	// 新建一個新元件
+	UnitOR* ptNewUnitOR = new UnitOR(rectShowRegion, rectUnit);
+
+	// 放進紀錄 Pointer 的串列結構
+	m_listUnitPointers.AddHead(ptNewUnitOR);
+
+	// 更新操作視窗	
+	Invalidate();
+	UpdateWindow();
 }
 
 
 // 函數輸入紐 "NOT"
 void CMFCSimulatorDlg::OnBnClickedButtonNot()
 {
-	// TODO: 在此加入控制項告知處理常式程式碼
+	// 操作視窗矩形
+	CRect rectShowRegion;
+
+	// 元件矩形
+	CRect rectUnit;
+
+	// 得到操作視窗矩形
+	m_staticShowRegion.GetWindowRect(&rectShowRegion);
+
+	// 操作視窗長、寬
+	int iHeightShowRegion = rectShowRegion.Height();
+	int iWidthShowRegion = rectShowRegion.Width();
+
+	// 得到元件矩形
+	m_buttonNOT.GetWindowRect(&rectUnit);
+
+	// 元件矩形長寬
+	int iWidthUnit = rectUnit.Width();
+	int iHeightUnit = rectUnit.Height();
+
+	// 新建一個新元件
+	UnitNOT* ptNewUnitNOT = new UnitNOT(rectShowRegion, rectUnit);
+
+	// 放進紀錄 Pointer 的串列結構
+	m_listUnitPointers.AddHead(ptNewUnitNOT);
+
+	// 更新操作視窗	
+	Invalidate();
+	UpdateWindow();
 }
 
 
 // 函數輸入紐 "FUN"
 void CMFCSimulatorDlg::OnBnClickedButtonFun()
 {
-	// TODO: 在此加入控制項告知處理常式程式碼
+	// 操作視窗矩形
+	CRect rectShowRegion;
+
+	// 元件矩形
+	CRect rectUnit;
+
+	// 得到操作視窗矩形
+	m_staticShowRegion.GetWindowRect(&rectShowRegion);
+
+	// 操作視窗長、寬
+	int iHeightShowRegion = rectShowRegion.Height();
+	int iWidthShowRegion = rectShowRegion.Width();
+
+	// 得到元件矩形
+	m_buttonFUN.GetWindowRect(&rectUnit);
+
+	// 元件矩形長寬
+	int iWidthUnit = rectUnit.Width();
+	int iHeightUnit = rectUnit.Height();
+
+	// 新建一個新元件
+	UnitFUN* ptNewUnitFUN = new UnitFUN(rectShowRegion, rectUnit);
+
+	// 放進紀錄 Pointer 的串列結構
+	m_listUnitPointers.AddHead(ptNewUnitFUN);
+
+	// 更新操作視窗	
+	Invalidate();
+	UpdateWindow(); 
 }
 
 
@@ -500,55 +623,54 @@ void CMFCSimulatorDlg::OnBnClickedButtonLine()
 }
 
 
-
-
-
-
-
-
 void CMFCSimulatorDlg::OnLButtonDown(UINT nFlags, CPoint point)
 {
+	// 得到操作視窗矩形資訊
 	CRect rectShowRegion;
 	GetDlgItem(IDC_STATIC_SHOW_REGION)->GetWindowRect(&rectShowRegion);
+
+	// 主視窗座標轉換為操作視窗的座標
 	ScreenToClient(&rectShowRegion);
 
+	// 滑鼠座標點轉換為操作視窗內的座標點
 	point.x = point.x - rectShowRegion.left;
 	point.y = point.y - rectShowRegion.top;
 
-	POSITION posIn = m_listInUnit.GetHeadPosition();
-	POSITION posOut = m_listOutUnit.GetHeadPosition();
-
+	// 擷取滑鼠位置
 	SetCapture();
 
-	while (posIn)
-	{
-		CRect& rect = m_listInUnit.GetNext(posIn);
-		if (rect.PtInRect(point))
-		{
+	// 得到內含已創建元件的指針的 CList ，並取得 CList 的位置指針
+	POSITION posiUnit = m_listUnitPointers.GetHeadPosition();
+
+	while (posiUnit != nullptr)
+	{	// 走訪 CList 內的所有元素
+
+
+		UnitBase* ptUnit = m_listUnitPointers.GetNext(posiUnit);
+
+		// 得到元件的矩形
+		CRect rectUnit = GetUnitRect(ptUnit->m_pointUnitLocation);
+		
+		if (rectUnit.PtInRect(point))
+		{	// 確認滑鼠是否點取元件
+
+			// 更新被拖曳元件的狀態
+			ptUnit->m_bMoveState = TRUE;
+			
+			// 點取元件時，滑鼠產生十字的圖案
 			SetCursor(LoadCursor(NULL, IDC_SIZEALL));
 
+			// 開啟拖曳的狀態
 			m_bIsDragging = TRUE;
-			m_pointInUnitStartPos = point;
+
+			// 更新滑鼠位置
+			m_pointMouseStartPos = point;
+
+			m_ptMovingUnit = ptUnit;
 
 			break;
 		}
-	}
-
-	while (posOut)
-	{
-		CRect& rect = m_listOutUnit.GetNext(posOut);
-		if (rect.PtInRect(point))
-		{
-			SetCursor(LoadCursor(NULL, IDC_SIZEALL));
-
-			m_bIsDragging = TRUE;
-			m_pointOutUnitStartPos = point;
-
-			break;
-		}
-	}
-
-
+	}	
 
 	CDialogEx::OnLButtonDown(nFlags, point);
 }
@@ -558,56 +680,33 @@ void CMFCSimulatorDlg::OnLButtonDown(UINT nFlags, CPoint point)
 
 void CMFCSimulatorDlg::OnMouseMove(UINT nFlags, CPoint point)
 {
-
+	// 得到操作視窗矩形資訊
 	CRect rectShowRegion;
 	GetDlgItem(IDC_STATIC_SHOW_REGION)->GetWindowRect(&rectShowRegion);
+
+	// 主視窗座標轉換為操作視窗的座標
 	ScreenToClient(&rectShowRegion);
 
+	// 滑鼠座標點轉換為操作視窗內的座標點
 	point.x = point.x - rectShowRegion.left;
 	point.y = point.y - rectShowRegion.top;
 	
 	if (m_bIsDragging == TRUE)
-	{
-		int iOffsetInX = point.x - m_pointInUnitStartPos.x;
-		int iOffsetInY = point.y - m_pointInUnitStartPos.y;
+	{	// 當開始拖曳時，計算拖曳的距離，改變矩形位置
 
-		int iOffsetOutX = point.x - m_pointOutUnitStartPos.x;
-		int iOffsetOutY = point.y - m_pointOutUnitStartPos.y;
-
-
-		POSITION posIn = m_listInUnit.GetHeadPosition();
-		POSITION posOut = m_listOutUnit.GetHeadPosition();
+		//
+		int iOffsetX = point.x - m_pointMouseStartPos.x;
+		int iOffsetY = point.y - m_pointMouseStartPos.y;
 
 
-		while (posIn)
-		{
-			CRect& rect = m_listInUnit.GetNext(posIn);
-			if (rect.PtInRect(m_pointInUnitStartPos))
-			{
-				rect.OffsetRect(iOffsetInX, iOffsetInY);
-				break;
-			}
-		}
 
-		while (posOut)
-		{
-			CRect& rect = m_listInUnit.GetNext(posOut);
-			if (rect.PtInRect(m_pointOutUnitStartPos))
-			{
-				rect.OffsetRect(iOffsetOutX, iOffsetOutY);
-				break;
-			}
-		}
+		m_ptMovingUnit->m_pointUnitLocation.Offset(iOffsetX, iOffsetY);
 
+		m_pointMouseStartPos = point;
 
 		OnPaint();
 
-		m_pointInUnitStartPos = point;
-
-		m_pointOutUnitStartPos = point;
-
 	}
-
 
 	CDialogEx::OnMouseMove(nFlags, point);
 }
@@ -616,23 +715,46 @@ void CMFCSimulatorDlg::OnMouseMove(UINT nFlags, CPoint point)
 
 void CMFCSimulatorDlg::OnLButtonUp(UINT nFlags, CPoint point)
 {
-
+	// 得到操作視窗矩形資訊
 	CRect rectShowRegion;
 	GetDlgItem(IDC_STATIC_SHOW_REGION)->GetWindowRect(&rectShowRegion);
+
+	// 主視窗座標轉換為操作視窗的座標
 	ScreenToClient(&rectShowRegion);
 
+	// 滑鼠座標點轉換為操作視窗內的座標點
 	point.x = point.x - rectShowRegion.left;
 	point.y = point.y - rectShowRegion.top;
 
 	if (m_bIsDragging)
-	{ 
+	{   // 當放開滑鼠時，釋放滑鼠位置
 	
 		point = NULL;
 
 		m_bIsDragging = FALSE;
 
-		ReleaseCapture();
+		// 得到內含已創建元件的指針的 CList ，並取得 CList 的位置指針
+		POSITION posiUnit = m_listUnitPointers.GetHeadPosition();
 
+		while (posiUnit != nullptr)
+		{	// 走訪 CList 內的所有元素
+
+			UnitBase* ptUnit = m_listUnitPointers.GetNext(posiUnit);
+
+			// 得到元件的矩形
+			CRect rectUnit = GetUnitRect(ptUnit->m_pointUnitLocation);
+
+			if (ptUnit->m_bMoveState = TRUE)
+			{
+				ptUnit->m_bMoveState = FALSE;
+
+				break;
+			}
+
+		}
+
+		// 釋放滑鼠擷取
+		ReleaseCapture();
 
 	}
 

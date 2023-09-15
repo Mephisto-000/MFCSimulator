@@ -36,13 +36,13 @@
     <ClInclude Include="UnitBase.h">
       <Filter>標頭檔</Filter>
     </ClInclude>
-    <ClInclude Include="UnitIn.h">
+    <ClInclude Include="UnitIN.h">
       <Filter>標頭檔</Filter>
     </ClInclude>
-    <ClInclude Include="UnitFun.h">
+    <ClInclude Include="UnitFUN.h">
       <Filter>標頭檔</Filter>
     </ClInclude>
-    <ClInclude Include="UnitAnd.h">
+    <ClInclude Include="UnitAND.h">
       <Filter>標頭檔</Filter>
     </ClInclude>
     <ClInclude Include="UnitOR.h">
@@ -74,13 +74,13 @@
     <ClCompile Include="UnitBase.cpp">
       <Filter>來源檔案</Filter>
     </ClCompile>
-    <ClCompile Include="UnitIn.cpp">
+    <ClCompile Include="UnitIN.cpp">
       <Filter>來源檔案</Filter>
     </ClCompile>
-    <ClCompile Include="UnitFun.cpp">
+    <ClCompile Include="UnitFUN.cpp">
       <Filter>來源檔案</Filter>
     </ClCompile>
-    <ClCompile Include="UnitAnd.cpp">
+    <ClCompile Include="UnitAND.cpp">
       <Filter>來源檔案</Filter>
     </ClCompile>
     <ClCompile Include="UnitOR.cpp">

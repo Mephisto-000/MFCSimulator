@@ -4,29 +4,29 @@
 
 
 
-UnitIn::UnitIn(CRect rectShowRegion, CRect rectButton) : UnitBase (rectShowRegion, rectButton)
+UnitIN::UnitIN(CRect rectShowRegion, CRect rectButton) : UnitBase (rectShowRegion, rectButton)
 {
-
+	m_strUnitID = _T("IN");
 
 }
 
 
 
-void UnitIn::SetFuncOrOpera(CString strChoose)
+void UnitIN::SetFuncOrOpera(CString strChoose)
 {
 	m_strFuncOrOpera = strChoose;
 }
 
 
 // 將要連接 FUN 或 OUT 元件的指標存入陣列
-void UnitIn::InsertUnit(UnitBase* ptNewUnit)
+void UnitIN::InsertUnit(UnitBase* ptNewUnit)
 {
 	
-	if (ptNewUnit->m_UnitID == "FUN")
+	if (ptNewUnit->m_strUnitID == "FUN")
 	{
 		m_arrPtsNextUnit.push_back(ptNewUnit);
 	}
-	else if (ptNewUnit->m_UnitID == "OUT")
+	else if (ptNewUnit->m_strUnitID == "OUT")
 	{
 		m_arrPtsNextUnit.push_back(ptNewUnit);
 	}
@@ -34,13 +34,13 @@ void UnitIn::InsertUnit(UnitBase* ptNewUnit)
 }
 
 
-void UnitIn::UpdateDotData(CPoint pointNewLocation)
+void UnitIN::UpdateDotData(CPoint pointNewLocation)
 {
 	m_arrConnectPt.push_back(pointNewLocation);
 }
 
 
-void UnitIn::Result(double dRealTimeValue)
+void UnitIN::Result(double dRealTimeValue)
 {
 	if (m_strFuncOrOpera == "sin")
 	{

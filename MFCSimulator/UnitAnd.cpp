@@ -1,11 +1,38 @@
 #include "pch.h"
-#include "UnitAnd.h"
+#include "UnitAND.h"
 
-void UnitAnd::BitwiseANDOperator()
+UnitAND::UnitAND(CRect rectShowRegion, CRect rectButton) : UnitBase(rectShowRegion, rectButton)
 {
+	m_strUnitID = _T("AND");
 
-	m_dResult = (m_dLeftValue && m_dRightValue);
 
 }
 
 
+
+
+void UnitAND::SetFuncOrOpera(CString strChoose)
+{
+
+}
+
+
+// 將要連接 FUN 或 OUT 元件的指標存入陣列
+void UnitAND::InsertUnit(UnitBase* ptNewUnit)
+{
+
+
+
+}
+
+
+void UnitAND::UpdateDotData(CPoint pointNewLocation)
+{
+
+}
+
+
+void UnitAND::Result(double dRealTimeValue)
+{
+
+}

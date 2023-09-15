@@ -15,12 +15,13 @@ protected:
 public:													  
 	
 	// 元件資料
-	CPoint pointUnitLocation;                             // 元件位置
+	CPoint m_pointUnitLocation;                           // 元件位置，元件矩形左上角的點
 	int m_iUnitHeight;                                    // 元件長
 	int m_iUnitWidth;                                     // 元件寬
-
-	CString m_UnitID;                                     // 確認是哪一種元件
+	CString m_strUnitID;                                     // 元件類型
+	BOOL m_bMoveState;                                    // 確認是否被拖曳
 	
+	// 輸出處理
 	CString m_strFuncOrOpera;							  // 紀錄選擇的函數或是運算元
 	double m_dOutValue;                                   // 輸出的數值
 

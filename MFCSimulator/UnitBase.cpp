@@ -20,10 +20,13 @@ UnitBase::UnitBase(CRect rectShowRegion, CRect rectButton)
 	int iButtonH = rectButton.Height();
 	int iButtonW = rectButton.Height();
 
-	// 元件初始生成的位置於畫面中央
+	// 元件初始生成的位置於畫面左上
 	m_iUnitWidth = iButtonW;
 	m_iUnitHeight = iButtonH;
-	pointUnitLocation = CPoint((iShowRegW - iButtonW) * 0.5, (iShowRegH - iButtonH) * 0.5);
+	m_pointUnitLocation = CPoint(iShowRegW * 0.5, iShowRegH * 0.5);
+
+	// 初始拖曳狀態
+	m_bMoveState = FALSE;
 
 	// 輸出值為 0.0
 	m_dOutValue = 0.0;

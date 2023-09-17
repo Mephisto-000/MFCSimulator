@@ -65,8 +65,8 @@ CMFCSimulatorDlg::CMFCSimulatorDlg(CWnd* pParent /*=nullptr*/)
 	: CDialogEx(IDD_MFCSIMULATOR_DIALOG, pParent)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
-	m_colorShowRegionBg = RGB(255, 255, 255);
-	m_strShowRegionImgBgPath = _T("test1.bmp");
+	m_colorShowRegionBg = RGB(255, 255, 255);       // 操作畫面初始為白色
+	m_strShowRegionImgBgPath = _T("");
 	m_bIsDragging = FALSE;
 }
 
@@ -134,6 +134,9 @@ BOOL CMFCSimulatorDlg::OnInitDialog()
 
 	// TODO: 在此加入額外的初始設定
 
+	// 獲取初始操作畫面的位圖路徑
+	CString strCurrentPath = GetCurrentDir();
+	m_strShowRegionImgBgPath = strCurrentPath + _T("\\res\\test0.bmp");
 
 
 	return TRUE;  // 傳回 TRUE，除非您對控制項設定焦點
@@ -179,6 +182,16 @@ CRect CMFCSimulatorDlg::GetUnitRect(CPoint ptLeftTop)
 }
 
 
+CString CMFCSimulatorDlg::GetCurrentDir()
+{
+	
+	wchar_t path[MAX_PATH];
+	GetCurrentDirectory(MAX_PATH, path);
+
+	return path;
+}
+
+
 
 ////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -219,6 +232,8 @@ void CMFCSimulatorDlg::OnPaint()
 		int iWidthShowRegion = rectShowRegion.Width();
 		int iHeightShowRegion = rectShowRegion.Height();
 
+		
+
 		m_hBitmapImgBg = (HBITMAP)::LoadImage(NULL, m_strShowRegionImgBgPath, IMAGE_BITMAP,
 			rectShowRegion.Width(), rectShowRegion.Height(), LR_LOADFROMFILE);
 
@@ -227,26 +242,26 @@ void CMFCSimulatorDlg::OnPaint()
 		//CPaintDC dcShowRegion(pShowRegion);
 		CDC* pdcShowRegion = pShowRegion->GetDC();
 		pShowRegion->UpdateWindow();
+
 		CDC memDC;
 		CBitmap memBitmap;
 
-		//if (m_hBitmapImgBg != nullptr)
-		//{
-		//	memBitmap.Attach(m_hBitmapImgBg);
-		//	BITMAP bmp;
-		//	memBitmap.GetBitmap(&bmp);
-		//}
+		if (m_hBitmapImgBg != nullptr)
+		{
+			memBitmap.Attach(m_hBitmapImgBg);
+			BITMAP bmp;
+			memBitmap.GetBitmap(&bmp);
+		}
 
 
-
+		// 創建雙緩衝
 		memDC.CreateCompatibleDC(pdcShowRegion);
-		memBitmap.CreateCompatibleBitmap(pdcShowRegion, iWidthShowRegion, iHeightShowRegion);
-
 		CBitmap* pOldMemBitMap = memDC.SelectObject(&memBitmap);
-		
+
 
 		DrawToBuffer(&memDC);
-		
+
+
 		pdcShowRegion->BitBlt(0, 0, iWidthShowRegion, iHeightShowRegion, &memDC, 0, 0, SRCCOPY);
 		memDC.SelectObject(pOldMemBitMap);
 		memBitmap.DeleteObject();
@@ -282,24 +297,7 @@ void CMFCSimulatorDlg::DrawToBuffer(CDC* pDC)
 		pDC->SelectObject(pOldbrushShowRegion);
 	}
 
-
-	// TODO : 雙緩衝圖片被洗掉問題
-	// 判斷是否更改操作視窗背景圖片，有的話就更新背景並顯示出來
-	if (g_bShowRegionBgImgChange == TRUE)
-	{
-		//m_staticShowRegion.ModifyStyle(1, SS_BITMAP);
-		//m_staticShowRegion.SetBitmap(m_hBitmapImgBg);
-		//m_staticShowRegion.ShowWindow(SW_SHOW);
-
-
-		m_staticShowRegion.ModifyStyle(1, SS_BITMAP);
-		m_staticShowRegion.SetBitmap(m_hBitmapImgBg);
-		m_staticShowRegion.ShowWindow(SW_SHOW);
-
-	}
 	
-
-
 
 	// 元件矩形顏色 : 
 	CBrush brushInRect;
@@ -363,8 +361,9 @@ void CMFCSimulatorDlg::OnBnClickedButtonBgImg()
 
 
 		// 更新操作視窗	
-		Invalidate();
-		UpdateWindow();	
+		//Invalidate();
+		//UpdateWindow();	
+		OnPaint();
 	}
 }
 

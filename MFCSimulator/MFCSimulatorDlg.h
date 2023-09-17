@@ -97,4 +97,8 @@ public:
 	afx_msg void OnBnClickedButtonFun();                    // 新增 FUN 元件按鈕
 	afx_msg void OnBnClickedButtonLine();                   // 新增連線模式按鈕
 
+
+
+	CString GetCurrentDir();
+
 };

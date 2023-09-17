@@ -113,5 +113,11 @@
     <Image Include="res\MFCSimulator.ico">
       <Filter>資源檔</Filter>
     </Image>
+    <Image Include="res\WHT.BMP">
+      <Filter>資源檔</Filter>
+    </Image>
+    <Image Include="res\test0.bmp">
+      <Filter>資源檔</Filter>
+    </Image>
   </ItemGroup>
 </Project>

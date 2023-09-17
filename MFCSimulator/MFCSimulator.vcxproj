@@ -226,6 +226,8 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\MFCSimulator.ico" />
+    <Image Include="res\test0.bmp" />
+    <Image Include="res\WHT.BMP" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

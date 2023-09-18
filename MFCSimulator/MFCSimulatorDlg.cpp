@@ -139,7 +139,7 @@ BOOL CMFCSimulatorDlg::OnInitDialog()
 	m_strShowRegionImgBgPath = strCurrentPath + _T("\\res\\test0.bmp");
 
 
-	return TRUE;  // 傳回 TRUE，除非您對控制項設定焦點
+	return FALSE;  // 傳回 TRUE，除非您對控制項設定焦點
 }
 
 void CMFCSimulatorDlg::OnSysCommand(UINT nID, LPARAM lParam)
@@ -619,7 +619,7 @@ void CMFCSimulatorDlg::OnBnClickedButtonFun()
 // 開啟連線模式
 void CMFCSimulatorDlg::OnBnClickedButtonLine()
 {
-	// TODO: 在此加入控制項告知處理常式程式碼
+	
 }
 
 
@@ -753,10 +753,13 @@ void CMFCSimulatorDlg::OnLButtonUp(UINT nFlags, CPoint point)
 
 		}
 
-		// 釋放滑鼠擷取
-		ReleaseCapture();
+		//// 釋放滑鼠擷取
+		//ReleaseCapture();
 
 	}
+
+	// 釋放滑鼠擷取
+	ReleaseCapture();
 
 	CDialogEx::OnLButtonUp(nFlags, point);
 }

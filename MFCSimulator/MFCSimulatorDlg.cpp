@@ -432,7 +432,7 @@ void CMFCSimulatorDlg::OnBnClickedButtonIn()
 	UnitIN* ptNewUnitIN = new UnitIN(rectShowRegion, rectUnit);
 
 	// 放進紀錄 Pointer 的串列結構
-	m_listUnitPointers.AddHead(ptNewUnitIN);
+	m_listUnitPointers.AddTail(ptNewUnitIN);
 
 	// 更新操作視窗	
 	Invalidate();
@@ -468,7 +468,7 @@ void CMFCSimulatorDlg::OnBnClickedButtonOut()
 	UnitOUT* ptNewUnitOUT = new UnitOUT(rectShowRegion, rectUnit);
 
 	// 放進紀錄 Pointer 的串列結構
-	m_listUnitPointers.AddHead(ptNewUnitOUT);
+	m_listUnitPointers.AddTail(ptNewUnitOUT);
 
 	// 更新操作視窗	
 	Invalidate();
@@ -503,7 +503,7 @@ void CMFCSimulatorDlg::OnBnClickedButtonAnd()
 	UnitAND* ptNewUnitAND = new UnitAND(rectShowRegion, rectUnit);
 
 	// 放進紀錄 Pointer 的串列結構
-	m_listUnitPointers.AddHead(ptNewUnitAND);
+	m_listUnitPointers.AddTail(ptNewUnitAND);
 
 	// 更新操作視窗	
 	Invalidate();
@@ -538,7 +538,7 @@ void CMFCSimulatorDlg::OnBnClickedButtonOr()
 	UnitOR* ptNewUnitOR = new UnitOR(rectShowRegion, rectUnit);
 
 	// 放進紀錄 Pointer 的串列結構
-	m_listUnitPointers.AddHead(ptNewUnitOR);
+	m_listUnitPointers.AddTail(ptNewUnitOR);
 
 	// 更新操作視窗	
 	Invalidate();
@@ -573,7 +573,7 @@ void CMFCSimulatorDlg::OnBnClickedButtonNot()
 	UnitNOT* ptNewUnitNOT = new UnitNOT(rectShowRegion, rectUnit);
 
 	// 放進紀錄 Pointer 的串列結構
-	m_listUnitPointers.AddHead(ptNewUnitNOT);
+	m_listUnitPointers.AddTail(ptNewUnitNOT);
 
 	// 更新操作視窗	
 	Invalidate();
@@ -608,7 +608,7 @@ void CMFCSimulatorDlg::OnBnClickedButtonFun()
 	UnitFUN* ptNewUnitFUN = new UnitFUN(rectShowRegion, rectUnit);
 
 	// 放進紀錄 Pointer 的串列結構
-	m_listUnitPointers.AddHead(ptNewUnitFUN);
+	m_listUnitPointers.AddTail(ptNewUnitFUN);
 
 	// 更新操作視窗	
 	Invalidate();

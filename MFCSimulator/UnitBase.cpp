@@ -11,11 +11,6 @@ UnitBase::UnitBase(CRect rectShowRegion, CRect rectButton)
 	// 新建立時沒有連接
 	m_bConnectPoint = FALSE;
 
-	// 元件生成位置在操作畫面中
-	// 取得操作畫面長寬
-	int iShowRegH = rectShowRegion.Height();
-	int iShowRegW = rectShowRegion.Width();
-
 	// 取得元件長寬
 	int iButtonH = rectButton.Height();
 	int iButtonW = rectButton.Height();
@@ -23,7 +18,7 @@ UnitBase::UnitBase(CRect rectShowRegion, CRect rectButton)
 	// 元件初始生成的位置於畫面左上
 	m_iUnitWidth = iButtonW;
 	m_iUnitHeight = iButtonH;
-	m_pointUnitLocation = CPoint(iShowRegW * 0.5, iShowRegH * 0.5);
+	m_pointUnitLocation = CPoint(0, 0);
 
 	// 初始拖曳狀態
 	m_bMoveState = FALSE;

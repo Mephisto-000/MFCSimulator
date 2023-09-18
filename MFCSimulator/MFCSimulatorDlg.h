@@ -99,6 +99,6 @@ public:
 
 
 
-	CString GetCurrentDir();
+	CString GetCurrentDir();                                // 取得 MFCSimulatorDlg.cpp 的絕對路徑
 
 };

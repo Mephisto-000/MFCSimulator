@@ -182,6 +182,7 @@ CRect CMFCSimulatorDlg::GetUnitRect(CPoint ptLeftTop)
 }
 
 
+// 取得 MFCSimulatorDlg.cpp 的絕對路徑
 CString CMFCSimulatorDlg::GetCurrentDir()
 {
 	

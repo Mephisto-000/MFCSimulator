@@ -3,10 +3,12 @@
 //
 
 #include "math.h"
+#include <vector>
 
 #pragma once
 
 #include "UnitBase.h"
+#include "UnitLine.h"
 
 // CMFCSimulatorDlg 對話方塊
 class CMFCSimulatorDlg : public CDialogEx
@@ -50,7 +52,8 @@ public:
 
 
 	CList<UnitBase*, UnitBase*> m_listUnitPointers;         // 紀錄已生成的元件
-	UnitBase* m_ptMovingUnit;                               // 紀錄正在被滑鼠拖曳的指標
+	UnitBase* m_ptMovingUnit;                               // 紀錄正在被滑鼠拖曳的指標，拖曳控件的情況
+	UnitLine* m_ptMovingLine;								// 紀錄正在被滑鼠拖曳的指標，拖曳連接線的情況
 
 
 	//CPoint m_pointInUnitStartPos;						    // IN 元件被拖動的起始點
@@ -68,6 +71,8 @@ public:
 
 
 	CRect GetUnitRect(CPoint ptLeftTop);                    // 經由左上角點定位，得到元件矩形
+	
+	std::vector<CRect> GetConnectRects(UnitBase* ptUnit);   // 經由左上角點定位，得到元件接點外接矩形
 
 	CStatic m_staticShowRegion;								// 顯示區成員控件
 	CStatic m_staticLineState;                              // 連線模式的狀態

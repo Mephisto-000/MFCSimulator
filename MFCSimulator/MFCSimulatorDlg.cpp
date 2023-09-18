@@ -216,6 +216,115 @@ CRect CMFCSimulatorDlg::GetUnitRect(CPoint ptLeftTop)
 }
 
 
+// 從元件左上角位置來得到元件連接點外接矩形
+std::vector<CRect> CMFCSimulatorDlg::GetConnectRects(UnitBase* ptUnit)
+{
+	int iUnitW = ptUnit->m_iUnitWidth;
+	int iUnitH = ptUnit->m_iUnitHeight;
+	int iRadius = ptUnit->m_iConnectPtRadius;
+	CPoint pointLocation = ptUnit->m_pointUnitLocation;
+
+	std::vector<CRect> vecConnectPtRects;
+
+	if (ptUnit->m_strUnitID == "IN")
+	{	
+
+		// 下方中點位置
+		CPoint pointConnect;
+
+		pointConnect.x = pointLocation.x + iUnitW * 0.5;
+		pointConnect.y = pointLocation.y + iUnitH;
+
+		CRect rectConnect(CPoint(pointConnect.x - iRadius, pointConnect.y - iRadius),     // Left, Top
+						  CPoint(pointConnect.x + iRadius, pointConnect.y + iRadius));    // Right, Bottom
+
+		vecConnectPtRects.push_back(rectConnect);
+
+		return 	vecConnectPtRects;
+	}
+	else if (ptUnit->m_strUnitID == "OUT")
+	{
+		// 上方中點位置
+		CPoint pointConnect;
+
+		pointConnect.x = pointLocation.x + iUnitW * 0.5;
+		pointConnect.y = pointLocation.y + 0;
+
+		CRect rectConnect(CPoint(pointConnect.x - iRadius, pointConnect.y - iRadius),     // Left, Top
+						  CPoint(pointConnect.x + iRadius, pointConnect.y + iRadius));    // Right, Bottom
+
+		vecConnectPtRects.push_back(rectConnect);
+
+		return 	vecConnectPtRects;
+	}
+	else if (ptUnit->m_strUnitID == "NOT")
+	{
+		// 上方中點位置
+		CPoint pointConnect;
+
+		pointConnect.x = pointLocation.x + iUnitW * 0.5;
+		pointConnect.y = pointLocation.y + 0;
+
+		CRect rectConnectUp(CPoint(pointConnect.x - iRadius, pointConnect.y - iRadius),     // Left, Top
+						    CPoint(pointConnect.x + iRadius, pointConnect.y + iRadius));    // Right, Bottom
+
+		vecConnectPtRects.push_back(rectConnectUp);
+
+		// 下方中點位置
+
+		pointConnect.x = pointLocation.x + iUnitW * 0.5;
+		pointConnect.y = pointLocation.y + iUnitH;
+
+		CRect rectConnectDown(CPoint(pointConnect.x - iRadius, pointConnect.y - iRadius),     // Left, Top
+							  CPoint(pointConnect.x + iRadius, pointConnect.y + iRadius));    // Right, Bottom
+
+		vecConnectPtRects.push_back(rectConnectDown);
+
+		return vecConnectPtRects;
+	}
+	else
+	{
+		// 左上角
+		CPoint pointConnectLeftUp;
+
+		pointConnectLeftUp.x = pointLocation.x + 0;
+		pointConnectLeftUp.y = pointLocation.y + 0;
+
+		CRect rectConnectLeftUp(CPoint(pointConnectLeftUp.x - iRadius, pointConnectLeftUp.y - iRadius),     // Left, Top
+						        CPoint(pointConnectLeftUp.x + iRadius, pointConnectLeftUp.y + iRadius));    // Right, Bottom
+
+		vecConnectPtRects.push_back(rectConnectLeftUp);
+
+		// 右上角
+		CPoint pointConnectRightUp;
+
+		pointConnectRightUp.x = pointLocation.x + iUnitW;
+		pointConnectRightUp.y = pointLocation.y + 0;
+
+		CRect rectConnectRightUp(CPoint(pointConnectRightUp.x - iRadius, pointConnectRightUp.y - iRadius),     // Left, Top
+							     CPoint(pointConnectRightUp.x + iRadius, pointConnectRightUp.y + iRadius));    // Right, Bottom
+
+		vecConnectPtRects.push_back(rectConnectRightUp);
+
+		// 下方中點位置
+		CPoint pointConnectDown;
+
+		pointConnectDown.x = pointLocation.x + iUnitW * 0.5;
+		pointConnectDown.y = pointLocation.y + iUnitH;
+
+		CRect rectConnectDown(CPoint(pointConnectDown.x - iRadius, pointConnectDown.y - iRadius),     // Left, Top
+						      CPoint(pointConnectDown.x + iRadius, pointConnectDown.y + iRadius));    // Right, Bottom
+
+		vecConnectPtRects.push_back(rectConnectDown);
+
+		return vecConnectPtRects;
+	}
+		
+
+
+}
+
+
 // 取得 MFCSimulatorDlg.cpp 的絕對路徑
 CString CMFCSimulatorDlg::GetCurrentDir()
 {
@@ -350,30 +459,39 @@ void CMFCSimulatorDlg::DrawToBuffer(CDC* pDC)
 
 	while (posiUnit != nullptr)
 	{
-
+		
 		UnitBase* ptUnit = m_listUnitPointers.GetPrev(posiUnit);
 
-		CPoint pointUnitLeftTop = ptUnit->m_pointUnitLocation;
-		
-		CRect rectUnit = GetUnitRect(pointUnitLeftTop);
-
-		pDC->Rectangle(rectUnit);
-		pDC->FillRect(&rectUnit, &brushInRect);
-		pDC->SetBkMode(TRANSPARENT);
-		pDC->TextOut((rectUnit.left + rectUnit.right) * 0.5 - 10, (rectUnit.top + rectUnit.bottom) * 0.5 - 8, 
-			ptUnit->m_strUnitID);
-
-
-		std::vector<CRect> vecConnectPtRect = ptUnit->m_arrConnectPtRect;
-
-		pDC->SelectObject(&brushConnectPt);
-		
-		for (int i = 0; i < vecConnectPtRect.size(); i++)
+		if (ptUnit->m_strUnitID != "LINE")
 		{
-			pDC->Ellipse(vecConnectPtRect[i]);
+
+			CPoint pointUnitLeftTop = ptUnit->m_pointUnitLocation;
+
+			CRect rectUnit = GetUnitRect(pointUnitLeftTop);
+
+			pDC->Rectangle(rectUnit);
+			pDC->FillRect(&rectUnit, &brushInRect);
+			pDC->SetBkMode(TRANSPARENT);
+			pDC->TextOut((rectUnit.left + rectUnit.right) * 0.5 - 10, (rectUnit.top + rectUnit.bottom) * 0.5 - 8,
+				ptUnit->m_strUnitID);
+
+
+			std::vector<CRect> vecConnectPtRect = GetConnectRects(ptUnit);
+
+			pDC->SelectObject(&brushConnectPt);
+
+			for (int i = 0; i < vecConnectPtRect.size(); i++)
+			{
+				pDC->Ellipse(vecConnectPtRect[i]);
+			}
+
 		}
+		else
+		{
 
 
+
+		}
 	}
 
 }
@@ -699,6 +817,10 @@ void CMFCSimulatorDlg::OnLButtonDown(UINT nFlags, CPoint point)
 	CRect rectShowRegion;
 	GetDlgItem(IDC_STATIC_SHOW_REGION)->GetWindowRect(&rectShowRegion);
 
+	// 操作視窗長、寬
+	int iHeightShowRegion = rectShowRegion.Height();
+	int iWidthShowRegion = rectShowRegion.Width();
+
 	// 主視窗座標轉換為操作視窗的座標
 	ScreenToClient(&rectShowRegion);
 
@@ -721,25 +843,50 @@ void CMFCSimulatorDlg::OnLButtonDown(UINT nFlags, CPoint point)
 		// 得到元件的矩形
 		CRect rectUnit = GetUnitRect(ptUnit->m_pointUnitLocation);
 
-		
-		if (rectUnit.PtInRect(point))
-		{	// 確認滑鼠是否點取元件
+		if (ptUnit->m_strUnitID != "LINE")
+		{
 
-			// 更新被拖曳元件的狀態
-			ptUnit->m_bMoveState = TRUE;
-			
-			// 點取元件時，滑鼠產生十字的圖案
-			SetCursor(LoadCursor(NULL, IDC_SIZEALL));
+			if (rectUnit.PtInRect(point) && (m_bIsLineMode == FALSE))
+			{	// 確認滑鼠是否點取元件
 
-			// 開啟拖曳的狀態
-			m_bIsDragging = TRUE;
+				// 更新被拖曳元件的狀態
+				ptUnit->m_bMoveState = TRUE;
 
-			// 更新滑鼠位置
-			m_pointMouseStartPos = point;
+				// 點取元件時，滑鼠產生十字的圖案
+				SetCursor(LoadCursor(NULL, IDC_SIZEALL));
 
-			m_ptMovingUnit = ptUnit;
+				// 開啟拖曳的狀態
+				m_bIsDragging = TRUE;
 
-			break;
+				// 更新滑鼠位置
+				m_pointMouseStartPos = point;
+
+				m_ptMovingUnit = ptUnit;
+
+				break;
+			}
+		}
+		else
+		{
+			// 得到連接點外接矩形
+			std::vector<CRect> rectConnectPts = GetConnectRects(ptUnit);
+
+			for (int i = 0; i < rectConnectPts.size(); i++)
+			{
+				if (rectConnectPts[i].PtInRect(point) && (m_bIsLineMode == TRUE))
+				{
+					UnitLine* ptNewUnitLine = new UnitLine(rectShowRegion, rectUnit);
+					ptNewUnitLine->m_arrPtsNextUnit.push_back(ptUnit);
+
+					// 放進紀錄 Pointer 的串列結構
+					m_listUnitPointers.AddTail(ptNewUnitLine);
+
+					m_ptMovingLine = ptNewUnitLine;
+
+					break;
+				}
+			}
+
 		}
 	}	
 
@@ -770,14 +917,6 @@ void CMFCSimulatorDlg::OnMouseMove(UINT nFlags, CPoint point)
 		int iOffsetY = point.y - m_pointMouseStartPos.y;
 
 		m_ptMovingUnit->m_pointUnitLocation.Offset(iOffsetX, iOffsetY);
-
-		std::vector<CRect> vecConnectPtRect = m_ptMovingUnit->m_arrConnectPtRect;
-
-		for (int i = 0; i < vecConnectPtRect.size(); i++)
-		{
-			m_ptMovingUnit->m_arrConnectPtRect[i].OffsetRect(iOffsetX, iOffsetY);
-		}
-
 
 		m_pointMouseStartPos = point;
 
@@ -818,16 +957,37 @@ void CMFCSimulatorDlg::OnLButtonUp(UINT nFlags, CPoint point)
 
 			UnitBase* ptUnit = m_listUnitPointers.GetPrev(posiUnit);
 
-			// 得到元件的矩形
-			CRect rectUnit = GetUnitRect(ptUnit->m_pointUnitLocation);
-
-			if (ptUnit->m_bMoveState = TRUE)
+			if (ptUnit->m_strUnitID != "LINE")
 			{
-				ptUnit->m_bMoveState = FALSE;
 
-				break;
+				// 得到元件的矩形
+				CRect rectUnit = GetUnitRect(ptUnit->m_pointUnitLocation);
+
+
+				if (ptUnit->m_bMoveState = TRUE)
+				{
+					ptUnit->m_bMoveState = FALSE;
+
+					break;
+				}
+
 			}
+			else
+			{
+				// 得到連接點外接矩形
+				std::vector<CRect> rectConnectPts = GetConnectRects(ptUnit);
 
+				for (int i = 0; i < rectConnectPts.size(); i++)
+				{
+					if (rectConnectPts[i].PtInRect(point) && (m_bIsLineMode == TRUE))
+					{
+
+						m_ptMovingLine->m_arrPtsNextUnit.push_back(ptUnit);
+
+					}
+				}
+
+			}
 		}
 
 	}

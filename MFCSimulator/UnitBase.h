@@ -18,7 +18,7 @@ public:
 	CPoint m_pointUnitLocation;                           // 元件位置，元件矩形左上角的點
 	int m_iUnitHeight;                                    // 元件長
 	int m_iUnitWidth;                                     // 元件寬
-	CString m_strUnitID;                                     // 元件類型
+	CString m_strUnitID;                                  // 元件類型
 	BOOL m_bMoveState;                                    // 確認是否被拖曳
 	
 	// 輸出處理
@@ -27,7 +27,6 @@ public:
 
 	// 線段資料
 	std::vector<CPoint> m_arrConnectPt;			          // 線段連接點
-	std::vector<CRect> m_arrConnectPtRect;				  // 線段連接點外切矩形
 	int m_iConnectPtRadius;                               // 連接點半徑
 	BOOL m_bConnectPoint;                                 // 確認是否被連接
 	

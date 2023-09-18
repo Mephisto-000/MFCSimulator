@@ -5,13 +5,12 @@
 
 class UnitLine : public UnitBase
 {
-protected:
-	std::vector<UnitBase*> m_arrPtsPreUnit;               // 指向前一個元件的指標陣列
-	std::vector<UnitBase*> m_arrPtsNextUnit;              // 指向下一個元件的指標陣列
-
 public:
+    std::vector<UnitBase*> m_arrPtsPreUnit;               // 指向前一個元件的指標陣列
+    std::vector<UnitBase*> m_arrPtsNextUnit;              // 指向下一個元件的指標陣列
 	
 	UnitLine(CRect rectShowRegion, CRect rectButton);
+
 
     // 設置函數
     virtual void SetFuncOrOpera(CString strChoose) override {};

@@ -44,8 +44,8 @@ public:
 	HBITMAP m_hBitmapImgBg;									// 顯示區背景圖片
 
 	int m_iInUnitCount;									    // 計算元件 IN 個數 
-	CList<CRect, CRect&> m_listInUnit;                      // 記錄生成的 IN 元件
-	CList<CRect, CRect&> m_listInUnitBg;					// 記錄生成的 IN 元件背景矩形
+	CList<CRect, CRect&> m_listInUnit;                      // 記錄生成的元件
+	CList<CRect, CRect&> m_listInUnitLine;					// 記錄生成的元件連線
 
 	CList<CRect, CRect&> m_listOutUnit;
 	CList<CRect, CRect&> m_listOutUnitBg;

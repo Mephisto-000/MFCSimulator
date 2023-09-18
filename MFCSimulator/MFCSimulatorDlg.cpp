@@ -945,6 +945,8 @@ void CMFCSimulatorDlg::OnMouseMove(UINT nFlags, CPoint point)
 
 	}
 
+	// TODO : 畫線 
+
 	CDialogEx::OnMouseMove(nFlags, point);
 }
 

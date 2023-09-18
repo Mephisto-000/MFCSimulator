@@ -70,6 +70,7 @@ public:
 	CRect GetUnitRect(CPoint ptLeftTop);                    // 經由左上角點定位，得到元件矩形
 
 	CStatic m_staticShowRegion;								// 顯示區成員控件
+	CStatic m_staticLineState;                              // 連線模式的狀態
 
 	CButton m_buttonIN;										// 輸入函數元件 IN 
 	CButton m_buttonOUT;
@@ -102,4 +103,6 @@ public:
 
 	CString GetCurrentDir();                                // 取得 MFCSimulatorDlg.cpp 的絕對路徑
 
+
+	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
 };

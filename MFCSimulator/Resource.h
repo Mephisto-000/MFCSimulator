@@ -25,6 +25,8 @@
 #define IDC_BUTTON_SAVE                 1012
 #define IDC_STATIC_SHOW_REGION          1013
 #define IDC_EDIT1                       1014
+#define IDC_BUTTON_SIMULATE2            1014
+#define IDC_BUTTON_DELETE               1014
 #define IDC_BUTTON_IN_FALSE             1015
 #define IDC_BUTTON_IN_TRUE              1016
 #define IDC_BUTTON_FUN_PLUS             1016
@@ -34,7 +36,8 @@
 #define IDC_BUTTON_FUN_DIVISION         1018
 #define IDC_BUTTON_FUN_MULTIPLY         1019
 #define IDC_EDIT_SHOW_CHOOSE            1019
-#define IDC_BUTTON1                     1020
+#define IDC_STATIC_LINE_MODE_TEXT       1029
+#define IDC_STATIC_LINE_MODE_STATE      1030
 
 // Next default values for new objects
 // 
@@ -42,7 +45,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        136
 #define _APS_NEXT_COMMAND_VALUE         32771
-#define _APS_NEXT_CONTROL_VALUE         1029
+#define _APS_NEXT_CONTROL_VALUE         1030
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

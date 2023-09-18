@@ -82,6 +82,7 @@ void CMFCSimulatorDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_BUTTON_OR, m_buttonOR);
 	DDX_Control(pDX, IDC_BUTTON_NOT, m_buttonNOT);
 	DDX_Control(pDX, IDC_BUTTON_FUN, m_buttonFUN);
+	DDX_Control(pDX, IDC_STATIC_LINE_MODE_STATE, m_staticLineState);
 }
 
 BEGIN_MESSAGE_MAP(CMFCSimulatorDlg, CDialogEx)
@@ -100,6 +101,7 @@ BEGIN_MESSAGE_MAP(CMFCSimulatorDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_BUTTON_NOT, &CMFCSimulatorDlg::OnBnClickedButtonNot)
 	ON_BN_CLICKED(IDC_BUTTON_FUN, &CMFCSimulatorDlg::OnBnClickedButtonFun)
 	ON_BN_CLICKED(IDC_BUTTON_LINE, &CMFCSimulatorDlg::OnBnClickedButtonLine)
+	ON_WM_CTLCOLOR()
 END_MESSAGE_MAP()
 
 
@@ -156,6 +158,36 @@ void CMFCSimulatorDlg::OnSysCommand(UINT nID, LPARAM lParam)
 		CDialogEx::OnSysCommand(nID, lParam);
 	}
 }
+
+
+
+// 開啟視窗
+BOOL CAboutDlg::OnInitDialog()
+{
+	CDialogEx::OnInitDialog();
+
+	// TODO:  在此加入額外的初始化
+
+	return TRUE;  // return TRUE unless you set the focus to a control
+	// EXCEPTION: OCX 屬性頁應傳回 FALSE
+}
+
+
+
+HBRUSH CMFCSimulatorDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
+{
+	HBRUSH hbr = CDialogEx::OnCtlColor(pDC, pWnd, nCtlColor);
+
+	// TODO:  在此變更 DC 的任何屬性
+	if (pWnd->GetDlgCtrlID() == IDC_STATIC_LINE_MODE_STATE)
+	{
+		pDC->SetTextColor(RGB(255, 0, 0));
+	}
+
+	// TODO:  如果預設值並非想要的，則傳回不同的筆刷
+	return hbr;
+}
+
 
 ////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -642,6 +674,9 @@ void CMFCSimulatorDlg::OnBnClickedButtonLine()
 	{
 		m_bIsLineMode = TRUE;
 
+		m_staticLineState.SetWindowText(_T("ON"));
+
+		
 
 
 
@@ -650,6 +685,7 @@ void CMFCSimulatorDlg::OnBnClickedButtonLine()
 	{
 		m_bIsLineMode = FALSE;
 
+		m_staticLineState.SetWindowText(_T("OFF"));
 
 	}
 
@@ -685,7 +721,6 @@ void CMFCSimulatorDlg::OnLButtonDown(UINT nFlags, CPoint point)
 		// 得到元件的矩形
 		CRect rectUnit = GetUnitRect(ptUnit->m_pointUnitLocation);
 
-		// 
 		
 		if (rectUnit.PtInRect(point))
 		{	// 確認滑鼠是否點取元件
@@ -812,22 +847,6 @@ void CMFCSimulatorDlg::OnLButtonUp(UINT nFlags, CPoint point)
 
 
 
-
-
-
-
-
-
-// 開啟視窗
-BOOL CAboutDlg::OnInitDialog()
-{
-	CDialogEx::OnInitDialog();
-
-	// TODO:  在此加入額外的初始化
-
-	return TRUE;  // return TRUE unless you set the focus to a control
-	// EXCEPTION: OCX 屬性頁應傳回 FALSE
-}
 
 
 

@@ -8,6 +8,14 @@ UnitIN::UnitIN(CRect rectShowRegion, CRect rectButton) : UnitBase (rectShowRegio
 {
 	m_strUnitID = _T("IN");
 
+
+	CPoint pointConnect(m_iUnitWidth * 0.5, m_iUnitHeight);
+
+	CRect rectConnectPt(CPoint(pointConnect.x - m_iConnectPtRadius, pointConnect.y - m_iConnectPtRadius),
+		CPoint(pointConnect.x + m_iConnectPtRadius, pointConnect.y + m_iConnectPtRadius));
+
+	m_arrConnectPtRect.push_back(rectConnectPt);
+
 }
 
 
@@ -36,6 +44,13 @@ void UnitIN::InsertUnit(UnitBase* ptNewUnit)
 
 void UnitIN::UpdateDotData(CPoint pointNewLocation)
 {
+	
+
+	CPoint pointConnect(m_iUnitWidth * 0.5, m_iUnitHeight);
+
+	//CRect rectConnectPt(CPoint(pointConnect.x - m_iConnectPtRadius, pointConnect.y - m_iConnectPtRadius),
+	//	CPoint(pointConnect.x + m_iConnectPtRadius, pointConnect.y + m_iConnectPtRadius));
+
 	m_arrConnectPt.push_back(pointNewLocation);
 }
 

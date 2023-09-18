@@ -13,7 +13,7 @@ UnitBase::UnitBase(CRect rectShowRegion, CRect rectButton)
 
 	// 取得元件長寬
 	int iButtonH = rectButton.Height();
-	int iButtonW = rectButton.Height();
+	int iButtonW = rectButton.Width();
 
 	// 元件初始生成的位置於畫面左上
 	m_iUnitWidth = iButtonW;
@@ -22,6 +22,9 @@ UnitBase::UnitBase(CRect rectShowRegion, CRect rectButton)
 
 	// 初始拖曳狀態
 	m_bMoveState = FALSE;
+
+	// 連接點半徑為 8 
+	m_iConnectPtRadius = 8;
 
 	// 輸出值為 0.0
 	m_dOutValue = 0.0;

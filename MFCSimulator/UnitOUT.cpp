@@ -7,6 +7,13 @@ UnitOUT::UnitOUT(CRect rectShowRegion, CRect rectButton) : UnitBase(rectShowRegi
 {
 	m_strUnitID = _T("OUT");
 
+
+	CPoint pointConnect(m_iUnitWidth * 0.5, 0);
+
+	CRect rectConnectPt(CPoint(pointConnect.x - m_iConnectPtRadius, pointConnect.y - m_iConnectPtRadius),
+		CPoint(pointConnect.x + m_iConnectPtRadius, pointConnect.y + m_iConnectPtRadius));
+
+	m_arrConnectPtRect.push_back(rectConnectPt);
 }
 
 

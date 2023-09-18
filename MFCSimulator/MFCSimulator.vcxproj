@@ -195,6 +195,7 @@
     <ClInclude Include="UnitBase.h" />
     <ClInclude Include="UnitFUN.h" />
     <ClInclude Include="UnitInDlg.h" />
+    <ClInclude Include="UnitLine.h" />
     <ClInclude Include="UnitNOT.h" />
     <ClInclude Include="UnitOR.h" />
     <ClInclude Include="UnitOUT.h" />
@@ -214,6 +215,7 @@
     <ClCompile Include="UnitBase.cpp" />
     <ClCompile Include="UnitFUN.cpp" />
     <ClCompile Include="UnitInDlg.cpp" />
+    <ClCompile Include="UnitLine.cpp" />
     <ClCompile Include="UnitNOT.cpp" />
     <ClCompile Include="UnitOR.cpp" />
     <ClCompile Include="UnitOUT.cpp" />

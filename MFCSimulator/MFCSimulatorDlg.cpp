@@ -15,6 +15,7 @@
 #include "UnitOR.h"
 #include "UnitNOT.h"
 #include "UnitFUN.h"
+#include "UnitLine.h"
 
 
 #ifdef _DEBUG
@@ -66,8 +67,9 @@ CMFCSimulatorDlg::CMFCSimulatorDlg(CWnd* pParent /*=nullptr*/)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 	m_colorShowRegionBg = RGB(255, 255, 255);       // 操作畫面初始為白色
-	m_strShowRegionImgBgPath = _T("");
-	m_bIsDragging = FALSE;
+	m_strShowRegionImgBgPath = _T("");              // 背景圖片路徑
+	m_bIsDragging = FALSE;                          // 元件是否被拖曳
+	m_bIsLineMode = FALSE;                          // 連線模式是否被開啟
 }
 
 void CMFCSimulatorDlg::DoDataExchange(CDataExchange* pDX)
@@ -304,16 +306,20 @@ void CMFCSimulatorDlg::DrawToBuffer(CDC* pDC)
 	CBrush brushInRect;
 	brushInRect.CreateSolidBrush(RGB(192, 192, 192));  // 灰色
 
+	// 連接點顏色
+	CBrush brushConnectPt;
+	brushConnectPt.CreateSolidBrush(RGB(255, 140, 0));
+
 	pDC->SetTextColor(RGB(0, 0, 0));
 	pDC->SelectObject(&brushInRect);
 
 
-	POSITION posiUnit = m_listUnitPointers.GetHeadPosition();
+	POSITION posiUnit = m_listUnitPointers.GetTailPosition();
 
 	while (posiUnit != nullptr)
 	{
 
-		UnitBase* ptUnit = m_listUnitPointers.GetNext(posiUnit);
+		UnitBase* ptUnit = m_listUnitPointers.GetPrev(posiUnit);
 
 		CPoint pointUnitLeftTop = ptUnit->m_pointUnitLocation;
 		
@@ -322,8 +328,20 @@ void CMFCSimulatorDlg::DrawToBuffer(CDC* pDC)
 		pDC->Rectangle(rectUnit);
 		pDC->FillRect(&rectUnit, &brushInRect);
 		pDC->SetBkMode(TRANSPARENT);
-		pDC->TextOut((rectUnit.left + rectUnit.right) * 0.5 - 8, (rectUnit.top + rectUnit.bottom) * 0.5 - 8, 
+		pDC->TextOut((rectUnit.left + rectUnit.right) * 0.5 - 10, (rectUnit.top + rectUnit.bottom) * 0.5 - 8, 
 			ptUnit->m_strUnitID);
+
+
+		std::vector<CRect> vecConnectPtRect = ptUnit->m_arrConnectPtRect;
+
+		pDC->SelectObject(&brushConnectPt);
+		
+		for (int i = 0; i < vecConnectPtRect.size(); i++)
+		{
+			pDC->Ellipse(vecConnectPtRect[i]);
+		}
+
+
 	}
 
 }
@@ -619,7 +637,23 @@ void CMFCSimulatorDlg::OnBnClickedButtonFun()
 // 開啟連線模式
 void CMFCSimulatorDlg::OnBnClickedButtonLine()
 {
-	
+
+	if (m_bIsLineMode == FALSE)
+	{
+		m_bIsLineMode = TRUE;
+
+
+
+
+	}
+	else
+	{
+		m_bIsLineMode = FALSE;
+
+
+	}
+
+
 }
 
 
@@ -650,6 +684,8 @@ void CMFCSimulatorDlg::OnLButtonDown(UINT nFlags, CPoint point)
 
 		// 得到元件的矩形
 		CRect rectUnit = GetUnitRect(ptUnit->m_pointUnitLocation);
+
+		// 
 		
 		if (rectUnit.PtInRect(point))
 		{	// 確認滑鼠是否點取元件
@@ -698,9 +734,15 @@ void CMFCSimulatorDlg::OnMouseMove(UINT nFlags, CPoint point)
 		int iOffsetX = point.x - m_pointMouseStartPos.x;
 		int iOffsetY = point.y - m_pointMouseStartPos.y;
 
-
-
 		m_ptMovingUnit->m_pointUnitLocation.Offset(iOffsetX, iOffsetY);
+
+		std::vector<CRect> vecConnectPtRect = m_ptMovingUnit->m_arrConnectPtRect;
+
+		for (int i = 0; i < vecConnectPtRect.size(); i++)
+		{
+			m_ptMovingUnit->m_arrConnectPtRect[i].OffsetRect(iOffsetX, iOffsetY);
+		}
+
 
 		m_pointMouseStartPos = point;
 
@@ -734,12 +776,12 @@ void CMFCSimulatorDlg::OnLButtonUp(UINT nFlags, CPoint point)
 		m_bIsDragging = FALSE;
 
 		// 得到內含已創建元件的指針的 CList ，並取得 CList 的位置指針
-		POSITION posiUnit = m_listUnitPointers.GetHeadPosition();
+		POSITION posiUnit = m_listUnitPointers.GetTailPosition();
 
 		while (posiUnit != nullptr)
 		{	// 走訪 CList 內的所有元素
 
-			UnitBase* ptUnit = m_listUnitPointers.GetNext(posiUnit);
+			UnitBase* ptUnit = m_listUnitPointers.GetPrev(posiUnit);
 
 			// 得到元件的矩形
 			CRect rectUnit = GetUnitRect(ptUnit->m_pointUnitLocation);
@@ -752,9 +794,6 @@ void CMFCSimulatorDlg::OnLButtonUp(UINT nFlags, CPoint point)
 			}
 
 		}
-
-		//// 釋放滑鼠擷取
-		//ReleaseCapture();
 
 	}
 

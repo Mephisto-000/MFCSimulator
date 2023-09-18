@@ -60,6 +60,9 @@
     <ClInclude Include="UnitFunDlg.h">
       <Filter>標頭檔</Filter>
     </ClInclude>
+    <ClInclude Include="UnitLine.h">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MFCSimulator.cpp">
@@ -96,6 +99,9 @@
       <Filter>來源檔案</Filter>
     </ClCompile>
     <ClCompile Include="UnitFunDlg.cpp">
+      <Filter>來源檔案</Filter>
+    </ClCompile>
+    <ClCompile Include="UnitLine.cpp">
       <Filter>來源檔案</Filter>
     </ClCompile>
   </ItemGroup>

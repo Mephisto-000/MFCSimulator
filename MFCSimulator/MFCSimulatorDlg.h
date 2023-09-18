@@ -50,7 +50,7 @@ public:
 
 
 	CList<UnitBase*, UnitBase*> m_listUnitPointers;         // 紀錄已生成的元件
-	UnitBase* m_ptMovingUnit;                                // 紀錄正在被滑鼠拖曳的指標
+	UnitBase* m_ptMovingUnit;                               // 紀錄正在被滑鼠拖曳的指標
 
 
 	//CPoint m_pointInUnitStartPos;						    // IN 元件被拖動的起始點
@@ -60,6 +60,7 @@ public:
 
 
 	BOOL m_bIsDragging;                                     // 記錄元件是否被拖動
+	BOOL m_bIsLineMode;                                     // 紀錄是否開啟連線模式
 
 
 	afx_msg void OnBnClickedButtonBgImg();					// 調整顯示區背景圖片

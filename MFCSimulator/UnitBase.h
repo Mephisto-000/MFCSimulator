@@ -26,7 +26,9 @@ public:
 	double m_dOutValue;                                   // 輸出的數值
 
 	// 線段資料
-	std::vector<CPoint> m_arrConnectPt;				      // 線段連接點位置
+	std::vector<CPoint> m_arrConnectPt;			          // 線段連接點
+	std::vector<CRect> m_arrConnectPtRect;				  // 線段連接點外切矩形
+	int m_iConnectPtRadius;                               // 連接點半徑
 	BOOL m_bConnectPoint;                                 // 確認是否被連接
 	
 
@@ -41,18 +43,18 @@ public:
 
 
 	// 設置選擇的函數或是四則運算元
-	virtual void SetFuncOrOpera(CString strChoose) = 0;
+	virtual void SetFuncOrOpera(CString strChoose) {};
 
 
 	// 更新連接的元件
-	virtual void InsertUnit(UnitBase* ptNewUnit) = 0;
+	virtual void InsertUnit(UnitBase* ptNewUnit) {};
 
 	
 	// 根據拖曳位置更新線段點資料
-	virtual void UpdateDotData(CPoint pointNewLocation) = 0;
+	virtual void UpdateDotData(CPoint pointNewLocation) {};
 
 
 	// 輸出元件的結果
-	virtual void Result(double dRealTimeValue) = 0;
+	virtual void Result(double dRealTimeValue) {};
 };
 

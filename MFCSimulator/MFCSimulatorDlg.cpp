@@ -331,7 +331,7 @@ void CMFCSimulatorDlg::DrawConnectLine(UnitBase* ptUnit, CDC* pDC)
 	std::vector<UnitBase*> vecPtPre = ptUnit->m_arrPtsPreUnit;
 	std::vector<UnitBase*> vecPtNext = ptUnit->m_arrPtsNextUnit;
 
-	CPen penConnectLine(PS_SOLID, 5, RGB(0, 0, 0));
+	CPen penConnectLine(PS_SOLID, 5, RGB(0, 0, 255));
 	pDC->SelectObject(&penConnectLine);
 	for (int i = 0; i < vecPtPre.size(); i++)
 	{
@@ -855,20 +855,50 @@ void CMFCSimulatorDlg::OnLButtonDown(UINT nFlags, CPoint point)
 		// 得到元件的矩形
 		CRect rectUnit = GetUnitRect(ptUnit->m_pointUnitLocation);
 
-		if (ptUnit->m_strUnitID != "LINE")
+
+
+		if (rectUnit.PtInRect(point) && (m_bIsLineMode == FALSE))
+		{	// 確認滑鼠是否點取元件
+
+			// 更新被拖曳元件的狀態
+			ptUnit->m_bMoveState = TRUE;
+
+			// 點取元件時，滑鼠產生十字的圖案
+			SetCursor(LoadCursor(NULL, IDC_SIZEALL));
+
+			// 開啟拖曳的狀態
+			m_bIsDragging = TRUE;
+
+			// 更新滑鼠位置
+			m_pointMouseStartPos = point;
+
+			m_ptMovingUnit = ptUnit;
+
+			break;
+		}
+
+
+		// 得到連接點外接矩形
+		std::vector<CRect> rectConnectPts = GetConnectRects(ptUnit);
+
+		for (int i = 0; i < rectConnectPts.size(); i++)
 		{
-
-			if (rectUnit.PtInRect(point) && (m_bIsLineMode == FALSE))
-			{	// 確認滑鼠是否點取元件
-
-				// 更新被拖曳元件的狀態
-				ptUnit->m_bMoveState = TRUE;
+			if (rectConnectPts[i].PtInRect(point) && (m_bIsLineMode == TRUE))
+			{
 
 				// 點取元件時，滑鼠產生十字的圖案
 				SetCursor(LoadCursor(NULL, IDC_SIZEALL));
 
 				// 開啟拖曳的狀態
-				m_bIsDragging = TRUE;
+				//m_bIsDragging = TRUE;
+
+				UnitLine* ptNewUnitLine = new UnitLine(rectShowRegion, rectUnit);
+				ptNewUnitLine->m_arrPtsNextUnit.push_back(ptUnit);
+
+				// 放進紀錄 Pointer 的串列結構
+				m_listUnitPointers.AddTail(ptNewUnitLine);
+
+				m_ptMovingLine = ptNewUnitLine;
 
 				// 更新滑鼠位置
 				m_pointMouseStartPos = point;
@@ -878,43 +908,7 @@ void CMFCSimulatorDlg::OnLButtonDown(UINT nFlags, CPoint point)
 				break;
 			}
 		}
-		else
-		{
-			// 得到連接點外接矩形
-			std::vector<CRect> rectConnectPts = GetConnectRects(ptUnit);
 
-			for (int i = 0; i < rectConnectPts.size(); i++)
-			{
-				if (rectConnectPts[i].PtInRect(point) && (m_bIsLineMode == TRUE))
-				{
-
-					// 更新被拖曳元件的狀態
-					ptUnit->m_bMoveState = TRUE;
-
-					// 點取元件時，滑鼠產生十字的圖案
-					SetCursor(LoadCursor(NULL, IDC_SIZEALL));
-
-					// 開啟拖曳的狀態
-					m_bIsDragging = TRUE;
-
-					UnitLine* ptNewUnitLine = new UnitLine(rectShowRegion, rectUnit);
-					ptNewUnitLine->m_arrPtsNextUnit.push_back(ptUnit);
-
-					// 放進紀錄 Pointer 的串列結構
-					m_listUnitPointers.AddTail(ptNewUnitLine);
-
-					m_ptMovingLine = ptNewUnitLine;
-
-					// 更新滑鼠位置
-					m_pointMouseStartPos = point;
-
-					m_ptMovingUnit = ptUnit;
-
-					break;
-				}
-			}
-
-		}
 	}	
 
 	CDialogEx::OnLButtonDown(nFlags, point);

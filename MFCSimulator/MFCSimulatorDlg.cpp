@@ -993,7 +993,7 @@ void CMFCSimulatorDlg::OnLButtonUp(UINT nFlags, CPoint point)
 				}
 
 			}
-			else
+			else // TODO : 修改 Line 結構
 			{
 				// 得到連接點外接矩形
 				std::vector<CRect> rectConnectPts = GetConnectRects(ptUnit);
@@ -1007,7 +1007,6 @@ void CMFCSimulatorDlg::OnLButtonUp(UINT nFlags, CPoint point)
 
 					}
 				}
-
 			}
 		}
 

@@ -325,6 +325,23 @@ std::vector<CRect> CMFCSimulatorDlg::GetConnectRects(UnitBase* ptUnit)
 }
 
 
+// 畫出連接線段
+void CMFCSimulatorDlg::DrawConnectLine(UnitBase* ptUnit, CDC* pDC)
+{
+	std::vector<UnitBase*> vecPtPre = ptUnit->m_arrPtsPreUnit;
+	std::vector<UnitBase*> vecPtNext = ptUnit->m_arrPtsNextUnit;
+
+	CPen penConnectLine(PS_SOLID, 5, RGB(0, 0, 0));
+	pDC->SelectObject(&penConnectLine);
+	for (int i = 0; i < vecPtPre.size(); i++)
+	{
+		pDC->MoveTo(vecPtPre[i]->m_pointUnitLocation);
+		pDC->LineTo(vecPtNext[i]->m_pointUnitLocation);
+	}
+
+}
+
+
 // 取得 MFCSimulatorDlg.cpp 的絕對路徑
 CString CMFCSimulatorDlg::GetCurrentDir()
 {
@@ -465,6 +482,16 @@ void CMFCSimulatorDlg::DrawToBuffer(CDC* pDC)
 		if (ptUnit->m_strUnitID != "LINE")
 		{
 
+			std::vector<CRect> vecConnectPtRect = GetConnectRects(ptUnit);
+
+			pDC->SelectObject(&brushConnectPt);
+
+			for (int i = 0; i < vecConnectPtRect.size(); i++)
+			{
+				pDC->Ellipse(vecConnectPtRect[i]);
+			}
+
+
 			CPoint pointUnitLeftTop = ptUnit->m_pointUnitLocation;
 
 			CRect rectUnit = GetUnitRect(pointUnitLeftTop);
@@ -475,21 +502,11 @@ void CMFCSimulatorDlg::DrawToBuffer(CDC* pDC)
 			pDC->TextOut((rectUnit.left + rectUnit.right) * 0.5 - 10, (rectUnit.top + rectUnit.bottom) * 0.5 - 8,
 				ptUnit->m_strUnitID);
 
-
-			std::vector<CRect> vecConnectPtRect = GetConnectRects(ptUnit);
-
-			pDC->SelectObject(&brushConnectPt);
-
-			for (int i = 0; i < vecConnectPtRect.size(); i++)
-			{
-				pDC->Ellipse(vecConnectPtRect[i]);
-			}
-
 		}
 		else
 		{
-
-
+			
+			DrawConnectLine(ptUnit, pDC);
 
 		}
 	}
@@ -794,10 +811,6 @@ void CMFCSimulatorDlg::OnBnClickedButtonLine()
 
 		m_staticLineState.SetWindowText(_T("ON"));
 
-		
-
-
-
 	}
 	else
 	{
@@ -806,7 +819,6 @@ void CMFCSimulatorDlg::OnBnClickedButtonLine()
 		m_staticLineState.SetWindowText(_T("OFF"));
 
 	}
-
 
 }
 
@@ -875,6 +887,16 @@ void CMFCSimulatorDlg::OnLButtonDown(UINT nFlags, CPoint point)
 			{
 				if (rectConnectPts[i].PtInRect(point) && (m_bIsLineMode == TRUE))
 				{
+
+					// 更新被拖曳元件的狀態
+					ptUnit->m_bMoveState = TRUE;
+
+					// 點取元件時，滑鼠產生十字的圖案
+					SetCursor(LoadCursor(NULL, IDC_SIZEALL));
+
+					// 開啟拖曳的狀態
+					m_bIsDragging = TRUE;
+
 					UnitLine* ptNewUnitLine = new UnitLine(rectShowRegion, rectUnit);
 					ptNewUnitLine->m_arrPtsNextUnit.push_back(ptUnit);
 
@@ -882,6 +904,11 @@ void CMFCSimulatorDlg::OnLButtonDown(UINT nFlags, CPoint point)
 					m_listUnitPointers.AddTail(ptNewUnitLine);
 
 					m_ptMovingLine = ptNewUnitLine;
+
+					// 更新滑鼠位置
+					m_pointMouseStartPos = point;
+
+					m_ptMovingUnit = ptUnit;
 
 					break;
 				}

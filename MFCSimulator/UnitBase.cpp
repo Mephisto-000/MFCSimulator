@@ -24,7 +24,7 @@ UnitBase::UnitBase(CRect rectShowRegion, CRect rectButton)
 	m_bMoveState = FALSE;
 
 	// 連接點半徑為 8 
-	m_iConnectPtRadius = 8;
+	m_iConnectPtRadius = 10;
 
 	// 輸出值為 0.0
 	m_dOutValue = 0.0;

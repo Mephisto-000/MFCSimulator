@@ -74,6 +74,8 @@ public:
 	
 	std::vector<CRect> GetConnectRects(UnitBase* ptUnit);   // 經由左上角點定位，得到元件接點外接矩形
 
+	void DrawConnectLine(UnitBase* ptUnit, CDC* pDC);                 // 根據前後連接的指標畫出連接線段
+
 	CStatic m_staticShowRegion;								// 顯示區成員控件
 	CStatic m_staticLineState;                              // 連線模式的狀態
 

@@ -8,11 +8,14 @@ class UnitBase
 
 protected:
 	
+	//std::vector<UnitBase*> m_arrPtsPreUnit;               // 指向前一個元件的指標陣列
+	//std::vector<UnitBase*> m_arrPtsNextUnit;              // 指向下一個元件的指標陣列
+														  
+														  
+public:			
+
 	std::vector<UnitBase*> m_arrPtsPreUnit;               // 指向前一個元件的指標陣列
 	std::vector<UnitBase*> m_arrPtsNextUnit;              // 指向下一個元件的指標陣列
-														  
-														  
-public:													  
 	
 	// 元件資料
 	CPoint m_pointUnitLocation;                           // 元件位置，元件矩形左上角的點

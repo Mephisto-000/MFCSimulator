@@ -70,6 +70,8 @@ CMFCSimulatorDlg::CMFCSimulatorDlg(CWnd* pParent /*=nullptr*/)
 	m_strShowRegionImgBgPath = _T("");              // 背景圖片路徑
 	m_bIsDragging = FALSE;                          // 元件是否被拖曳
 	m_bIsLineMode = FALSE;                          // 連線模式是否被開啟
+	m_iOffsetX = 0;
+	m_iOffsetY = 0;
 }
 
 void CMFCSimulatorDlg::DoDataExchange(CDataExchange* pDX)
@@ -518,8 +520,18 @@ void CMFCSimulatorDlg::DrawToBuffer(CDC* pDC)
 	{
 		UnitLine* ptLineUnit = m_listUnitLines.GetPrev(posiLineUnit);
 
-		pDC->MoveTo(ptLineUnit->m_vecPtsPreUnit[0]->m_pointUnitLocation);  // Note : 會隨著元件一起動
-		pDC->LineTo(ptLineUnit->m_pointLineEnd);
+		//pDC->MoveTo(ptLineUnit->m_vecPtsPreUnit[0]->m_pointUnitLocation);  // Note : 會隨著元件一起動
+		//pDC->LineTo(ptLineUnit->m_pointLineEnd);
+		if (ptLineUnit->m_bIsConnect == TRUE)
+		{
+			pDC->MoveTo(ptLineUnit->m_vecPtsPreUnit[0]->m_vecConnectPt[ptLineUnit->m_iConnectPrePtIndex]);  // Note : 會隨著元件一起動
+			pDC->LineTo(ptLineUnit->m_vecPtsNextUnit[0]->m_vecConnectPt[ptLineUnit->m_iConnectNextPtIndex]);
+		}
+		else
+		{
+			pDC->MoveTo(ptLineUnit->m_vecPtsPreUnit[0]->m_vecConnectPt[ptLineUnit->m_iConnectPrePtIndex]);
+			pDC->LineTo(ptLineUnit->m_pointMovingLinePos);
+		}
 	}
 
 	pDC->SelectObject(ptOldPenpenConnectLine);
@@ -892,7 +904,7 @@ void CMFCSimulatorDlg::OnLButtonDown(UINT nFlags, CPoint point)
 
 		// 得到連接點外接矩形
 		/*std::vector<CRect> vecConnectPtRects = GetConnectRects(ptUnit);*/
-		ptUnit->SetConnectPtAndRect();
+		ptUnit->SetConnectPtAndRect(m_iOffsetX, m_iOffsetY);
 		std::vector<CRect> vecConnectPtRects = ptUnit->m_vecConnectPtRect;
 
 		for (int i = 0; i < vecConnectPtRects.size(); i++)
@@ -908,11 +920,12 @@ void CMFCSimulatorDlg::OnLButtonDown(UINT nFlags, CPoint point)
 
 				UnitLine* ptNewUnitLine = new UnitLine(rectShowRegion, rectUnit);
 
-				// 紀錄連線起始點
-				ptNewUnitLine->m_pointLineStart = ptUnit->m_vecConnectPt[i];
+				ptNewUnitLine->m_bMoveState = TRUE;
 
-				// 紀錄連線初始終點
-				ptNewUnitLine->m_pointLineEnd = ptUnit->m_vecConnectPt[i];
+				// 紀錄連線點編號
+				ptNewUnitLine->m_iConnectPrePtIndex = i;
+
+				ptNewUnitLine->m_pointMovingLinePos = ptUnit->m_vecConnectPt[i];
 
 				m_ptMovingLine = ptNewUnitLine;
 
@@ -954,13 +967,15 @@ void CMFCSimulatorDlg::OnMouseMove(UINT nFlags, CPoint point)
 	{	// 當開始拖曳時，計算拖曳的距離，改變矩形位置
 
 		//
-		int iOffsetX = point.x - m_pointMouseStartPos.x;
-		int iOffsetY = point.y - m_pointMouseStartPos.y;
+		m_iOffsetX = point.x - m_pointMouseStartPos.x;
+		m_iOffsetY = point.y - m_pointMouseStartPos.y;
 
 		if (m_bIsLineMode == FALSE)
 		{
 
-			m_ptMovingUnit->m_pointUnitLocation.Offset(iOffsetX, iOffsetY);
+			m_ptMovingUnit->m_pointUnitLocation.Offset(m_iOffsetX, m_iOffsetY);
+
+			m_ptMovingUnit->SetConnectPtAndRect(m_iOffsetX, m_iOffsetY);
 
 			m_pointMouseStartPos = point; 
 
@@ -968,7 +983,7 @@ void CMFCSimulatorDlg::OnMouseMove(UINT nFlags, CPoint point)
 		else
 		{
 			
-			m_ptMovingLine->m_pointLineEnd.Offset(iOffsetX, iOffsetY);
+			m_ptMovingLine->m_pointMovingLinePos.Offset(m_iOffsetX, m_iOffsetY);
 
 			m_pointMovingMouse = point;
 
@@ -1021,14 +1036,14 @@ void CMFCSimulatorDlg::OnLButtonUp(UINT nFlags, CPoint point)
 
 
 			// 得到連接點外接矩形
-			ptUnit->SetConnectPtAndRect();
+			//ptUnit->SetConnectPtAndRect();
 			std::vector<CRect> rectConnectPts = ptUnit->m_vecConnectPtRect;
 			/*std::vector<CRect> rectConnectPts = GetConnectRects(ptUnit);*/
 			//ptUnit->SetConnectPtAndRect();
 			//std::vector<CRect> rectConnectPts = ptUnit->m_vecConnectPtRect;
 
 
-			if (ptUnit->m_bMoveState = TRUE)
+			if ((ptUnit->m_bMoveState == TRUE) && (m_bIsLineMode == FALSE))
 			{
 				ptUnit->m_bMoveState = FALSE;
 
@@ -1045,19 +1060,16 @@ void CMFCSimulatorDlg::OnLButtonUp(UINT nFlags, CPoint point)
 					{
 						UnitLine* ptLineUnit = m_listUnitLines.GetPrev(posiLineUnit);
 
-						ptLineUnit->m_pointLineEnd = ptUnit->m_vecConnectPt[i];
+						ptLineUnit->m_bMoveState = FALSE;
+
+						ptLineUnit->m_iConnectNextPtIndex = i;
 
 						ptLineUnit->m_vecPtsNextUnit.push_back(ptUnit);
 
-						
-					}
-					else
-					{
-						UnitLine* ptLineUnit = m_listUnitLines.GetPrev(posiLineUnit);
+						ptLineUnit->m_bIsConnect = TRUE;
 
-						ptLineUnit->m_pointLineEnd = ptLineUnit->m_pointLineStart;
+						break;
 
-						ptLineUnit->m_vecPtsPreUnit[0] = nullptr;
 					}
 
 				}

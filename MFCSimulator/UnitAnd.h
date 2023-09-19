@@ -11,7 +11,7 @@ public:
 
     UnitAND(CRect rectShowRegion, CRect rectButton);
 
-    virtual void SetConnectPtAndRect() override;
+    virtual void SetConnectPtAndRect(int iOffsetX, int iOffsetY) override;
 
     // ³]¸m¨ç¼Æ
     virtual void SetFuncOrOpera(CString strChoose) override;

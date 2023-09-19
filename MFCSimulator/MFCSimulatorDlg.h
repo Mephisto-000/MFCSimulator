@@ -56,6 +56,10 @@ public:
 	UnitBase* m_ptMovingUnit;                               // 紀錄正在被滑鼠拖曳的指標，拖曳控件的情況
 	UnitLine* m_ptMovingLine;								// 紀錄正在被滑鼠拖曳的指標，拖曳連接線的情況
 
+	int m_iOffsetX;                                         // 拖曳X位移
+	int m_iOffsetY;											// 拖曳Y位移
+
+
 
 	//CPoint m_pointInUnitStartPos;						    // IN 元件被拖動的起始點
 	//CPoint m_pointOutUnitStartPos;                        // OUT 元件被拖動的起始點

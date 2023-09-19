@@ -6,7 +6,9 @@ UnitLine::UnitLine(CRect rectShowRegion, CRect rectButton) : UnitBase(rectShowRe
 {
 	m_strUnitID = _T("LINE");
 	
+	m_bIsConnect = FALSE;
 
+	CPoint m_pointMovingLinePos(0, 0);
 }
 
 

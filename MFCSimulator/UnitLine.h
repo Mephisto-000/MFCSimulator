@@ -7,9 +7,14 @@ class UnitLine : public UnitBase
 {
 public:
 
-    CPoint m_pointLineStart;
-    CPoint m_pointLineEnd;
+    // 紀錄連接哪個點
+    int m_iConnectPrePtIndex;
+    int m_iConnectNextPtIndex;
 
+    BOOL m_bIsConnect;
+
+    // 移動中的線終點
+    CPoint m_pointMovingLinePos;
 
 	UnitLine(CRect rectShowRegion, CRect rectButton);
 

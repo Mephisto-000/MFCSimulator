@@ -40,7 +40,7 @@ public:
 	~UnitBase ();
 
 	// 根據元件類型給出連接點連接點矩形
-	virtual void SetConnectPtAndRect () {};
+	virtual void SetConnectPtAndRect (int iOffsetX, int iOffsetY) {};
 
 
 	// 設置選擇的函數或是四則運算元

@@ -24,7 +24,7 @@ UnitBase::UnitBase(CRect rectShowRegion, CRect rectButton)
 	m_bMoveState = FALSE;
 
 	// 連接點半徑為 8 
-	m_iConnectPtRadius = 15;
+	m_iConnectPtRadius = 8;
 
 	// 輸出值為 0.0
 	m_dOutValue = 0.0;
@@ -36,33 +36,33 @@ UnitBase::UnitBase(CRect rectShowRegion, CRect rectButton)
 UnitBase::~UnitBase()
 {
 
-	if (m_arrPtsPreUnit.empty() != TRUE)
+	if (m_vecPtsPreUnit.empty() != TRUE)
 	{
 		// 釋放陣列內的指標記憶體
-		for (int i = 0; i < m_arrPtsPreUnit.size(); i++)
+		for (int i = 0; i < m_vecPtsPreUnit.size(); i++)
 		{
-			UnitBase* ptTemp = m_arrPtsPreUnit[i];
+			UnitBase* ptTemp = m_vecPtsPreUnit[i];
 			delete ptTemp;
 		}
 
 		// 清空陣列元素，再宣告一個空陣列與其做交換釋放記憶體
-		m_arrPtsPreUnit.clear();
-		std::vector<UnitBase*>().swap(m_arrPtsPreUnit);
+		m_vecPtsPreUnit.clear();
+		std::vector<UnitBase*>().swap(m_vecPtsPreUnit);
 	}
 
 
-	if (m_arrPtsNextUnit.empty() != TRUE)
+	if (m_vecPtsNextUnit.empty() != TRUE)
 	{
 		// 釋放陣列內的指標記憶體
-		for (int i = 0; i < m_arrPtsNextUnit.size(); i++)
+		for (int i = 0; i < m_vecPtsNextUnit.size(); i++)
 		{
-			UnitBase* ptTemp = m_arrPtsNextUnit[i];
+			UnitBase* ptTemp = m_vecPtsNextUnit[i];
 			delete ptTemp;
 		}
 
 		// 清空陣列元素，再宣告一個空陣列與其做交換釋放記憶體
-		m_arrPtsNextUnit.clear();
-		std::vector<UnitBase*>().swap(m_arrPtsNextUnit);
+		m_vecPtsNextUnit.clear();
+		std::vector<UnitBase*>().swap(m_vecPtsNextUnit);
 	}
 
 }

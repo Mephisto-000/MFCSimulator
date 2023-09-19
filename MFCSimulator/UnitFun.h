@@ -8,6 +8,8 @@ public:
 
     UnitFUN(CRect rectShowRegion, CRect rectButton);
 
+    virtual void SetConnectPtAndRect() override;
+
     // ³]¸m¨ç¼Æ
     virtual void SetFuncOrOpera(CString strChoose) override;
 

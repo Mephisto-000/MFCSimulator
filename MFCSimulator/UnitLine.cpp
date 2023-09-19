@@ -6,6 +6,7 @@ UnitLine::UnitLine(CRect rectShowRegion, CRect rectButton) : UnitBase(rectShowRe
 {
 	m_strUnitID = _T("LINE");
 	
+
 }
 
 

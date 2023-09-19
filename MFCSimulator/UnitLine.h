@@ -6,7 +6,11 @@
 class UnitLine : public UnitBase
 {
 public:
-	
+
+    CPoint m_pointLineStart;
+    CPoint m_pointLineEnd;
+
+
 	UnitLine(CRect rectShowRegion, CRect rectButton);
 
 

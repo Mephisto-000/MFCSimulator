@@ -52,6 +52,7 @@ public:
 
 
 	CList<UnitBase*, UnitBase*> m_listUnitPointers;         // 紀錄已生成的元件
+	CList<UnitLine*, UnitLine*> m_listUnitLines;            // 紀錄連接線
 	UnitBase* m_ptMovingUnit;                               // 紀錄正在被滑鼠拖曳的指標，拖曳控件的情況
 	UnitLine* m_ptMovingLine;								// 紀錄正在被滑鼠拖曳的指標，拖曳連接線的情況
 
@@ -59,7 +60,8 @@ public:
 	//CPoint m_pointInUnitStartPos;						    // IN 元件被拖動的起始點
 	//CPoint m_pointOutUnitStartPos;                        // OUT 元件被拖動的起始點
 
-	CPoint m_pointMouseStartPos;                            // 紀錄滑鼠按下左鍵當下位置 
+	CPoint m_pointMouseStartPos;                            // 紀錄滑鼠按下左鍵當下位置
+	CPoint m_pointMovingMouse;                              // 紀錄拖曳線當中，還未連接到另一個元件的滑鼠點
 
 
 	BOOL m_bIsDragging;                                     // 記錄元件是否被拖動
@@ -74,7 +76,7 @@ public:
 	
 	std::vector<CRect> GetConnectRects(UnitBase* ptUnit);   // 經由左上角點定位，得到元件接點外接矩形
 
-	void DrawConnectLine(UnitBase* ptUnit, CDC* pDC);                 // 根據前後連接的指標畫出連接線段
+	void DrawConnectLine(UnitBase* ptUnit, CDC* pDC);       // 根據前後連接的指標畫出連接線段
 
 	CStatic m_staticShowRegion;								// 顯示區成員控件
 	CStatic m_staticLineState;                              // 連線模式的狀態

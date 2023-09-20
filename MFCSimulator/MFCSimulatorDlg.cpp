@@ -482,7 +482,7 @@ void CMFCSimulatorDlg::DrawToBuffer(CDC* pDC)
 
 
 
-	CPen penConnectLine(PS_SOLID, 8, RGB(0, 0, 255));
+	CPen penConnectLine(PS_SOLID, 10, RGB(0, 0, 255));
 	CPen* ptOldPenpenConnectLine = pDC->SelectObject(&penConnectLine);
 	pDC->SelectObject(&penConnectLine);
 
@@ -496,7 +496,8 @@ void CMFCSimulatorDlg::DrawToBuffer(CDC* pDC)
 			pDC->MoveTo(ptLineUnit->m_vecPtsPreUnit[0]->m_vecConnectPt[ptLineUnit->m_iConnectPrePtIndex]);
 			pDC->LineTo(ptLineUnit->m_vecPtsNextUnit[0]->m_vecConnectPt[ptLineUnit->m_iConnectNextPtIndex]);
 		}
-		else if (ptLineUnit->m_bMoveState == TRUE)
+		
+		if (ptLineUnit->m_bMoveState == TRUE)
 		{
 			pDC->MoveTo(ptLineUnit->m_vecPtsPreUnit[0]->m_vecConnectPt[ptLineUnit->m_iConnectPrePtIndex]);
 			pDC->LineTo(ptLineUnit->m_pointMovingLinePos);
@@ -1016,8 +1017,6 @@ void CMFCSimulatorDlg::OnLButtonUp(UINT nFlags, CPoint point)
 
 	if (m_bIsDragging)
 	{   // 當放開滑鼠時，釋放滑鼠位置
-	
-		//point = NULL;
 
 		m_bIsDragging = FALSE;
 
@@ -1027,10 +1026,7 @@ void CMFCSimulatorDlg::OnLButtonUp(UINT nFlags, CPoint point)
 		POSITION posiLineUnit = m_listUnitLines.GetTailPosition();
 
 
-		//// 當下線段
-		BOOL bLineActState = TRUE;
-
-		while ((posiUnit != nullptr) && (bLineActState == TRUE))
+		while (posiUnit != nullptr)
 		{	// 走訪 CList 內的所有元件
 
 			UnitBase* ptUnit = m_listUnitPointers.GetPrev(posiUnit);
@@ -1066,12 +1062,28 @@ void CMFCSimulatorDlg::OnLButtonUp(UINT nFlags, CPoint point)
 						ptLineUnit->m_bIsConnect = TRUE;
 
 						break;
-
 					}
 				}
 			}
 		}
 	}
+
+
+	POSITION posiLineUnitCheck = m_listUnitLines.GetTailPosition();
+	while (posiLineUnitCheck != nullptr)
+	{
+		POSITION posiCur = posiLineUnitCheck;
+		UnitLine* ptLineUnit = m_listUnitLines.GetPrev(posiLineUnitCheck);
+		
+		if (ptLineUnit->m_bIsConnect == FALSE)
+		{
+			m_listUnitLines.RemoveAt(posiCur);
+
+			break;
+		}
+	}
+	OnPaint();
+
 
 	// 位移歸零
 	m_iOffsetX = 0;

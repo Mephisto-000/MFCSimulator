@@ -72,6 +72,8 @@ CMFCSimulatorDlg::CMFCSimulatorDlg(CWnd* pParent /*=nullptr*/)
 	m_bIsLineMode = FALSE;                          // 連線模式是否被開啟
 	m_iOffsetX = 0;
 	m_iOffsetY = 0;
+	m_fontLineModeState.CreatePointFont(125, _T("Calibri"));
+	m_fontLineModeText.CreatePointFont(125, _T("Calibri"));
 }
 
 void CMFCSimulatorDlg::DoDataExchange(CDataExchange* pDX)
@@ -85,6 +87,7 @@ void CMFCSimulatorDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_BUTTON_NOT, m_buttonNOT);
 	DDX_Control(pDX, IDC_BUTTON_FUN, m_buttonFUN);
 	DDX_Control(pDX, IDC_STATIC_LINE_MODE_STATE, m_staticLineState);
+	DDX_Control(pDX, IDC_STATIC_LINE_MODE_TEXT, m_staticLineModeText);
 }
 
 BEGIN_MESSAGE_MAP(CMFCSimulatorDlg, CDialogEx)
@@ -184,6 +187,12 @@ HBRUSH CMFCSimulatorDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 	if (pWnd->GetDlgCtrlID() == IDC_STATIC_LINE_MODE_STATE)
 	{
 		pDC->SetTextColor(RGB(255, 0, 0));
+		pDC->SelectObject(&m_fontLineModeState);
+	}
+
+	if (pWnd->GetDlgCtrlID() == IDC_STATIC_LINE_MODE_TEXT)
+	{
+		pDC->SelectObject(&m_fontLineModeText);
 	}
 
 	// TODO:  如果預設值並非想要的，則傳回不同的筆刷

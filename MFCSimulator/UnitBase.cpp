@@ -23,8 +23,11 @@ UnitBase::UnitBase(CRect rectShowRegion, CRect rectButton)
 	// 初始拖曳狀態
 	m_bMoveState = FALSE;
 
-	// 連接點半徑為 10 
-	m_iConnectPtRadius = 10;
+	// 初始點取狀態
+	m_bFocusState = FALSE;
+
+	// 連接點半徑為 14 
+	m_iConnectPtRadius = 14;
 
 	// 輸出值為 0.0
 	m_dOutValue = 0.0;

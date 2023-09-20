@@ -18,6 +18,7 @@ public:
 	int m_iUnitWidth;                                     // 元件寬
 	CString m_strUnitID;                                  // 元件類型
 	BOOL m_bMoveState;                                    // 確認是否被拖曳
+	BOOL m_bFocusState;                                   // 確認是否被點取
 	
 	// 輸出處理
 	CString m_strFuncOrOpera;							  // 紀錄選擇的函數或是運算元

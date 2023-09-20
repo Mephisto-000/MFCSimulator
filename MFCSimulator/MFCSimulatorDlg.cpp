@@ -472,19 +472,6 @@ void CMFCSimulatorDlg::DrawToBuffer(CDC* pDC)
 
 
 
-	
-
-	//// 元件矩形顏色 : 
-	//CBrush brushInRect;
-	//brushInRect.CreateSolidBrush(RGB(192, 192, 192));  // 灰色
-
-	//// 連接點顏色
-	//CBrush brushConnectPt;
-	//brushConnectPt.CreateSolidBrush(RGB(255, 140, 0));
-
-	//pDC->SetTextColor(RGB(0, 0, 0));
-	//pDC->SelectObject(&brushInRect);
-
 
 	POSITION posiUnit = m_listUnitPointers.GetTailPosition();
 
@@ -492,7 +479,7 @@ void CMFCSimulatorDlg::DrawToBuffer(CDC* pDC)
 
 
 
-	CPen penConnectLine(PS_SOLID, 10, RGB(0, 0, 255));
+	CPen penConnectLine(PS_SOLID, 14, RGB(0, 0, 255));
 	CPen penMovingLine(PS_DASH, 1, RGB(255, 0, 0));
 
 	while (posiLineUnit != nullptr)
@@ -520,13 +507,16 @@ void CMFCSimulatorDlg::DrawToBuffer(CDC* pDC)
 
 
 
-	// 元件矩形顏色 : 
+	// 元件矩形顏色
 	CBrush brushInRect;
 	brushInRect.CreateSolidBrush(RGB(192, 192, 192));  // 灰色
 
 	// 連接點顏色
 	CBrush brushConnectPt;
 	brushConnectPt.CreateSolidBrush(RGB(255, 140, 0));
+
+	// 點取元件時的邊框顏色
+	CPen penFocusRect(PS_SOLID, 8, RGB(255, 0, 0));
 
 	pDC->SetTextColor(RGB(0, 0, 0));
 	pDC->SelectObject(&brushInRect);
@@ -551,11 +541,32 @@ void CMFCSimulatorDlg::DrawToBuffer(CDC* pDC)
 
 		CRect rectUnit = GetUnitRect(pointUnitLeftTop);
 
-		pDC->Rectangle(rectUnit);
+		if (ptUnit->m_bFocusState == TRUE)
+		{
+			CPen* ptOldPenFocusRect = pDC->SelectObject(&penFocusRect);
+			pDC->SelectObject(&penFocusRect);
+			pDC->Rectangle(rectUnit);
+			pDC->FillRect(&rectUnit, &brushInRect);
+			pDC->SetBkMode(TRANSPARENT);
+			pDC->TextOut((rectUnit.left + rectUnit.right) * 0.5 - 10, (rectUnit.top + rectUnit.bottom) * 0.5 - 8,
+				ptUnit->m_strUnitID);
+			pDC->SelectObject(ptOldPenFocusRect);
+		}
+		else
+		{
+			pDC->Rectangle(rectUnit);
+			pDC->FillRect(&rectUnit, &brushInRect);
+			pDC->SetBkMode(TRANSPARENT);
+			pDC->TextOut((rectUnit.left + rectUnit.right) * 0.5 - 10, (rectUnit.top + rectUnit.bottom) * 0.5 - 8,
+				ptUnit->m_strUnitID);
+
+
+		}
+		/*pDC->Rectangle(rectUnit);
 		pDC->FillRect(&rectUnit, &brushInRect);
 		pDC->SetBkMode(TRANSPARENT);
 		pDC->TextOut((rectUnit.left + rectUnit.right) * 0.5 - 10, (rectUnit.top + rectUnit.bottom) * 0.5 - 8,
-			ptUnit->m_strUnitID);
+			ptUnit->m_strUnitID);*/
 		
 	}
 
@@ -871,12 +882,29 @@ void CMFCSimulatorDlg::OnBnClickedButtonLine()
 }
 
 
-// 刪除元件或線段
+// 刪除元件或線段 TODO
 void CMFCSimulatorDlg::OnBnClickedButtonDelete()
 {
-	// TODO: 在此加入控制項告知處理常式程式碼
 
+	POSITION posiUnit = m_listUnitPointers.GetTailPosition();
 
+	while (posiUnit != nullptr)
+	{
+
+		UnitBase* ptUnit = m_listUnitPointers.GetPrev(posiUnit);
+
+		if ((ptUnit->m_vecPtsNextUnit.empty() != TRUE) && (ptUnit->m_bFocusState == TRUE))
+		{
+			CString strTest = ptUnit->m_vecPtsNextUnit[0]->m_strUnitID;
+			AfxMessageBox(strTest);
+		}
+		else
+		{
+			AfxMessageBox(_T("empty"));
+		}
+	}
+
+	/*AfxMessageBox(_T("empty"));*/
 
 
 }
@@ -924,6 +952,24 @@ void CMFCSimulatorDlg::OnLButtonDown(UINT nFlags, CPoint point)
 			// 更新被拖曳元件的狀態
 			ptUnit->m_bMoveState = TRUE;
 
+
+			////////////////////////////////////////////////////////
+			// 元件點取狀態更新
+			if (m_ptPreMovingUnit != nullptr)
+			{
+				m_ptPreMovingUnit->m_bFocusState = FALSE;
+			}
+			
+			if (ptUnit->m_bFocusState == FALSE)
+			{
+				// 更新元件被點取狀態
+				ptUnit->m_bFocusState = TRUE;
+				m_ptPreMovingUnit = ptUnit;
+			}
+			////////////////////////////////////////////////////////
+			
+
+
 			// 點取元件時，滑鼠產生十字的圖案
 			SetCursor(LoadCursor(NULL, IDC_SIZEALL));
 
@@ -940,7 +986,6 @@ void CMFCSimulatorDlg::OnLButtonDown(UINT nFlags, CPoint point)
 
 
 		// 得到連接點外接矩形
-		/*std::vector<CRect> vecConnectPtRects = GetConnectRects(ptUnit);*/
 		ptUnit->SetConnectPtAndRect(m_iOffsetX, m_iOffsetY);
 		std::vector<CRect> vecConnectPtRects = ptUnit->m_vecConnectPtRect;
 
@@ -980,6 +1025,8 @@ void CMFCSimulatorDlg::OnLButtonDown(UINT nFlags, CPoint point)
 			}
 		}
 	}	
+
+	OnPaint();
 
 	CDialogEx::OnLButtonDown(nFlags, point);
 }
@@ -1075,6 +1122,10 @@ void CMFCSimulatorDlg::OnLButtonUp(UINT nFlags, CPoint point)
 
 			if ((ptUnit->m_bMoveState == TRUE) && (m_bIsLineMode == FALSE))
 			{
+
+				//// 更新元件被點取狀態
+				//ptUnit->m_bFocusState = FALSE;
+
 				ptUnit->m_bMoveState = FALSE;
 
 				break;
@@ -1093,6 +1144,15 @@ void CMFCSimulatorDlg::OnLButtonUp(UINT nFlags, CPoint point)
 						ptLineUnit->m_bMoveState = FALSE;
 
 						ptLineUnit->m_iConnectNextPtIndex = i;
+
+
+
+						
+						// Bugs:
+						m_ptMovingUnit->m_vecPtsNextUnit.push_back(ptUnit);
+						ptUnit->m_vecPtsPreUnit.push_back(m_ptMovingUnit);
+
+
 
 						ptLineUnit->m_vecPtsNextUnit.push_back(ptUnit);
 

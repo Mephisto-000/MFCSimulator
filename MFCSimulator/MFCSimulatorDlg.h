@@ -49,6 +49,8 @@ public:
 
 	CList<UnitBase*, UnitBase*> m_listUnitPointers;         // 紀錄已生成的元件
 	CList<UnitLine*, UnitLine*> m_listUnitLines;            // 紀錄連接線
+
+	UnitBase* m_ptPreMovingUnit;							// 紀錄前一個點選的指標
 	UnitBase* m_ptMovingUnit;                               // 紀錄正在被滑鼠拖曳的指標，拖曳控件的情況
 	UnitLine* m_ptMovingLine;								// 紀錄正在被滑鼠拖曳的指標，拖曳連接線的情況
 

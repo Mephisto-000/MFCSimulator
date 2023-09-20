@@ -44,8 +44,6 @@ public:
 	HBITMAP m_hBitmapImgBg;									// 顯示區背景圖片
 
 	int m_iInUnitCount;									    // 計算元件 IN 個數 
-	CList<CRect, CRect&> m_listInUnit;                      // 記錄生成的元件
-	CList<CRect, CRect&> m_listInUnitLine;					// 記錄生成的元件連線
 
 	CList<CRect, CRect&> m_listOutUnit;
 	CList<CRect, CRect&> m_listOutUnitBg;
@@ -111,14 +109,16 @@ public:
 	afx_msg void OnBnClickedButtonOr();                     // 新增 OR 元件按鈕
 	afx_msg void OnBnClickedButtonNot();                    // 新增 NOT 元件按鈕
 	afx_msg void OnBnClickedButtonFun();                    // 新增 FUN 元件按鈕
-	afx_msg void OnBnClickedButtonLine();                   // 新增連線模式按鈕
+	afx_msg void OnBnClickedButtonLine();                   // 開關連線模式按鈕
+	afx_msg void OnBnClickedButtonDelete();                 // 刪除元件或線段按鈕
 
 
 
 	CString GetCurrentDir();                                // 取得 MFCSimulatorDlg.cpp 的絕對路徑
 
-	CFont m_fontLineModeState;
-	CFont m_fontLineModeText;
+	CFont m_fontLineModeState;                              // 自定 Line Mode 狀態字型
+	CFont m_fontLineModeText;								// 自定 Line Mode 標題字型
 
 	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
+
 };

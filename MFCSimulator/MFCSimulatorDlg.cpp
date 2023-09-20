@@ -107,6 +107,7 @@ BEGIN_MESSAGE_MAP(CMFCSimulatorDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_BUTTON_FUN, &CMFCSimulatorDlg::OnBnClickedButtonFun)
 	ON_BN_CLICKED(IDC_BUTTON_LINE, &CMFCSimulatorDlg::OnBnClickedButtonLine)
 	ON_WM_CTLCOLOR()
+	ON_BN_CLICKED(IDC_BUTTON_DELETE, &CMFCSimulatorDlg::OnBnClickedButtonDelete)
 END_MESSAGE_MAP()
 
 
@@ -473,6 +474,52 @@ void CMFCSimulatorDlg::DrawToBuffer(CDC* pDC)
 
 	
 
+	//// 元件矩形顏色 : 
+	//CBrush brushInRect;
+	//brushInRect.CreateSolidBrush(RGB(192, 192, 192));  // 灰色
+
+	//// 連接點顏色
+	//CBrush brushConnectPt;
+	//brushConnectPt.CreateSolidBrush(RGB(255, 140, 0));
+
+	//pDC->SetTextColor(RGB(0, 0, 0));
+	//pDC->SelectObject(&brushInRect);
+
+
+	POSITION posiUnit = m_listUnitPointers.GetTailPosition();
+
+	POSITION posiLineUnit = m_listUnitLines.GetTailPosition();
+
+
+
+	CPen penConnectLine(PS_SOLID, 10, RGB(0, 0, 255));
+	CPen penMovingLine(PS_DASH, 1, RGB(255, 0, 0));
+
+	while (posiLineUnit != nullptr)
+	{
+		UnitLine* ptLineUnit = m_listUnitLines.GetPrev(posiLineUnit);
+
+		if (ptLineUnit->m_bIsConnect == TRUE)
+		{
+			CPen* ptOldPenConnectLine = pDC->SelectObject(&penConnectLine);
+			pDC->SelectObject(&penConnectLine);
+			pDC->MoveTo(ptLineUnit->m_vecPtsPreUnit[0]->m_vecConnectPt[ptLineUnit->m_iConnectPrePtIndex]);
+			pDC->LineTo(ptLineUnit->m_vecPtsNextUnit[0]->m_vecConnectPt[ptLineUnit->m_iConnectNextPtIndex]);
+			pDC->SelectObject(ptOldPenConnectLine);
+		}
+		
+		if (ptLineUnit->m_bMoveState == TRUE)
+		{
+			CPen* ptOldPenMovingLine = pDC->SelectObject(&penMovingLine);
+			pDC->SelectObject(&penMovingLine);
+			pDC->MoveTo(ptLineUnit->m_vecPtsPreUnit[0]->m_vecConnectPt[ptLineUnit->m_iConnectPrePtIndex]);
+			pDC->LineTo(ptLineUnit->m_pointMovingLinePos);
+			pDC->SelectObject(ptOldPenMovingLine);
+		}
+	}
+
+
+
 	// 元件矩形顏色 : 
 	CBrush brushInRect;
 	brushInRect.CreateSolidBrush(RGB(192, 192, 192));  // 灰色
@@ -483,38 +530,6 @@ void CMFCSimulatorDlg::DrawToBuffer(CDC* pDC)
 
 	pDC->SetTextColor(RGB(0, 0, 0));
 	pDC->SelectObject(&brushInRect);
-
-
-	POSITION posiUnit = m_listUnitPointers.GetTailPosition();
-
-	POSITION posiLineUnit = m_listUnitLines.GetTailPosition();
-
-
-
-	CPen penConnectLine(PS_SOLID, 10, RGB(0, 0, 255));
-	CPen* ptOldPenpenConnectLine = pDC->SelectObject(&penConnectLine);
-	pDC->SelectObject(&penConnectLine);
-
-
-	while (posiLineUnit != nullptr)
-	{
-		UnitLine* ptLineUnit = m_listUnitLines.GetPrev(posiLineUnit);
-
-		if (ptLineUnit->m_bIsConnect == TRUE)
-		{
-			pDC->MoveTo(ptLineUnit->m_vecPtsPreUnit[0]->m_vecConnectPt[ptLineUnit->m_iConnectPrePtIndex]);
-			pDC->LineTo(ptLineUnit->m_vecPtsNextUnit[0]->m_vecConnectPt[ptLineUnit->m_iConnectNextPtIndex]);
-		}
-		
-		if (ptLineUnit->m_bMoveState == TRUE)
-		{
-			pDC->MoveTo(ptLineUnit->m_vecPtsPreUnit[0]->m_vecConnectPt[ptLineUnit->m_iConnectPrePtIndex]);
-			pDC->LineTo(ptLineUnit->m_pointMovingLinePos);
-		}
-	}
-
-	pDC->SelectObject(ptOldPenpenConnectLine);
-
 
 
 	while (posiUnit != nullptr)
@@ -856,6 +871,19 @@ void CMFCSimulatorDlg::OnBnClickedButtonLine()
 }
 
 
+// 刪除元件或線段
+void CMFCSimulatorDlg::OnBnClickedButtonDelete()
+{
+	// TODO: 在此加入控制項告知處理常式程式碼
+
+
+
+
+}
+
+
+
+
 void CMFCSimulatorDlg::OnLButtonDown(UINT nFlags, CPoint point)
 {
 	// 得到操作視窗矩形資訊
@@ -1103,10 +1131,6 @@ void CMFCSimulatorDlg::OnLButtonUp(UINT nFlags, CPoint point)
 
 	CDialogEx::OnLButtonUp(nFlags, point);
 }
-
-
-
-
 
 
 

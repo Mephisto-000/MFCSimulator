@@ -25,7 +25,6 @@
 #define IDC_BUTTON_SAVE                 1012
 #define IDC_STATIC_SHOW_REGION          1013
 #define IDC_EDIT1                       1014
-#define IDC_BUTTON_SIMULATE2            1014
 #define IDC_BUTTON_DELETE               1014
 #define IDC_BUTTON_IN_FALSE             1015
 #define IDC_BUTTON_IN_TRUE              1016

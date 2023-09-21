@@ -939,51 +939,122 @@ void CMFCSimulatorDlg::OnBnClickedButtonLine()
 void CMFCSimulatorDlg::OnBnClickedButtonDelete()
 {
 
+
+
 	POSITION posiUnit = m_listUnitPointers.GetTailPosition();
+	while (posiUnit != nullptr)
+	{
 
-	//POSITION posiLineUnit = m_listUnitLines.GetTailPosition();
+		POSITION posiCur = posiUnit;
+		UnitBase* ptCurUnit = m_listUnitPointers.GetPrev(posiUnit);
+		
+
+		if (ptCurUnit->m_bFocusState == TRUE)
+		{
+			if (ptCurUnit->m_vecPtsPreUnit.empty() != TRUE)
+			{
+				for (int i = 0; i < ptCurUnit->m_vecPtsPreUnit.size(); i++)
+				{
+
+					std::vector<UnitBase*>vecPreToCur = ptCurUnit->m_vecPtsPreUnit[i]->m_vecPtsNextUnit;
+					int iCurPtIndex;
+
+					for (int j = 0; j < vecPreToCur.size(); j++)
+					{
+						if (vecPreToCur[j] == ptCurUnit)
+						{
+							iCurPtIndex = j;
+							ptCurUnit->m_vecPtsPreUnit[i]->m_vecPtsNextUnit[iCurPtIndex] = nullptr;
+							break;
+						}
+					}
+
+				}
+			}
+			
+			if (ptCurUnit->m_vecPtsNextUnit.empty() != TRUE)
+			{
+				for (int i = 0; i < ptCurUnit->m_vecPtsNextUnit.size(); i++)
+				{
+					
+					std::vector<UnitBase*>vecNextToCur = ptCurUnit->m_vecPtsNextUnit[i]->m_vecPtsPreUnit;
+					int iCurPtIndex;
+
+					for (int j = 0; j < vecNextToCur.size(); j++)
+					{
+						if (vecNextToCur[j] == ptCurUnit)
+						{
+							iCurPtIndex = j;
+							ptCurUnit->m_vecPtsNextUnit[i]->m_vecPtsPreUnit[iCurPtIndex] = nullptr;
+							break;
+						}
+					}
+
+				}
+
+			}
 
 
-	//while ((posiUnit != nullptr) && (m_bIsLineMode != TRUE))
+			
+			m_listUnitPointers.RemoveAt(posiCur);
+
+
+		}
+
+		ptCurUnit = nullptr;
+
+		/*delete ptCurUnit;*/
+	}
+
+
+
+	POSITION posiCheckUnit = m_listUnitPointers.GetTailPosition();
+	//while ((posiCheckUnit != nullptr) && (m_bIsLineMode != TRUE))
 	//{
-	//	POSITION posiCur = posiUnit;
-	//	UnitBase* ptUnit = m_listUnitPointers.GetPrev(posiUnit);
+	//	POSITION posiCur = posiCheckUnit;
+	//	UnitBase* ptUnit = m_listUnitPointers.GetPrev(posiCheckUnit);
 
-	//	if (ptUnit->m_bFocusState == TRUE)
+	//	if (ptUnit->m_strUnitID == _T("OUT"))
 	//	{
-	//		m_listUnitPointers.RemoveAt(posiCur);
+	//	
+	//		UnitBase* ptHead = ptUnit;
 
-	//		// TODO
+	//		while (ptHead != nullptr)
+	//		{
+	//			CString strIdName = ptHead->m_strUnitID;
 
+	//			AfxMessageBox(strIdName);
+
+	//			if (ptHead->m_vecPtsPreUnit.empty() == TRUE)
+	//			{
+	//				break;
+	//			}
+
+	//			for (int i = 0; i < ptHead->m_vecPtsPreUnit.size(); i++)
+	//			{
+	//				ptHead = ptHead->m_vecPtsPreUnit[i];
+	//			}
+	//		}
 	//		break;
 	//	}
 	//}
 
 
-	
+	//while (posiUnit != nullptr)
+	//{
+	//	POSITION posiCur = posiUnit;
+	//	UnitBase* ptUnit = m_listUnitPointers.GetPrev(posiUnit);
 
-
-
-
-	while (posiUnit != nullptr)
-	{
-		POSITION posiCur = posiUnit;
-		UnitBase* ptUnit = m_listUnitPointers.GetPrev(posiUnit);
-
-		if ((ptUnit->m_vecPtsNextUnit.empty() != TRUE) && (ptUnit->m_bFocusState == TRUE))
-		{
-			for (int i = 0; i < ptUnit->m_vecPtsNextUnit.size(); i++)
-			{
-				CString strTest = ptUnit->m_vecPtsNextUnit[i]->m_strUnitID;
-				AfxMessageBox(strTest);
-			}
-			break;
-		}
-		//else
-		//{
-		//	AfxMessageBox(_T("empty"));
-		//}
-	}
+	//	if ((ptUnit->m_vecPtsNextUnit.empty() != TRUE) && (ptUnit->m_bFocusState == TRUE))
+	//	{
+	//		for (int i = 0; i < ptUnit->m_vecPtsNextUnit.size(); i++)
+	//		{
+	//			CString strTest = ptUnit->m_vecPtsNextUnit[i]->m_strUnitID;
+	//			AfxMessageBox(strTest);
+	//		}
+	//		break;
+	//	}
+	//}
 
 	/*AfxMessageBox(_T("empty"));*/
 

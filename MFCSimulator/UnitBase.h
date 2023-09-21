@@ -40,7 +40,7 @@ public:
 	// 解構子
 	~UnitBase ();
 
-	// 根據元件類型給出連接點連接點矩形
+	// 根據元件類型和拖曳後的位移，更新連接點與其外切矩形的位置
 	virtual void SetConnectPtAndRect (int iOffsetX, int iOffsetY) {};
 
 

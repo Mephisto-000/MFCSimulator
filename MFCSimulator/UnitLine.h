@@ -7,8 +7,10 @@ class UnitLine : public UnitBase
 {
 public:
 
-    // 紀錄連接哪個點
+    // 紀錄線段連點起點
     int m_iConnectPrePtIndex;
+
+    // 紀錄線段連接點終點
     int m_iConnectNextPtIndex;
 
     BOOL m_bIsConnect;

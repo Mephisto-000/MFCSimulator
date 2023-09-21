@@ -888,25 +888,49 @@ void CMFCSimulatorDlg::OnBnClickedButtonDelete()
 
 	POSITION posiUnit = m_listUnitPointers.GetTailPosition();
 
-	while (posiUnit != nullptr)
-	{
+	POSITION posiLineUnit = m_listUnitLines.GetTailPosition();
 
+
+	while ((posiUnit != nullptr) && (m_bIsLineMode != TRUE))
+	{
+		POSITION posiCur = posiUnit;
 		UnitBase* ptUnit = m_listUnitPointers.GetPrev(posiUnit);
 
-		if ((ptUnit->m_vecPtsNextUnit.empty() != TRUE) && (ptUnit->m_bFocusState == TRUE))
+		if (ptUnit->m_bFocusState == TRUE)
 		{
-			CString strTest = ptUnit->m_vecPtsNextUnit[0]->m_strUnitID;
-			AfxMessageBox(strTest);
-		}
-		else
-		{
-			AfxMessageBox(_T("empty"));
+			m_listUnitPointers.RemoveAt(posiCur);
+
+			// TODO
+
+			break;
 		}
 	}
 
+
+	
+
+
+
+
+	//while (posiUnit != nullptr)
+	//{
+
+	//	UnitBase* ptUnit = m_listUnitPointers.GetPrev(posiUnit);
+
+	//	if ((ptUnit->m_vecPtsNextUnit.empty() != TRUE) && (ptUnit->m_bFocusState == TRUE))
+	//	{
+	//		CString strTest = ptUnit->m_vecPtsNextUnit[0]->m_strUnitID;
+	//		AfxMessageBox(strTest);
+	//	}
+	//	else
+	//	{
+	//		AfxMessageBox(_T("empty"));
+	//	}
+	//}
+
 	/*AfxMessageBox(_T("empty"));*/
 
-
+	OnPaint();
 }
 
 
@@ -938,12 +962,10 @@ void CMFCSimulatorDlg::OnLButtonDown(UINT nFlags, CPoint point)
 	while (posiUnit != nullptr)
 	{	// 走訪 CList 內的所有元素
 
-
 		UnitBase* ptUnit = m_listUnitPointers.GetNext(posiUnit);
 
 		// 得到元件的矩形
 		CRect rectUnit = GetUnitRect(ptUnit->m_pointUnitLocation);
-
 
 
 		if (rectUnit.PtInRect(point) && (m_bIsLineMode == FALSE))
@@ -955,44 +977,48 @@ void CMFCSimulatorDlg::OnLButtonDown(UINT nFlags, CPoint point)
 
 			////////////////////////////////////////////////////////
 			// 元件點取狀態更新
+
 			if (m_ptPreMovingUnit != nullptr)
-			{
+			{  // 前一次點取的元件取消點取狀態
+
 				m_ptPreMovingUnit->m_bFocusState = FALSE;
 			}
 			
 			if (ptUnit->m_bFocusState == FALSE)
-			{
-				// 更新元件被點取狀態
+			{	// 更新新點取的元件狀態
+
 				ptUnit->m_bFocusState = TRUE;
 				m_ptPreMovingUnit = ptUnit;
 			}
 			////////////////////////////////////////////////////////
 			
-
-
 			// 點取元件時，滑鼠產生十字的圖案
 			SetCursor(LoadCursor(NULL, IDC_SIZEALL));
 
 			// 開啟拖曳的狀態
 			m_bIsDragging = TRUE;
 
-			// 更新滑鼠位置
+			// 更新滑鼠點擊時的位置
 			m_pointMouseStartPos = point;
 
+			// 暫時紀錄移動中的元件指標
 			m_ptMovingUnit = ptUnit;
 
 			break;
 		}
 
 
-		// 得到連接點外接矩形
+		// 更新元件連接點與其外切矩形位置
 		ptUnit->SetConnectPtAndRect(m_iOffsetX, m_iOffsetY);
+
+		// 得到儲存連接點外切矩形的陣列
 		std::vector<CRect> vecConnectPtRects = ptUnit->m_vecConnectPtRect;
 
 		for (int i = 0; i < vecConnectPtRects.size(); i++)
-		{
+		{	// 遍歷元件所有的連接點外切矩形
+
 			if (vecConnectPtRects[i].PtInRect(point) && (m_bIsLineMode == TRUE))
-			{
+			{	// 滑鼠點到外切矩形內的範圍，並且開啟連線模式
 
 				// 點取元件時，滑鼠產生十字的圖案
 				SetCursor(LoadCursor(NULL, IDC_SIZEALL));
@@ -1000,15 +1026,19 @@ void CMFCSimulatorDlg::OnLButtonDown(UINT nFlags, CPoint point)
 				// 開啟拖曳的狀態
 				m_bIsDragging = TRUE;
 
+				// 新增連線線段物件
 				UnitLine* ptNewUnitLine = new UnitLine(rectShowRegion, rectUnit);
 
+				// 更新線段狀態，設為正在拖曳中
 				ptNewUnitLine->m_bMoveState = TRUE;
 
-				// 紀錄連線點編號
+				// 紀錄連線的連接點編號
 				ptNewUnitLine->m_iConnectPrePtIndex = i;
 
+				// 
 				ptNewUnitLine->m_pointMovingLinePos = ptUnit->m_vecConnectPt[i];
 
+				// 暫時紀錄移動中的線段指標
 				m_ptMovingLine = ptNewUnitLine;
 
 				// 紀錄連線起點的元件
@@ -1017,8 +1047,7 @@ void CMFCSimulatorDlg::OnLButtonDown(UINT nFlags, CPoint point)
 				// 放進紀錄 Line Pointer 的串列結構
 				m_listUnitLines.AddTail(ptNewUnitLine);
 
-
-				// 更新滑鼠位置
+				// 更新按下滑鼠左鍵當下位置
 				m_pointMouseStartPos = point;
 
 				break;
@@ -1050,36 +1079,39 @@ void CMFCSimulatorDlg::OnMouseMove(UINT nFlags, CPoint point)
 	if (m_bIsDragging == TRUE)
 	{	// 當開始拖曳時，計算拖曳的距離，改變矩形位置
 
-		//
+		//計算並暫存拖曳元件或是線段的位移
 		m_iOffsetX = point.x - m_pointMouseStartPos.x;
 		m_iOffsetY = point.y - m_pointMouseStartPos.y;
 
 		if (m_bIsLineMode == FALSE)
-		{
+		{	// 連線模式關閉的時候
 
+			// 更新元件的位置
 			m_ptMovingUnit->m_pointUnitLocation.Offset(m_iOffsetX, m_iOffsetY);
 
+			// 更新元件連接點與其外切矩形的位置
 			m_ptMovingUnit->SetConnectPtAndRect(m_iOffsetX, m_iOffsetY);
 
+			// 更新滑鼠左鍵當下位置
 			m_pointMouseStartPos = point; 
 
 		}
 		else
-		{
+		{	// 連線模式開啟的時候
 			
+			// 更新線段終點的位置
 			m_ptMovingLine->m_pointMovingLinePos.Offset(m_iOffsetX, m_iOffsetY);
 
+			// 更新拖曳移動中的滑鼠點位置
 			m_pointMovingMouse = point;
 
+			// 初始化按下滑鼠左鍵時的位置
 			m_pointMouseStartPos = point;
 
 		}
 
-
 		OnPaint();
-
 	}
-
 
 	CDialogEx::OnMouseMove(nFlags, point);
 }
@@ -1102,11 +1134,13 @@ void CMFCSimulatorDlg::OnLButtonUp(UINT nFlags, CPoint point)
 	if (m_bIsDragging)
 	{   // 當放開滑鼠時，釋放滑鼠位置
 
+		// 更新拖曳狀態
 		m_bIsDragging = FALSE;
 
 		// 得到內含已創建元件的指針的 CList ，並取得 CList 的位置指針
 		POSITION posiUnit = m_listUnitPointers.GetTailPosition();
 
+		// 得到內含已創建線段的指針的 CList ，並取得 CList 的位置指針
 		POSITION posiLineUnit = m_listUnitLines.GetTailPosition();
 
 
@@ -1115,47 +1149,45 @@ void CMFCSimulatorDlg::OnLButtonUp(UINT nFlags, CPoint point)
 
 			UnitBase* ptUnit = m_listUnitPointers.GetPrev(posiUnit);
 
-
-			// 得到連接點外接矩形
+			// 得到連接點外切矩形
 			std::vector<CRect> rectConnectPts = ptUnit->m_vecConnectPtRect;
 
-
 			if ((ptUnit->m_bMoveState == TRUE) && (m_bIsLineMode == FALSE))
-			{
-
-				//// 更新元件被點取狀態
-				//ptUnit->m_bFocusState = FALSE;
+			{	// 更新元件移動的狀態
 
 				ptUnit->m_bMoveState = FALSE;
 
 				break;
 			}
 
-
 			if (m_bIsLineMode == TRUE)
-			{
+			{	// 開啟連線模式後
+
 				for (int i = 0; i < rectConnectPts.size(); i++)
-				{
+				{	// 遍歷已儲存元件的連接點外切矩形
+
 					if (rectConnectPts[i].PtInRect(point))
-					{
+					{	// 當拖曳的後釋放滑鼠左鍵時，在外切矩形內
 
 						UnitLine* ptLineUnit = m_listUnitLines.GetPrev(posiLineUnit);
 
+						// 更新線段拖曳狀態
 						ptLineUnit->m_bMoveState = FALSE;
 
+						// 紀錄線段連接點終點所連到的矩形編號
 						ptLineUnit->m_iConnectNextPtIndex = i;
-
-
-
 						
+
 						// Bugs:
+
 						m_ptMovingUnit->m_vecPtsNextUnit.push_back(ptUnit);
 						ptUnit->m_vecPtsPreUnit.push_back(m_ptMovingUnit);
 
 
-
+						// 紀錄連接的元件指標
 						ptLineUnit->m_vecPtsNextUnit.push_back(ptUnit);
 
+						// 更新線段的連接狀態
 						ptLineUnit->m_bIsConnect = TRUE;
 
 						break;
@@ -1166,6 +1198,8 @@ void CMFCSimulatorDlg::OnLButtonUp(UINT nFlags, CPoint point)
 	}
 
 
+	////////////////////////////////////////////////////////
+	// 即時清除畫面中沒有連接的線段
 	POSITION posiLineUnitCheck = m_listUnitLines.GetTailPosition();
 	while (posiLineUnitCheck != nullptr)
 	{
@@ -1180,6 +1214,7 @@ void CMFCSimulatorDlg::OnLButtonUp(UINT nFlags, CPoint point)
 		}
 	}
 	OnPaint();
+	////////////////////////////////////////////////////////
 
 
 	// 位移歸零

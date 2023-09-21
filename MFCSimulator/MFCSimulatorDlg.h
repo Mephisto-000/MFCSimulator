@@ -54,6 +54,15 @@ public:
 	UnitBase* m_ptMovingUnit;                               // 紀錄正在被滑鼠拖曳的指標，拖曳控件的情況
 	UnitLine* m_ptMovingLine;								// 紀錄正在被滑鼠拖曳的指標，拖曳連接線的情況
 
+	// 連線狀態中，元件指標連接用:
+	UnitBase* m_ptPreUnit;                                  // 紀錄連接的起點元件指標
+	UnitBase* m_ptNextUnit;									// 紀錄連接的終點元件指標
+
+
+	double TwoPtsDistance(CPoint pointStart, CPoint pointEnd);                           // 計算兩點距離
+	double PointToLineDistance(CPoint pointMouse, CPoint pointStart, CPoint pointEnd);   // 計算滑鼠座標點到線段距離
+
+
 	int m_iOffsetX;                                         // 拖曳X位移
 	int m_iOffsetY;											// 拖曳Y位移
 

@@ -354,6 +354,51 @@ void CMFCSimulatorDlg::DrawConnectLine(UnitBase* ptUnit, CDC* pDC)
 }
 
 
+// 計算兩點距離
+double CMFCSimulatorDlg::TwoPtsDistance(CPoint pointStart, CPoint pointEnd)
+{
+	double dLen = sqrt(pow((pointEnd.x - pointStart.x), 2) + pow((pointEnd.y - pointStart.y), 2));
+
+	return dLen;
+}
+
+
+// 計算滑鼠座標點到線段距離
+double CMFCSimulatorDlg::PointToLineDistance(CPoint pointMouse, CPoint pointStart, CPoint pointEnd)
+{
+	double dLenStartToEnd = TwoPtsDistance(pointStart, pointEnd);
+
+	if (dLenStartToEnd == 0.0)
+	{	// 線段長度為 0 的情況	
+
+		return TwoPtsDistance(pointMouse, pointStart);
+	}
+
+	// 計算向量 Start -> End 和 Start -> Mouse 內積
+	double dDotProduct = ((pointMouse.x - pointStart.x) * (pointEnd.x - pointStart.x) + (pointMouse.y - pointStart.y) * (pointEnd.y - pointStart.y)) / pow(dLenStartToEnd, 2);
+
+	if (dDotProduct < 0.0)
+	{	// 滑鼠座標點在點 Start 之前
+
+		return TwoPtsDistance(pointMouse, pointStart);
+	}
+
+	if (dDotProduct > 1.0)
+	{	// 滑鼠座標點在點 End 之後
+
+		return TwoPtsDistance(pointMouse, pointEnd);
+	}
+	
+	// 計算滑鼠座標點在線段 Start --- End 上的投影點
+	CPoint pointProject;
+	pointProject.x = pointStart.x + dDotProduct * (pointEnd.x - pointStart.x);
+	pointProject.y = pointStart.y + dDotProduct * (pointEnd.y - pointStart.y);
+
+	// 給出滑鼠座標點與其投影點距離
+	return TwoPtsDistance(pointMouse, pointProject);
+}
+
+
 // 取得 MFCSimulatorDlg.cpp 的絕對路徑
 CString CMFCSimulatorDlg::GetCurrentDir()
 {
@@ -481,6 +526,7 @@ void CMFCSimulatorDlg::DrawToBuffer(CDC* pDC)
 
 	CPen penConnectLine(PS_SOLID, 14, RGB(0, 0, 255));
 	CPen penMovingLine(PS_DASH, 1, RGB(255, 0, 0));
+	CPen penFocusLine(PS_SOLID, 14, RGB(255, 0, 0));
 
 	while (posiLineUnit != nullptr)
 	{
@@ -503,7 +549,19 @@ void CMFCSimulatorDlg::DrawToBuffer(CDC* pDC)
 			pDC->LineTo(ptLineUnit->m_pointMovingLinePos);
 			pDC->SelectObject(ptOldPenMovingLine);
 		}
+
+		if (ptLineUnit->m_bFocusState == TRUE)
+		{
+			CPen* ptOldPenFocusLine = pDC->SelectObject(&penFocusLine);
+			pDC->SelectObject(&penFocusLine);
+			pDC->MoveTo(ptLineUnit->m_vecPtsPreUnit[0]->m_vecConnectPt[ptLineUnit->m_iConnectPrePtIndex]);
+			pDC->LineTo(ptLineUnit->m_vecPtsNextUnit[0]->m_vecConnectPt[ptLineUnit->m_iConnectNextPtIndex]);
+			pDC->SelectObject(ptOldPenFocusLine);
+		}
 	}
+
+
+
 
 
 
@@ -562,11 +620,6 @@ void CMFCSimulatorDlg::DrawToBuffer(CDC* pDC)
 
 
 		}
-		/*pDC->Rectangle(rectUnit);
-		pDC->FillRect(&rectUnit, &brushInRect);
-		pDC->SetBkMode(TRANSPARENT);
-		pDC->TextOut((rectUnit.left + rectUnit.right) * 0.5 - 10, (rectUnit.top + rectUnit.bottom) * 0.5 - 8,
-			ptUnit->m_strUnitID);*/
 		
 	}
 
@@ -888,23 +941,23 @@ void CMFCSimulatorDlg::OnBnClickedButtonDelete()
 
 	POSITION posiUnit = m_listUnitPointers.GetTailPosition();
 
-	POSITION posiLineUnit = m_listUnitLines.GetTailPosition();
+	//POSITION posiLineUnit = m_listUnitLines.GetTailPosition();
 
 
-	while ((posiUnit != nullptr) && (m_bIsLineMode != TRUE))
-	{
-		POSITION posiCur = posiUnit;
-		UnitBase* ptUnit = m_listUnitPointers.GetPrev(posiUnit);
+	//while ((posiUnit != nullptr) && (m_bIsLineMode != TRUE))
+	//{
+	//	POSITION posiCur = posiUnit;
+	//	UnitBase* ptUnit = m_listUnitPointers.GetPrev(posiUnit);
 
-		if (ptUnit->m_bFocusState == TRUE)
-		{
-			m_listUnitPointers.RemoveAt(posiCur);
+	//	if (ptUnit->m_bFocusState == TRUE)
+	//	{
+	//		m_listUnitPointers.RemoveAt(posiCur);
 
-			// TODO
+	//		// TODO
 
-			break;
-		}
-	}
+	//		break;
+	//	}
+	//}
 
 
 	
@@ -912,21 +965,25 @@ void CMFCSimulatorDlg::OnBnClickedButtonDelete()
 
 
 
-	//while (posiUnit != nullptr)
-	//{
+	while (posiUnit != nullptr)
+	{
+		POSITION posiCur = posiUnit;
+		UnitBase* ptUnit = m_listUnitPointers.GetPrev(posiUnit);
 
-	//	UnitBase* ptUnit = m_listUnitPointers.GetPrev(posiUnit);
-
-	//	if ((ptUnit->m_vecPtsNextUnit.empty() != TRUE) && (ptUnit->m_bFocusState == TRUE))
-	//	{
-	//		CString strTest = ptUnit->m_vecPtsNextUnit[0]->m_strUnitID;
-	//		AfxMessageBox(strTest);
-	//	}
-	//	else
-	//	{
-	//		AfxMessageBox(_T("empty"));
-	//	}
-	//}
+		if ((ptUnit->m_vecPtsNextUnit.empty() != TRUE) && (ptUnit->m_bFocusState == TRUE))
+		{
+			for (int i = 0; i < ptUnit->m_vecPtsNextUnit.size(); i++)
+			{
+				CString strTest = ptUnit->m_vecPtsNextUnit[i]->m_strUnitID;
+				AfxMessageBox(strTest);
+			}
+			break;
+		}
+		//else
+		//{
+		//	AfxMessageBox(_T("empty"));
+		//}
+	}
 
 	/*AfxMessageBox(_T("empty"));*/
 
@@ -967,30 +1024,12 @@ void CMFCSimulatorDlg::OnLButtonDown(UINT nFlags, CPoint point)
 		// 得到元件的矩形
 		CRect rectUnit = GetUnitRect(ptUnit->m_pointUnitLocation);
 
-
 		if (rectUnit.PtInRect(point) && (m_bIsLineMode == FALSE))
 		{	// 確認滑鼠是否點取元件
 
 			// 更新被拖曳元件的狀態
 			ptUnit->m_bMoveState = TRUE;
 
-
-			////////////////////////////////////////////////////////
-			// 元件點取狀態更新
-
-			if (m_ptPreMovingUnit != nullptr)
-			{  // 前一次點取的元件取消點取狀態
-
-				m_ptPreMovingUnit->m_bFocusState = FALSE;
-			}
-			
-			if (ptUnit->m_bFocusState == FALSE)
-			{	// 更新新點取的元件狀態
-
-				ptUnit->m_bFocusState = TRUE;
-				m_ptPreMovingUnit = ptUnit;
-			}
-			////////////////////////////////////////////////////////
 			
 			// 點取元件時，滑鼠產生十字的圖案
 			SetCursor(LoadCursor(NULL, IDC_SIZEALL));
@@ -1041,6 +1080,9 @@ void CMFCSimulatorDlg::OnLButtonDown(UINT nFlags, CPoint point)
 				// 暫時紀錄移動中的線段指標
 				m_ptMovingLine = ptNewUnitLine;
 
+				// 紀錄連線起點的元件指標
+				m_ptPreUnit = ptUnit;
+
 				// 紀錄連線起點的元件
 				ptNewUnitLine->m_vecPtsPreUnit.push_back(ptUnit);
 
@@ -1054,6 +1096,49 @@ void CMFCSimulatorDlg::OnLButtonDown(UINT nFlags, CPoint point)
 			}
 		}
 	}	
+
+
+	////////////////////////////////////////////////////////
+	// 點選元件的功能
+	POSITION posiUnitCheck = m_listUnitPointers.GetTailPosition();
+	while ((posiUnitCheck != nullptr) && (m_bIsLineMode == FALSE))
+	{
+		UnitBase* ptUnit = m_listUnitPointers.GetPrev(posiUnitCheck);
+
+		// 得到元件的矩形
+		CRect rectUnit = GetUnitRect(ptUnit->m_pointUnitLocation);
+
+		ptUnit->m_bFocusState = FALSE;
+		if (rectUnit.PtInRect(point) && (m_bIsLineMode == FALSE))
+		{	// 確認滑鼠是否點取元件
+
+			ptUnit->m_bFocusState = TRUE;
+
+		}
+	}
+
+
+	// 點選線段的功能
+	POSITION posiLineUnitCheck = m_listUnitLines.GetTailPosition();
+	while ((posiLineUnitCheck != nullptr) && (m_bIsLineMode == FALSE))
+	{
+		POSITION posiCur = posiLineUnitCheck;
+		UnitLine* ptLineUnit = m_listUnitLines.GetPrev(posiLineUnitCheck);
+
+		ptLineUnit->m_bFocusState = FALSE;
+
+		CPoint pointLineStart = ptLineUnit->m_vecPtsPreUnit[0]->m_vecConnectPt[ptLineUnit->m_iConnectPrePtIndex];
+		CPoint pointLineEnd = ptLineUnit->m_vecPtsNextUnit[0]->m_vecConnectPt[ptLineUnit->m_iConnectNextPtIndex];
+
+		double dMouseToLineDistance = PointToLineDistance(point, pointLineStart, pointLineEnd);
+
+		if (dMouseToLineDistance <= 7)
+		{
+			ptLineUnit->m_bFocusState = TRUE;
+		}
+	}
+	////////////////////////////////////////////////////////
+
 
 	OnPaint();
 
@@ -1177,12 +1262,12 @@ void CMFCSimulatorDlg::OnLButtonUp(UINT nFlags, CPoint point)
 						// 紀錄線段連接點終點所連到的矩形編號
 						ptLineUnit->m_iConnectNextPtIndex = i;
 						
+						// 紀錄連線終點的元件
+						m_ptNextUnit = ptUnit;
 
-						// Bugs:
-
-						m_ptMovingUnit->m_vecPtsNextUnit.push_back(ptUnit);
-						ptUnit->m_vecPtsPreUnit.push_back(m_ptMovingUnit);
-
+						// 兩連接元件紀錄彼此的指標
+						m_ptPreUnit->m_vecPtsNextUnit.push_back(ptUnit);
+						m_ptNextUnit->m_vecPtsPreUnit.push_back(m_ptPreUnit);
 
 						// 紀錄連接的元件指標
 						ptLineUnit->m_vecPtsNextUnit.push_back(ptUnit);

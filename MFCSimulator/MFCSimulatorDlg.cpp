@@ -935,7 +935,7 @@ void CMFCSimulatorDlg::OnBnClickedButtonLine()
 }
 
 
-// 刪除元件或線段 TODO
+// 刪除元件或線段
 void CMFCSimulatorDlg::OnBnClickedButtonDelete()
 {
 
@@ -1014,7 +1014,7 @@ void CMFCSimulatorDlg::OnBnClickedButtonDelete()
 
 			// 清除連接的線
 			POSITION posiLineUnit = m_listUnitLines.GetTailPosition();
-			while ((posiLineUnit != nullptr))
+			while (posiLineUnit != nullptr)
 			{
 				POSITION posiLineCur = posiLineUnit;
 				UnitLine* ptUnitLine = m_listUnitLines.GetPrev(posiLineUnit);
@@ -1054,64 +1054,54 @@ void CMFCSimulatorDlg::OnBnClickedButtonDelete()
 		}
 	}
 
-
-
-
+	
 	POSITION posiLineUnit = m_listUnitLines.GetTailPosition();
+	while ((posiLineUnit != nullptr) && (m_bIsLineMode != TRUE))
+	{
 
+		POSITION posiLineCur = posiLineUnit;
+		UnitBase* ptCurLineUnit = m_listUnitLines.GetPrev(posiLineUnit);
 
+		if (ptCurLineUnit->m_bFocusState == TRUE)
+		{	// 確認是否為被選取的線段
 
+			// 線段起點連接的元件指標 
+			UnitBase* ptPreUnit = ptCurLineUnit->m_vecPtsPreUnit[0];
+			
+			// 線段終點連接的元件指標
+			UnitBase* ptNextUnit = ptCurLineUnit->m_vecPtsNextUnit[0];
 
+			// 取得線段起點連接的元件指向下一個元件的指標陣列 
+			std::vector<UnitBase*> vecPreUnitToLine = ptPreUnit->m_vecPtsNextUnit;
+			
+			for (int i = 0; i < vecPreUnitToLine.size(); i++)
+			{
+				if (vecPreUnitToLine[i] == ptNextUnit)
+				{	// 確認是否為連接的下一個元件
+					
+					// 刪除連接的元件指標
+					ptPreUnit->m_vecPtsNextUnit.erase(ptPreUnit->m_vecPtsNextUnit.begin() + i);
+				}
+			}
 
-	//POSITION posiCheckUnit = m_listUnitPointers.GetTailPosition();
-	//while ((posiCheckUnit != nullptr) && (m_bIsLineMode != TRUE))
-	//{
-	//	POSITION posiCur = posiCheckUnit;
-	//	UnitBase* ptUnit = m_listUnitPointers.GetPrev(posiCheckUnit);
+			// 取得線段終點連接的元件指向前一個元件的指標陣列 
+			std::vector<UnitBase*> vecNextUnitToLine = ptNextUnit->m_vecPtsPreUnit;
 
-	//	if (ptUnit->m_strUnitID == _T("OUT"))
-	//	{
-	//	
-	//		UnitBase* ptHead = ptUnit;
+			for (int i = 0; i < vecNextUnitToLine.size(); i++)
+			{
+				if (vecNextUnitToLine[i] == ptPreUnit)
+				{	// 確認是否為連接的前一個元件
 
-	//		while (ptHead != nullptr)
-	//		{
-	//			CString strIdName = ptHead->m_strUnitID;
+					// 刪除連接的元件指標
+					ptNextUnit->m_vecPtsPreUnit.erase(ptNextUnit->m_vecPtsPreUnit.begin() + i);
+				}
+			}
 
-	//			AfxMessageBox(strIdName);
+			// 刪除被選取的線段
+			m_listUnitLines.RemoveAt(posiLineCur);
 
-	//			if (ptHead->m_vecPtsPreUnit.empty() == TRUE)
-	//			{
-	//				break;
-	//			}
-
-	//			for (int i = 0; i < ptHead->m_vecPtsPreUnit.size(); i++)
-	//			{
-	//				ptHead = ptHead->m_vecPtsPreUnit[i];
-	//			}
-	//		}
-	//		break;
-	//	}
-	//}
-
-
-	//while (posiUnit != nullptr)
-	//{
-	//	POSITION posiCur = posiUnit;
-	//	UnitBase* ptUnit = m_listUnitPointers.GetPrev(posiUnit);
-
-	//	if ((ptUnit->m_vecPtsNextUnit.empty() != TRUE) && (ptUnit->m_bFocusState == TRUE))
-	//	{
-	//		for (int i = 0; i < ptUnit->m_vecPtsNextUnit.size(); i++)
-	//		{
-	//			CString strTest = ptUnit->m_vecPtsNextUnit[i]->m_strUnitID;
-	//			AfxMessageBox(strTest);
-	//		}
-	//		break;
-	//	}
-	//}
-
-	/*AfxMessageBox(_T("empty"));*/
+		}
+	}
 
 	OnPaint();
 }

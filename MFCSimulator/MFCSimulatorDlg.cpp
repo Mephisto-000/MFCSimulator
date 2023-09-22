@@ -947,7 +947,6 @@ void CMFCSimulatorDlg::OnBnClickedButtonDelete()
 
 		POSITION posiCur = posiUnit;
 		UnitBase* ptCurUnit = m_listUnitPointers.GetPrev(posiUnit);
-		
 
 		if (ptCurUnit->m_bFocusState == TRUE)
 		{
@@ -965,6 +964,9 @@ void CMFCSimulatorDlg::OnBnClickedButtonDelete()
 						{
 							iCurPtIndex = j;
 							ptCurUnit->m_vecPtsPreUnit[i]->m_vecPtsNextUnit[iCurPtIndex] = nullptr;
+
+							ptCurUnit->m_vecPtsPreUnit[i]->m_vecPtsNextUnit.erase(ptCurUnit->m_vecPtsPreUnit[i]->m_vecPtsNextUnit.begin() + iCurPtIndex);
+
 							break;
 						}
 					}
@@ -986,6 +988,9 @@ void CMFCSimulatorDlg::OnBnClickedButtonDelete()
 						{
 							iCurPtIndex = j;
 							ptCurUnit->m_vecPtsNextUnit[i]->m_vecPtsPreUnit[iCurPtIndex] = nullptr;
+
+							ptCurUnit->m_vecPtsNextUnit[i]->m_vecPtsPreUnit.erase(ptCurUnit->m_vecPtsNextUnit[i]->m_vecPtsPreUnit.begin() + iCurPtIndex);
+
 							break;
 						}
 					}
@@ -1003,7 +1008,6 @@ void CMFCSimulatorDlg::OnBnClickedButtonDelete()
 
 		ptCurUnit = nullptr;
 
-		/*delete ptCurUnit;*/
 	}
 
 

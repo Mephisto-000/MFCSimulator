@@ -108,6 +108,10 @@ public:
 	void UnitInWindow();                                    // 開啟函數選擇視窗
 
 
+	BOOL IsOperator(CString strOperator);                   // 判斷是否為運算元
+	int GetOperatorPriority(CString strOperator);           // 判斷運算元優先等級
+
+
 	afx_msg void OnBnClickedButtonIn();						// 新增 IN 元件按鈕
 	afx_msg void OnBnClickedButtonOut();                    // 新增 OUT 元件按鈕
 	afx_msg void OnBnClickedButtonAnd();                    // 新增 AND 元件按鈕

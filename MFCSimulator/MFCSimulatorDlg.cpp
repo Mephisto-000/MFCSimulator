@@ -410,6 +410,29 @@ CString CMFCSimulatorDlg::GetCurrentDir()
 }
 
 
+// 判斷是否為運算元
+BOOL CMFCSimulatorDlg::IsOperator(CString strOperator)
+{
+	return (strOperator == "+" || strOperator == "-" || strOperator == "*" || strOperator == "/");
+}
+
+
+// 判斷運算元優先等級
+int CMFCSimulatorDlg::GetOperatorPriority(CString strOperator)
+{
+	if (strOperator == "*" || strOperator == "/")
+	{
+		return 2;
+	}
+	else if (strOperator == "+" || strOperator == "-")
+	{
+		return 1;
+	}
+
+	return 0;
+}
+
+
 
 ////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////

@@ -22,7 +22,7 @@ public:
 	
 	// 輸出處理
 	CString m_strFuncOrOpera;							  // 紀錄選擇的函數或是運算元
-	double m_dOutValue;                                   // 輸出的數值
+	CString m_strOutValue;                                  // 輸出的數值
 
 	// 線段資料
 	std::vector<CPoint> m_vecConnectPt;			          // 線段連接點
@@ -57,6 +57,6 @@ public:
 
 
 	// 輸出元件的結果
-	virtual void Result (double dRealTimeValue) {};
+	virtual void Result (CString strOutValue) {};
 };
 

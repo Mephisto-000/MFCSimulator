@@ -22,7 +22,7 @@ public:
     virtual void UpdateDotData(CPoint pointNewLocation) override;
 
     // 輸出元件的結果
-    virtual void Result(double dRealTimeValue) override;
+    virtual void Result(CString strOutValue) override;
 
 };
 

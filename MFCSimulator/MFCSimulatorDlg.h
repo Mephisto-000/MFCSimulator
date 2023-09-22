@@ -110,6 +110,8 @@ public:
 
 	BOOL IsOperator(CString strOperator);                   // 判斷是否為運算元
 	int GetOperatorPriority(CString strOperator);           // 判斷運算元優先等級
+	
+	double EvaluateOutValue(UnitBase* ptUnit, double dTimeValue);  // 計算 OUT 輸出結果
 
 
 	afx_msg void OnBnClickedButtonIn();						// 新增 IN 元件按鈕

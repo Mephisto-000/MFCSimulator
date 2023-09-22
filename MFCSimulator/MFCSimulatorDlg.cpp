@@ -432,6 +432,56 @@ int CMFCSimulatorDlg::GetOperatorPriority(CString strOperator)
 	return 0;
 }
 
+// 計算 OUT 輸出結果
+double CMFCSimulatorDlg::EvaluateOutValue(UnitBase* ptUnit, double dTimeValue)
+{
+	if (ptUnit == nullptr)
+	{
+		return 0.0;
+	}
+
+	if (ptUnit->m_strOutValue == "sin")
+	{
+		return sin(EvaluateOutValue(ptUnit->m_vecPtsPreUnit.back(), dTimeValue));
+	}
+	else if (ptUnit->m_strOutValue == "cos")
+	{
+		return cos(EvaluateOutValue(ptUnit->m_vecPtsPreUnit.back(), dTimeValue));
+	}
+	else if (ptUnit->m_strOutValue == "1")
+	{
+		return 1.0;
+	}
+	else if (ptUnit->m_strOutValue == "0")
+	{
+		return 0.0;
+	}
+	else if (IsOperator(ptUnit->m_strOutValue) == TRUE)
+	{
+		double dLeftValue = EvaluateOutValue(ptUnit->m_vecPtsPreUnit[0], dTimeValue);
+		double dRightValue = EvaluateOutValue(ptUnit->m_vecPtsPreUnit[1], dTimeValue);
+
+		if (ptUnit->m_strOutValue == "+")
+		{
+			return dLeftValue + dRightValue;
+		}
+		else if (ptUnit->m_strOutValue == "-")
+		{
+			return dLeftValue - dRightValue;  // Bugs : 修正元件區別左右
+		}
+		else if (ptUnit->m_strOutValue == "*")
+		{
+			return dLeftValue * dRightValue;
+		}
+		else if (ptUnit->m_strOutValue == "/")
+		{
+			return dLeftValue / dRightValue;  // Bugs : 修正元件區別左右
+		}
+	}
+
+	return 0.0;
+
+}
 
 
 ////////////////////////////////////////////////////////////////////////////////////////

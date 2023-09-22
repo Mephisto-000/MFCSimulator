@@ -80,22 +80,7 @@ void UnitIN::UpdateDotData(CPoint pointNewLocation)
 }
 
 
-void UnitIN::Result(double dRealTimeValue)
+void UnitIN::Result(CString strOutValue)
 {
-	if (m_strFuncOrOpera == "sin")
-	{
-		m_dOutValue = sin(dRealTimeValue);
-	}
-	else if (m_strFuncOrOpera == "cos")
-	{
-		m_dOutValue = cos(dRealTimeValue);
-	}
-	else if (m_strFuncOrOpera == "True")
-	{
-		m_dOutValue = 1;
-	}
-	else
-	{
-		m_dOutValue = 0;
-	}
+
 }

@@ -30,7 +30,7 @@ UnitBase::UnitBase(CRect rectShowRegion, CRect rectButton)
 	m_iConnectPtRadius = 14;
 
 	// ¿é¥X­È¬° 0.0
-	m_dOutValue = 0.0;
+	m_strOutValue = _T("");
 
 }
 

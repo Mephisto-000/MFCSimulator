@@ -81,7 +81,7 @@ void UnitAND::UpdateDotData(CPoint pointNewLocation)
 }
 
 
-void UnitAND::Result(double dRealTimeValue)
+void UnitAND::Result(CString strOutValue)
 {
 
 }

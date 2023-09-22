@@ -9,6 +9,7 @@ class UnitBase
 																												  
 public:			
 
+	// TODO 分辨左右
 	std::vector<UnitBase*> m_vecPtsPreUnit;               // 指向前一個元件的指標陣列
 	std::vector<UnitBase*> m_vecPtsNextUnit;              // 指向下一個元件的指標陣列
 	

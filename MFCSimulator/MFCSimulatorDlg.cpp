@@ -1215,7 +1215,7 @@ void CMFCSimulatorDlg::OnLButtonDown(UINT nFlags, CPoint point)
 
 		if (rectUnit.PtInRect(point) && (m_bIsLineMode == FALSE))
 		{	// 確認滑鼠是否點取元件
-
+			
 			// 更新被拖曳元件的狀態
 			ptUnit->m_bMoveState = TRUE;
 
@@ -1465,7 +1465,7 @@ void CMFCSimulatorDlg::OnLButtonUp(UINT nFlags, CPoint point)
 						m_ptNextUnit = ptUnit;
 
 						// 兩連接元件紀錄彼此的指標
-						m_ptPreUnit->m_vecPtsNextUnit.push_back(ptUnit);
+						m_ptPreUnit->m_vecPtsNextUnit.push_back(ptUnit);             // 考慮左右邊放的位置
 						m_ptNextUnit->m_vecPtsPreUnit.push_back(m_ptPreUnit);
 
 						// 紀錄連接的元件指標

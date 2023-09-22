@@ -1287,12 +1287,22 @@ void CMFCSimulatorDlg::OnMouseMove(UINT nFlags, CPoint point)
 		if (m_bIsLineMode == FALSE)
 		{	// 連線模式關閉的時候
 
-			// 更新元件的位置
-			m_ptMovingUnit->m_pointUnitLocation.Offset(m_iOffsetX, m_iOffsetY);
+			CPoint pointOffsetCheck = m_ptMovingUnit->m_pointUnitLocation;
+			pointOffsetCheck.Offset(m_iOffsetX, m_iOffsetY);
 
-			// 更新元件連接點與其外切矩形的位置
-			m_ptMovingUnit->SetConnectPtAndRect(m_iOffsetX, m_iOffsetY);
+			if ((pointOffsetCheck.x >= 0) && (pointOffsetCheck.y >= 0))
+			{ // 確認元件位置不會高於畫面邊界和超出左邊畫面邊界
 
+				if ((pointOffsetCheck.x + m_ptMovingUnit->m_iUnitWidth <= rectShowRegion.Width()) && (pointOffsetCheck.y + m_ptMovingUnit->m_iUnitHeight <= rectShowRegion.Height()))
+				{	// 確認元件位置不會低於畫面邊界和超出右邊畫面邊界
+
+					// 更新元件的位置
+					m_ptMovingUnit->m_pointUnitLocation.Offset(m_iOffsetX, m_iOffsetY);
+
+					// 更新元件連接點與其外切矩形的位置
+					m_ptMovingUnit->SetConnectPtAndRect(m_iOffsetX, m_iOffsetY);
+				}
+			}
 			// 更新滑鼠左鍵當下位置
 			m_pointMouseStartPos = point; 
 

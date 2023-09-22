@@ -939,9 +939,8 @@ void CMFCSimulatorDlg::OnBnClickedButtonLine()
 void CMFCSimulatorDlg::OnBnClickedButtonDelete()
 {
 
-	
 	POSITION posiUnit = m_listUnitPointers.GetTailPosition();
-	while (posiUnit != nullptr)
+	while ((posiUnit != nullptr) && (m_bIsLineMode != TRUE))
 	{	// 遍歷所有元件
 
 		POSITION posiCur = posiUnit;
@@ -1012,6 +1011,43 @@ void CMFCSimulatorDlg::OnBnClickedButtonDelete()
 				}
 			}
 			
+
+			// 清除連接的線
+			POSITION posiLineUnit = m_listUnitLines.GetTailPosition();
+			while ((posiLineUnit != nullptr))
+			{
+				POSITION posiLineCur = posiLineUnit;
+				UnitLine* ptUnitLine = m_listUnitLines.GetPrev(posiLineUnit);
+				
+				// 指向前一個線段連接元件的指標陣列
+				std::vector<UnitBase*> vecPreToLine = ptUnitLine->m_vecPtsPreUnit;
+				
+				// 指向後一個線段連接元件的指標陣列
+				std::vector<UnitBase*> vecNextToLine = ptUnitLine->m_vecPtsNextUnit;
+
+
+				for (int i = 0; i < vecPreToLine.size(); i++)
+				{	// 遍歷指標陣列
+
+					if (vecPreToLine[i] == ptCurUnit)
+					{	// 確認是否為被選取的元件，並刪除此元件的指標
+
+						m_listUnitLines.RemoveAt(posiLineCur);
+					}
+				}
+
+				for (int i = 0; i < vecNextToLine.size(); i++)
+				{	// 遍歷指標陣列
+
+					if (vecNextToLine[i] == ptCurUnit)
+					{	// 確認是否為被選取的元件，並刪除此元件的指標
+
+						m_listUnitLines.RemoveAt(posiLineCur);
+					}
+				}
+			}
+
+
 			// 清除在記錄已創建元件的 CList 中被選取的元件
 			m_listUnitPointers.RemoveAt(posiCur);
 
@@ -1020,7 +1056,14 @@ void CMFCSimulatorDlg::OnBnClickedButtonDelete()
 
 
 
-	POSITION posiCheckUnit = m_listUnitPointers.GetTailPosition();
+
+	POSITION posiLineUnit = m_listUnitLines.GetTailPosition();
+
+
+
+
+
+	//POSITION posiCheckUnit = m_listUnitPointers.GetTailPosition();
 	//while ((posiCheckUnit != nullptr) && (m_bIsLineMode != TRUE))
 	//{
 	//	POSITION posiCur = posiCheckUnit;

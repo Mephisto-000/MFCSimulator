@@ -939,75 +939,83 @@ void CMFCSimulatorDlg::OnBnClickedButtonLine()
 void CMFCSimulatorDlg::OnBnClickedButtonDelete()
 {
 
-
-
+	
 	POSITION posiUnit = m_listUnitPointers.GetTailPosition();
 	while (posiUnit != nullptr)
-	{
+	{	// 遍歷所有元件
 
 		POSITION posiCur = posiUnit;
 		UnitBase* ptCurUnit = m_listUnitPointers.GetPrev(posiUnit);
 
 		if (ptCurUnit->m_bFocusState == TRUE)
-		{
-			if (ptCurUnit->m_vecPtsPreUnit.empty() != TRUE)
-			{
-				for (int i = 0; i < ptCurUnit->m_vecPtsPreUnit.size(); i++)
-				{
+		{	// 確認元件是否為被選取狀態
 
+			if (ptCurUnit->m_vecPtsPreUnit.empty() != TRUE)
+			{	// 確認指向前一個元件的指標陣列是否為空
+				// 若不為空，則開始清除前一個元件指向被選取元件的指標
+
+				for (int i = 0; i < ptCurUnit->m_vecPtsPreUnit.size(); i++)
+				{	// 遍歷指標陣列，找出指向被選取元件的指標
+
+					// 前一個元件指向下一個元件的指標陣列
 					std::vector<UnitBase*>vecPreToCur = ptCurUnit->m_vecPtsPreUnit[i]->m_vecPtsNextUnit;
+					
+					// 記錄被選取的元件指標位於指標陣列中的位置
 					int iCurPtIndex;
 
 					for (int j = 0; j < vecPreToCur.size(); j++)
-					{
-						if (vecPreToCur[j] == ptCurUnit)
-						{
-							iCurPtIndex = j;
-							ptCurUnit->m_vecPtsPreUnit[i]->m_vecPtsNextUnit[iCurPtIndex] = nullptr;
+					{	// 遍歷"前一個元件指向下一個元件的指標陣列"
 
+						if (vecPreToCur[j] == ptCurUnit)
+						{	// 確認是否為被選取的指標
+
+							// 記錄位置
+							iCurPtIndex = j;
+
+							// 刪除前一個元件指向被選取元件的指標
 							ptCurUnit->m_vecPtsPreUnit[i]->m_vecPtsNextUnit.erase(ptCurUnit->m_vecPtsPreUnit[i]->m_vecPtsNextUnit.begin() + iCurPtIndex);
 
 							break;
 						}
 					}
-
 				}
 			}
 			
 			if (ptCurUnit->m_vecPtsNextUnit.empty() != TRUE)
-			{
+			{	// 確認指向後一個元件的指標陣列是否為空
+				// 若不為空，則開始清除後一個元件指向被選取元件的指標
+
 				for (int i = 0; i < ptCurUnit->m_vecPtsNextUnit.size(); i++)
-				{
+				{	// 遍歷指標陣列，找出指向被選取元件的指標
 					
+					// 後一個元件指向前一個元件的指標陣列
 					std::vector<UnitBase*>vecNextToCur = ptCurUnit->m_vecPtsNextUnit[i]->m_vecPtsPreUnit;
+					
+					// 記錄被選取的元件指標位於指標陣列中的位置
 					int iCurPtIndex;
 
 					for (int j = 0; j < vecNextToCur.size(); j++)
-					{
-						if (vecNextToCur[j] == ptCurUnit)
-						{
-							iCurPtIndex = j;
-							ptCurUnit->m_vecPtsNextUnit[i]->m_vecPtsPreUnit[iCurPtIndex] = nullptr;
+					{	// 遍歷"後一個元件指向下一個元件的指標陣列"
 
+						if (vecNextToCur[j] == ptCurUnit)
+						{	// 確認是否為被選取的指標
+
+							// 記錄位置
+							iCurPtIndex = j;
+
+							// 刪除後一個元件指向被選取元件的指標
 							ptCurUnit->m_vecPtsNextUnit[i]->m_vecPtsPreUnit.erase(ptCurUnit->m_vecPtsNextUnit[i]->m_vecPtsPreUnit.begin() + iCurPtIndex);
 
 							break;
 						}
 					}
-
 				}
-
 			}
-
-
 			
+			// 清除在記錄已創建元件的 CList 中被選取的元件
 			m_listUnitPointers.RemoveAt(posiCur);
 
-
 		}
-
-		ptCurUnit = nullptr;
-
 	}
 
 

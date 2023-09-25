@@ -8,12 +8,24 @@ UnitIN::UnitIN(CRect rectShowRegion, CRect rectButton) : UnitBase (rectShowRegio
 {
 	m_strUnitID = _T("IN");
 
+	// 初始化連接點位置
+	m_pointConnectBottom = CPoint(m_iUnitWidth * 0.5, m_iUnitHeight);
+	m_rectConnectBottom.SetRect(m_pointConnectBottom.x - m_iConnectPtRadius, m_pointConnectBottom.y - m_iConnectPtRadius,
+								m_pointConnectBottom.x + m_iConnectPtRadius, m_pointConnectBottom.y + m_iConnectPtRadius);
+
 }
 
 
 // 更新連接點的座標
 void UnitIN::SetConnectPtAndRect(int iOffsetX, int iOffsetY)
-{
+{	// 元件 IN 只底部單一連接點
+
+	
+	m_pointConnectBottom.Offset(iOffsetX, iOffsetY);
+	m_rectConnectBottom.OffsetRect(iOffsetX, iOffsetY);
+
+
+	// 更新繪圖用的 vector
 	if ((m_vecConnectPt.empty() == TRUE) && (m_vecConnectPtRect.empty() == TRUE))
 	{
 		CPoint pointConnect;
@@ -76,7 +88,7 @@ void UnitIN::UpdateDotData(CPoint pointNewLocation)
 	//CRect rectConnectPt(CPoint(pointConnect.x - m_iConnectPtRadius, pointConnect.y - m_iConnectPtRadius),
 	//	CPoint(pointConnect.x + m_iConnectPtRadius, pointConnect.y + m_iConnectPtRadius));
 
-	m_vecConnectPt.push_back(pointNewLocation);
+	//m_vecConnectPt.push_back(pointNewLocation);
 }
 
 

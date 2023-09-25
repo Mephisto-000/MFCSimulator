@@ -108,6 +108,7 @@ BEGIN_MESSAGE_MAP(CMFCSimulatorDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_BUTTON_LINE, &CMFCSimulatorDlg::OnBnClickedButtonLine)
 	ON_WM_CTLCOLOR()
 	ON_BN_CLICKED(IDC_BUTTON_DELETE, &CMFCSimulatorDlg::OnBnClickedButtonDelete)
+	ON_BN_CLICKED(IDC_BUTTON_SIMULATE, &CMFCSimulatorDlg::OnBnClickedButtonSimulate)
 END_MESSAGE_MAP()
 
 
@@ -337,23 +338,6 @@ std::vector<CRect> CMFCSimulatorDlg::GetConnectRects(UnitBase* ptUnit)
 }
 
 
-// 畫出連接線段
-void CMFCSimulatorDlg::DrawConnectLine(UnitBase* ptUnit, CDC* pDC)
-{
-	std::vector<UnitBase*> vecPtPre = ptUnit->m_vecPtsPreUnit;
-	std::vector<UnitBase*> vecPtNext = ptUnit->m_vecPtsNextUnit;
-
-	CPen penConnectLine(PS_SOLID, 5, RGB(0, 0, 255));
-	pDC->SelectObject(&penConnectLine);
-	for (int i = 0; i < vecPtPre.size(); i++)
-	{
-		pDC->MoveTo(vecPtPre[i]->m_pointUnitLocation);
-		pDC->LineTo(vecPtNext[i]->m_pointUnitLocation);
-	}
-
-}
-
-
 // 計算兩點距離
 double CMFCSimulatorDlg::TwoPtsDistance(CPoint pointStart, CPoint pointEnd)
 {
@@ -435,49 +419,49 @@ int CMFCSimulatorDlg::GetOperatorPriority(CString strOperator)
 // 計算 OUT 輸出結果
 double CMFCSimulatorDlg::EvaluateOutValue(UnitBase* ptUnit, double dTimeValue)
 {
-	if (ptUnit == nullptr)
-	{
-		return 0.0;
-	}
+	//if (ptUnit == nullptr)
+	//{
+	//	return 0.0;
+	//}
 
-	if (ptUnit->m_strOutValue == "sin")
-	{
-		return sin(EvaluateOutValue(ptUnit->m_vecPtsPreUnit.back(), dTimeValue));
-	}
-	else if (ptUnit->m_strOutValue == "cos")
-	{
-		return cos(EvaluateOutValue(ptUnit->m_vecPtsPreUnit.back(), dTimeValue));
-	}
-	else if (ptUnit->m_strOutValue == "1")
-	{
-		return 1.0;
-	}
-	else if (ptUnit->m_strOutValue == "0")
-	{
-		return 0.0;
-	}
-	else if (IsOperator(ptUnit->m_strOutValue) == TRUE)
-	{
-		double dLeftValue = EvaluateOutValue(ptUnit->m_vecPtsPreUnit[0], dTimeValue);
-		double dRightValue = EvaluateOutValue(ptUnit->m_vecPtsPreUnit[1], dTimeValue);
+	//if (ptUnit->m_strOutValue == "sin")
+	//{
+	//	return sin(EvaluateOutValue(ptUnit->m_vecPtsPreUnit.back(), dTimeValue));
+	//}
+	//else if (ptUnit->m_strOutValue == "cos")
+	//{
+	//	return cos(EvaluateOutValue(ptUnit->m_vecPtsPreUnit.back(), dTimeValue));
+	//}
+	//else if (ptUnit->m_strOutValue == "1")
+	//{
+	//	return 1.0;
+	//}
+	//else if (ptUnit->m_strOutValue == "0")
+	//{
+	//	return 0.0;
+	//}
+	//else if (IsOperator(ptUnit->m_strOutValue) == TRUE)
+	//{
+	//	double dLeftValue = EvaluateOutValue(ptUnit->m_vecPtsPreUnit[0], dTimeValue);
+	//	double dRightValue = EvaluateOutValue(ptUnit->m_vecPtsPreUnit[1], dTimeValue);
 
-		if (ptUnit->m_strOutValue == "+")
-		{
-			return dLeftValue + dRightValue;
-		}
-		else if (ptUnit->m_strOutValue == "-")
-		{
-			return dLeftValue - dRightValue;  // Bugs : 修正元件區別左右
-		}
-		else if (ptUnit->m_strOutValue == "*")
-		{
-			return dLeftValue * dRightValue;
-		}
-		else if (ptUnit->m_strOutValue == "/")
-		{
-			return dLeftValue / dRightValue;  // Bugs : 修正元件區別左右
-		}
-	}
+	//	if (ptUnit->m_strOutValue == "+")
+	//	{
+	//		return dLeftValue + dRightValue;
+	//	}
+	//	else if (ptUnit->m_strOutValue == "-")
+	//	{
+	//		return dLeftValue - dRightValue;  // Bugs : 修正元件區別左右
+	//	}
+	//	else if (ptUnit->m_strOutValue == "*")
+	//	{
+	//		return dLeftValue * dRightValue;
+	//	}
+	//	else if (ptUnit->m_strOutValue == "/")
+	//	{
+	//		return dLeftValue / dRightValue;  // Bugs : 修正元件區別左右
+	//	}
+	//}
 
 	return 0.0;
 
@@ -606,28 +590,31 @@ void CMFCSimulatorDlg::DrawToBuffer(CDC* pDC)
 		UnitLine* ptLineUnit = m_listUnitLines.GetPrev(posiLineUnit);
 
 		if (ptLineUnit->m_bIsConnect == TRUE)
-		{
+		{	// 已連接並且未選取的現以藍色實線畫出表示
+
 			CPen* ptOldPenConnectLine = pDC->SelectObject(&penConnectLine);
 			pDC->SelectObject(&penConnectLine);
-			pDC->MoveTo(ptLineUnit->m_vecPtsPreUnit[0]->m_vecConnectPt[ptLineUnit->m_iConnectPrePtIndex]);
+			pDC->MoveTo(ptLineUnit->m_vecPtsPreLeftUnit[0]->m_vecConnectPt[ptLineUnit->m_iConnectPrePtIndex]);
 			pDC->LineTo(ptLineUnit->m_vecPtsNextUnit[0]->m_vecConnectPt[ptLineUnit->m_iConnectNextPtIndex]);
 			pDC->SelectObject(ptOldPenConnectLine);
 		}
 		
 		if (ptLineUnit->m_bMoveState == TRUE)
-		{
+		{	// 拖曳中的線以紅色虛線畫出表示
+
 			CPen* ptOldPenMovingLine = pDC->SelectObject(&penMovingLine);
 			pDC->SelectObject(&penMovingLine);
-			pDC->MoveTo(ptLineUnit->m_vecPtsPreUnit[0]->m_vecConnectPt[ptLineUnit->m_iConnectPrePtIndex]);
+			pDC->MoveTo(ptLineUnit->m_vecPtsPreLeftUnit[0]->m_vecConnectPt[ptLineUnit->m_iConnectPrePtIndex]);
 			pDC->LineTo(ptLineUnit->m_pointMovingLinePos);
 			pDC->SelectObject(ptOldPenMovingLine);
 		}
 
 		if (ptLineUnit->m_bFocusState == TRUE)
-		{
+		{	// 被點選的線以紅色實線畫出表示
+
 			CPen* ptOldPenFocusLine = pDC->SelectObject(&penFocusLine);
 			pDC->SelectObject(&penFocusLine);
-			pDC->MoveTo(ptLineUnit->m_vecPtsPreUnit[0]->m_vecConnectPt[ptLineUnit->m_iConnectPrePtIndex]);
+			pDC->MoveTo(ptLineUnit->m_vecPtsPreLeftUnit[0]->m_vecConnectPt[ptLineUnit->m_iConnectPrePtIndex]);
 			pDC->LineTo(ptLineUnit->m_vecPtsNextUnit[0]->m_vecConnectPt[ptLineUnit->m_iConnectNextPtIndex]);
 			pDC->SelectObject(ptOldPenFocusLine);
 		}
@@ -695,7 +682,6 @@ void CMFCSimulatorDlg::DrawToBuffer(CDC* pDC)
 		}
 		
 	}
-
 }
 
 
@@ -1022,16 +1008,19 @@ void CMFCSimulatorDlg::OnBnClickedButtonDelete()
 		if (ptCurUnit->m_bFocusState == TRUE)
 		{	// 確認元件是否為被選取狀態
 
-			if (ptCurUnit->m_vecPtsPreUnit.empty() != TRUE)
+
+
+
+			if (ptCurUnit->m_vecPtsPreLeftUnit.empty() != TRUE)
 			{	// 確認指向前一個元件的指標陣列是否為空
 				// 若不為空，則開始清除前一個元件指向被選取元件的指標
 
-				for (int i = 0; i < ptCurUnit->m_vecPtsPreUnit.size(); i++)
+				for (int i = 0; i < ptCurUnit->m_vecPtsPreLeftUnit.size(); i++)
 				{	// 遍歷指標陣列，找出指向被選取元件的指標
 
 					// 前一個元件指向下一個元件的指標陣列
-					std::vector<UnitBase*>vecPreToCur = ptCurUnit->m_vecPtsPreUnit[i]->m_vecPtsNextUnit;
-					
+					std::vector<UnitBase*>vecPreToCur = ptCurUnit->m_vecPtsPreLeftUnit[i]->m_vecPtsNextUnit;
+
 					// 記錄被選取的元件指標位於指標陣列中的位置
 					int iCurPtIndex;
 
@@ -1045,45 +1034,105 @@ void CMFCSimulatorDlg::OnBnClickedButtonDelete()
 							iCurPtIndex = j;
 
 							// 刪除前一個元件指向被選取元件的指標
-							ptCurUnit->m_vecPtsPreUnit[i]->m_vecPtsNextUnit.erase(ptCurUnit->m_vecPtsPreUnit[i]->m_vecPtsNextUnit.begin() + iCurPtIndex);
+							ptCurUnit->m_vecPtsPreLeftUnit[i]->m_vecPtsNextUnit.erase(ptCurUnit->m_vecPtsPreLeftUnit[i]->m_vecPtsNextUnit.begin() + iCurPtIndex);
 
 							break;
 						}
 					}
 				}
 			}
-			
+
+
+
+
+			if (ptCurUnit->m_vecPtsPreRightUnit.empty() != TRUE)
+			{	// 確認指向前一個元件的指標陣列是否為空
+				// 若不為空，則開始清除前一個元件指向被選取元件的指標
+
+				for (int i = 0; i < ptCurUnit->m_vecPtsPreRightUnit.size(); i++)
+				{	// 遍歷指標陣列，找出指向被選取元件的指標
+
+					// 前一個元件指向下一個元件的指標陣列
+					std::vector<UnitBase*>vecPreToCur = ptCurUnit->m_vecPtsPreRightUnit[i]->m_vecPtsNextUnit;
+
+					// 記錄被選取的元件指標位於指標陣列中的位置
+					int iCurPtIndex;
+
+					for (int j = 0; j < vecPreToCur.size(); j++)
+					{	// 遍歷"前一個元件指向下一個元件的指標陣列"
+
+						if (vecPreToCur[j] == ptCurUnit)
+						{	// 確認是否為被選取的指標
+
+							// 記錄位置
+							iCurPtIndex = j;
+
+							// 刪除前一個元件指向被選取元件的指標
+							ptCurUnit->m_vecPtsPreRightUnit[i]->m_vecPtsNextUnit.erase(ptCurUnit->m_vecPtsPreRightUnit[i]->m_vecPtsNextUnit.begin() + iCurPtIndex);
+
+							break;
+						}
+					}
+				}
+			}
+
+
 			if (ptCurUnit->m_vecPtsNextUnit.empty() != TRUE)
 			{	// 確認指向後一個元件的指標陣列是否為空
 				// 若不為空，則開始清除後一個元件指向被選取元件的指標
 
 				for (int i = 0; i < ptCurUnit->m_vecPtsNextUnit.size(); i++)
 				{	// 遍歷指標陣列，找出指向被選取元件的指標
-					
+
 					// 後一個元件指向前一個元件的指標陣列
-					std::vector<UnitBase*>vecNextToCur = ptCurUnit->m_vecPtsNextUnit[i]->m_vecPtsPreUnit;
-					
+					std::vector<UnitBase*>vecNextLeftToCur = ptCurUnit->m_vecPtsNextUnit[i]->m_vecPtsPreLeftUnit;
+					std::vector<UnitBase*>vecNextRightToCur = ptCurUnit->m_vecPtsNextUnit[i]->m_vecPtsPreRightUnit;
+
 					// 記錄被選取的元件指標位於指標陣列中的位置
 					int iCurPtIndex;
 
-					for (int j = 0; j < vecNextToCur.size(); j++)
-					{	// 遍歷"後一個元件指向下一個元件的指標陣列"
 
-						if (vecNextToCur[j] == ptCurUnit)
-						{	// 確認是否為被選取的指標
+					if (vecNextLeftToCur.empty() != TRUE)
+					{
+						for (int j = 0; j < vecNextLeftToCur.size(); j++)
+						{	// 遍歷"後一個元件指向下一個元件的指標陣列"
 
-							// 記錄位置
-							iCurPtIndex = j;
+							if (vecNextLeftToCur[j] == ptCurUnit)
+							{	// 確認是否為被選取的指標
 
-							// 刪除後一個元件指向被選取元件的指標
-							ptCurUnit->m_vecPtsNextUnit[i]->m_vecPtsPreUnit.erase(ptCurUnit->m_vecPtsNextUnit[i]->m_vecPtsPreUnit.begin() + iCurPtIndex);
+								// 記錄位置
+								iCurPtIndex = j;
 
-							break;
+								// 刪除後一個元件指向被選取元件的指標
+								ptCurUnit->m_vecPtsNextUnit[i]->m_vecPtsPreLeftUnit.erase(ptCurUnit->m_vecPtsNextUnit[i]->m_vecPtsPreLeftUnit.begin() + iCurPtIndex);
+
+								break;
+							}
+						}
+					}
+
+
+					if (vecNextRightToCur.empty() != TRUE)
+					{
+						for (int j = 0; j < vecNextRightToCur.size(); j++)
+						{	// 遍歷"後一個元件指向下一個元件的指標陣列"
+
+							if (vecNextRightToCur[j] == ptCurUnit)
+							{	// 確認是否為被選取的指標
+
+								// 記錄位置
+								iCurPtIndex = j;
+
+								// 刪除後一個元件指向被選取元件的指標
+								ptCurUnit->m_vecPtsNextUnit[i]->m_vecPtsPreRightUnit.erase(ptCurUnit->m_vecPtsNextUnit[i]->m_vecPtsPreRightUnit.begin() + iCurPtIndex);
+
+								break;
+							}
 						}
 					}
 				}
 			}
-			
+
 
 			// 清除連接的線
 			POSITION posiLineUnit = m_listUnitLines.GetTailPosition();
@@ -1091,10 +1140,10 @@ void CMFCSimulatorDlg::OnBnClickedButtonDelete()
 			{
 				POSITION posiLineCur = posiLineUnit;
 				UnitLine* ptUnitLine = m_listUnitLines.GetPrev(posiLineUnit);
-				
+
 				// 指向前一個線段連接元件的指標陣列
-				std::vector<UnitBase*> vecPreToLine = ptUnitLine->m_vecPtsPreUnit;
-				
+				std::vector<UnitBase*> vecPreToLine = ptUnitLine->m_vecPtsPreLeftUnit;
+
 				// 指向後一個線段連接元件的指標陣列
 				std::vector<UnitBase*> vecNextToLine = ptUnitLine->m_vecPtsNextUnit;
 
@@ -1120,14 +1169,14 @@ void CMFCSimulatorDlg::OnBnClickedButtonDelete()
 				}
 			}
 
-
 			// 清除在記錄已創建元件的 CList 中被選取的元件
 			m_listUnitPointers.RemoveAt(posiCur);
 
 		}
 	}
 
-	
+
+
 	POSITION posiLineUnit = m_listUnitLines.GetTailPosition();
 	while ((posiLineUnit != nullptr) && (m_bIsLineMode != TRUE))
 	{
@@ -1139,34 +1188,47 @@ void CMFCSimulatorDlg::OnBnClickedButtonDelete()
 		{	// 確認是否為被選取的線段
 
 			// 線段起點連接的元件指標 
-			UnitBase* ptPreUnit = ptCurLineUnit->m_vecPtsPreUnit[0];
-			
+			UnitBase* ptPreUnit = ptCurLineUnit->m_vecPtsPreLeftUnit[0];
+
 			// 線段終點連接的元件指標
 			UnitBase* ptNextUnit = ptCurLineUnit->m_vecPtsNextUnit[0];
 
 			// 取得線段起點連接的元件指向下一個元件的指標陣列 
 			std::vector<UnitBase*> vecPreUnitToLine = ptPreUnit->m_vecPtsNextUnit;
-			
+
 			for (int i = 0; i < vecPreUnitToLine.size(); i++)
 			{
 				if (vecPreUnitToLine[i] == ptNextUnit)
 				{	// 確認是否為連接的下一個元件
-					
+
 					// 刪除連接的元件指標
 					ptPreUnit->m_vecPtsNextUnit.erase(ptPreUnit->m_vecPtsNextUnit.begin() + i);
 				}
 			}
 
 			// 取得線段終點連接的元件指向前一個元件的指標陣列 
-			std::vector<UnitBase*> vecNextUnitToLine = ptNextUnit->m_vecPtsPreUnit;
+			std::vector<UnitBase*> vecNextLeftUnitToLine = ptNextUnit->m_vecPtsPreLeftUnit;
+			std::vector<UnitBase*> vecNextRightUnitToLine = ptNextUnit->m_vecPtsPreRightUnit;
 
-			for (int i = 0; i < vecNextUnitToLine.size(); i++)
+
+			for (int i = 0; i < vecNextLeftUnitToLine.size(); i++)
 			{
-				if (vecNextUnitToLine[i] == ptPreUnit)
+				if (vecNextLeftUnitToLine[i] == ptPreUnit)
 				{	// 確認是否為連接的前一個元件
 
 					// 刪除連接的元件指標
-					ptNextUnit->m_vecPtsPreUnit.erase(ptNextUnit->m_vecPtsPreUnit.begin() + i);
+					ptNextUnit->m_vecPtsPreLeftUnit.erase(ptNextUnit->m_vecPtsPreLeftUnit.begin() + i);
+				}
+			}
+
+
+			for (int i = 0; i < vecNextRightUnitToLine.size(); i++)
+			{
+				if (vecNextRightUnitToLine[i] == ptPreUnit)
+				{	// 確認是否為連接的前一個元件
+
+					// 刪除連接的元件指標
+					ptNextUnit->m_vecPtsPreRightUnit.erase(ptNextUnit->m_vecPtsPreRightUnit.begin() + i);
 				}
 			}
 
@@ -1236,52 +1298,61 @@ void CMFCSimulatorDlg::OnLButtonDown(UINT nFlags, CPoint point)
 		}
 
 
+
 		// 更新元件連接點與其外切矩形位置
 		ptUnit->SetConnectPtAndRect(m_iOffsetX, m_iOffsetY);
 
 		// 得到儲存連接點外切矩形的陣列
 		std::vector<CRect> vecConnectPtRects = ptUnit->m_vecConnectPtRect;
+		
+		CRect rectLeftTopCheck = ptUnit->m_rectConnectLeftTop;
+		CRect rectRightTopCheck = ptUnit->m_rectConnectRightTop;
+		CRect rectBottomCheck = ptUnit->m_rectConnectBottom;
+
 
 		for (int i = 0; i < vecConnectPtRects.size(); i++)
 		{	// 遍歷元件所有的連接點外切矩形
 
-			if (vecConnectPtRects[i].PtInRect(point) && (m_bIsLineMode == TRUE))
-			{	// 滑鼠點到外切矩形內的範圍，並且開啟連線模式
+			if (m_bIsLineMode == TRUE)
+			{
+				if (vecConnectPtRects[i].PtInRect(point))
+				{	// 滑鼠點到外切矩形內的範圍，並且開啟連線模式
 
-				// 點取元件時，滑鼠產生十字的圖案
-				SetCursor(LoadCursor(NULL, IDC_SIZEALL));
+					// 點取元件時，滑鼠產生十字的圖案
+					SetCursor(LoadCursor(NULL, IDC_SIZEALL));
 
-				// 開啟拖曳的狀態
-				m_bIsDragging = TRUE;
+					// 開啟拖曳的狀態
+					m_bIsDragging = TRUE;
 
-				// 新增連線線段物件
-				UnitLine* ptNewUnitLine = new UnitLine(rectShowRegion, rectUnit);
+					// 新增連線線段物件
+					UnitLine* ptNewUnitLine = new UnitLine(rectShowRegion, rectUnit);
 
-				// 更新線段狀態，設為正在拖曳中
-				ptNewUnitLine->m_bMoveState = TRUE;
+					// 更新線段狀態，設為正在拖曳中
+					ptNewUnitLine->m_bMoveState = TRUE;
 
-				// 紀錄連線的連接點編號
-				ptNewUnitLine->m_iConnectPrePtIndex = i;
+					// 紀錄連線的連接點編號
+					ptNewUnitLine->m_iConnectPrePtIndex = i;
 
-				// 
-				ptNewUnitLine->m_pointMovingLinePos = ptUnit->m_vecConnectPt[i];
+					// 
+					ptNewUnitLine->m_pointMovingLinePos = ptUnit->m_vecConnectPt[i];
 
-				// 暫時紀錄移動中的線段指標
-				m_ptMovingLine = ptNewUnitLine;
+					// 暫時紀錄移動中的線段指標
+					m_ptMovingLine = ptNewUnitLine;
 
-				// 紀錄連線起點的元件指標
-				m_ptPreUnit = ptUnit;
+					// 紀錄連線起點的元件指標
+					m_ptPreUnit = ptUnit;
 
-				// 紀錄連線起點的元件
-				ptNewUnitLine->m_vecPtsPreUnit.push_back(ptUnit);
+					// 紀錄連線起點的元件
+					ptNewUnitLine->m_vecPtsPreLeftUnit.push_back(ptUnit);
 
-				// 放進紀錄 Line Pointer 的串列結構
-				m_listUnitLines.AddTail(ptNewUnitLine);
+					// 放進紀錄 Line Pointer 的串列結構
+					m_listUnitLines.AddTail(ptNewUnitLine);
 
-				// 更新按下滑鼠左鍵當下位置
-				m_pointMouseStartPos = point;
+					// 更新按下滑鼠左鍵當下位置
+					m_pointMouseStartPos = point;
 
-				break;
+					break;
+				}
 			}
 		}
 	}	
@@ -1316,7 +1387,7 @@ void CMFCSimulatorDlg::OnLButtonDown(UINT nFlags, CPoint point)
 
 		ptLineUnit->m_bFocusState = FALSE;
 
-		CPoint pointLineStart = ptLineUnit->m_vecPtsPreUnit[0]->m_vecConnectPt[ptLineUnit->m_iConnectPrePtIndex];
+		CPoint pointLineStart = ptLineUnit->m_vecPtsPreLeftUnit[0]->m_vecConnectPt[ptLineUnit->m_iConnectPrePtIndex];
 		CPoint pointLineEnd = ptLineUnit->m_vecPtsNextUnit[0]->m_vecConnectPt[ptLineUnit->m_iConnectNextPtIndex];
 
 		double dMouseToLineDistance = PointToLineDistance(point, pointLineStart, pointLineEnd);
@@ -1415,6 +1486,9 @@ void CMFCSimulatorDlg::OnLButtonUp(UINT nFlags, CPoint point)
 	point.x = point.x - rectShowRegion.left;
 	point.y = point.y - rectShowRegion.top;
 
+
+
+
 	if (m_bIsDragging)
 	{   // 當放開滑鼠時，釋放滑鼠位置
 
@@ -1435,6 +1509,14 @@ void CMFCSimulatorDlg::OnLButtonUp(UINT nFlags, CPoint point)
 
 			// 得到連接點外切矩形
 			std::vector<CRect> rectConnectPts = ptUnit->m_vecConnectPtRect;
+
+
+
+			CRect rectLeftTopCheck = ptUnit->m_rectConnectLeftTop;
+			CRect rectRightTopCheck = ptUnit->m_rectConnectRightTop;
+			CRect rectBottomCheck = ptUnit->m_rectConnectBottom;
+
+
 
 			if ((ptUnit->m_bMoveState == TRUE) && (m_bIsLineMode == FALSE))
 			{	// 更新元件移動的狀態
@@ -1460,13 +1542,21 @@ void CMFCSimulatorDlg::OnLButtonUp(UINT nFlags, CPoint point)
 
 						// 紀錄線段連接點終點所連到的矩形編號
 						ptLineUnit->m_iConnectNextPtIndex = i;
-						
+
 						// 紀錄連線終點的元件
 						m_ptNextUnit = ptUnit;
 
 						// 兩連接元件紀錄彼此的指標
 						m_ptPreUnit->m_vecPtsNextUnit.push_back(ptUnit);             // 考慮左右邊放的位置
-						m_ptNextUnit->m_vecPtsPreUnit.push_back(m_ptPreUnit);
+
+						if (rectLeftTopCheck.PtInRect(point))
+						{
+							m_ptNextUnit->m_vecPtsPreLeftUnit.push_back(m_ptPreUnit);
+						}
+						else if (rectRightTopCheck.PtInRect(point))
+						{
+							m_ptNextUnit->m_vecPtsPreRightUnit.push_back(m_ptPreUnit);
+						}
 
 						// 紀錄連接的元件指標
 						ptLineUnit->m_vecPtsNextUnit.push_back(ptUnit);
@@ -1519,3 +1609,26 @@ void CMFCSimulatorDlg::OnLButtonUp(UINT nFlags, CPoint point)
 
 
 
+
+// 開始模擬
+void CMFCSimulatorDlg::OnBnClickedButtonSimulate()
+{
+
+	//POSITION posiUnit = m_listUnitPointers.GetTailPosition();
+	//while (posiUnit != nullptr)
+	//{
+	//	POSITION posiCurUnit = posiUnit;
+	//	UnitBase* ptUnit = m_listUnitPointers.GetPrev(posiUnit);
+
+	//	if ((ptUnit->m_strUnitID == "OUT") && (ptUnit->m_vecPtsPreUnit.size() != 0))
+	//	{
+	//		
+
+
+
+	//	}
+	//}
+
+
+
+}

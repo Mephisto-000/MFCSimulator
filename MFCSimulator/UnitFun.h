@@ -6,6 +6,9 @@ class UnitFUN : public UnitBase
 {
 public:
 
+
+
+
     UnitFUN(CRect rectShowRegion, CRect rectButton);
 
     virtual void SetConnectPtAndRect(int iOffsetX, int iOffsetY) override;

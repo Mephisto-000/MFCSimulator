@@ -83,7 +83,6 @@ public:
 	
 	std::vector<CRect> GetConnectRects(UnitBase* ptUnit);   // 經由左上角點定位，得到元件接點外接矩形
 
-	void DrawConnectLine(UnitBase* ptUnit, CDC* pDC);       // 根據前後連接的指標畫出連接線段
 
 	CStatic m_staticShowRegion;								// 顯示區成員控件
 	CStatic m_staticLineState;                              // 連線模式的狀態
@@ -122,6 +121,7 @@ public:
 	afx_msg void OnBnClickedButtonFun();                    // 新增 FUN 元件按鈕
 	afx_msg void OnBnClickedButtonLine();                   // 開關連線模式按鈕
 	afx_msg void OnBnClickedButtonDelete();                 // 刪除元件或線段按鈕
+	afx_msg void OnBnClickedButtonSimulate();               // 開始模擬
 
 
 
@@ -131,5 +131,4 @@ public:
 	CFont m_fontLineModeText;								// 自定 Line Mode 標題字型
 
 	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
-
 };

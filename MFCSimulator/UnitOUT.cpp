@@ -7,10 +7,21 @@ UnitOUT::UnitOUT(CRect rectShowRegion, CRect rectButton) : UnitBase(rectShowRegi
 {
 	m_strUnitID = _T("OUT");
 
+	// 初始化連接點位置
+	m_pointConnectLeftTop = CPoint(m_iUnitWidth * 0.5, 0);
+	m_rectConnectLeftTop.SetRect(m_pointConnectBottom.x - m_iConnectPtRadius, m_pointConnectBottom.y - m_iConnectPtRadius,
+								 m_pointConnectBottom.x + m_iConnectPtRadius, m_pointConnectBottom.y + m_iConnectPtRadius);
+
 }
 
 void UnitOUT::SetConnectPtAndRect(int iOffsetX, int iOffsetY)
-{
+{	// 元件 OUT 只頂部單一連接點
+
+	m_pointConnectLeftTop.Offset(iOffsetX, iOffsetY);
+	m_rectConnectLeftTop.OffsetRect(iOffsetX, iOffsetY);
+
+
+	// 更新繪圖用的 vector
 	if ((m_vecConnectPt.empty() == TRUE) && (m_vecConnectPtRect.empty() == TRUE))
 	{
 		CPoint pointConnect;
@@ -57,7 +68,7 @@ void UnitOUT::InsertUnit(UnitBase* ptNewUnit)
 
 void UnitOUT::UpdateDotData(CPoint pointNewLocation)
 {
-	m_vecConnectPt.push_back(pointNewLocation);
+	//m_vecConnectPt.push_back(pointNewLocation);
 }
 
 

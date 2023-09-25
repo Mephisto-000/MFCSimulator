@@ -1512,9 +1512,9 @@ void CMFCSimulatorDlg::OnLButtonUp(UINT nFlags, CPoint point)
 
 
 
-			CRect rectLeftTopCheck = ptUnit->m_rectConnectLeftTop;
-			CRect rectRightTopCheck = ptUnit->m_rectConnectRightTop;
-			CRect rectBottomCheck = ptUnit->m_rectConnectBottom;
+			//CRect rectLeftTopCheck = ptUnit->m_rectConnectLeftTop;
+			//CRect rectRightTopCheck = ptUnit->m_rectConnectRightTop;
+			//CRect rectBottomCheck = ptUnit->m_rectConnectBottom;
 
 
 
@@ -1549,11 +1549,11 @@ void CMFCSimulatorDlg::OnLButtonUp(UINT nFlags, CPoint point)
 						// 兩連接元件紀錄彼此的指標
 						m_ptPreUnit->m_vecPtsNextUnit.push_back(ptUnit);             // 考慮左右邊放的位置
 
-						if (rectLeftTopCheck.PtInRect(point))
+						if (ptUnit->m_rectConnectLeftTop.PtInRect(point))
 						{
 							m_ptNextUnit->m_vecPtsPreLeftUnit.push_back(m_ptPreUnit);
 						}
-						else if (rectRightTopCheck.PtInRect(point))
+						else if (ptUnit->m_rectConnectRightTop.PtInRect(point))
 						{
 							m_ptNextUnit->m_vecPtsPreRightUnit.push_back(m_ptPreUnit);
 						}
@@ -1605,8 +1605,27 @@ void CMFCSimulatorDlg::OnLButtonUp(UINT nFlags, CPoint point)
 
 
 
+void TestInorder(UnitBase* ptUnit)
+{
+	if (ptUnit == nullptr)
+	{
+		AfxMessageBox(_T("NULL"));
+	}
+	else
+	{
+		if (ptUnit->m_vecPtsPreRightUnit.size() != 0)
+		{
+			TestInorder(ptUnit->m_vecPtsPreRightUnit[0]);
+		}
 
+		AfxMessageBox(ptUnit->m_strUnitID);
 
+		if (ptUnit->m_vecPtsPreLeftUnit.size() != 0)
+		{
+			TestInorder(ptUnit->m_vecPtsPreLeftUnit[0]);
+		}
+	}
+}
 
 
 
@@ -1614,21 +1633,23 @@ void CMFCSimulatorDlg::OnLButtonUp(UINT nFlags, CPoint point)
 void CMFCSimulatorDlg::OnBnClickedButtonSimulate()
 {
 
-	//POSITION posiUnit = m_listUnitPointers.GetTailPosition();
-	//while (posiUnit != nullptr)
-	//{
-	//	POSITION posiCurUnit = posiUnit;
-	//	UnitBase* ptUnit = m_listUnitPointers.GetPrev(posiUnit);
+	POSITION posiUnit = m_listUnitPointers.GetTailPosition();
+	while (posiUnit != nullptr)
+	{
+		POSITION posiCurUnit = posiUnit;
+		UnitBase* ptUnit = m_listUnitPointers.GetPrev(posiUnit);
 
-	//	if ((ptUnit->m_strUnitID == "OUT") && (ptUnit->m_vecPtsPreUnit.size() != 0))
-	//	{
-	//		
+		if (ptUnit->m_strUnitID == "OUT")
+		{
+			
+			
+			TestInorder(ptUnit);
+			
 
+			int test = 1;
+		}
+	}
 
-
-	//	}
-	//}
-
-
+	AfxMessageBox(_T("Done"));
 
 }

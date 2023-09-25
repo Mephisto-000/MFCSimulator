@@ -1547,7 +1547,22 @@ void CMFCSimulatorDlg::OnLButtonUp(UINT nFlags, CPoint point)
 						m_ptNextUnit = ptUnit;
 
 						// 兩連接元件紀錄彼此的指標
-						m_ptPreUnit->m_vecPtsNextUnit.push_back(ptUnit);             // 考慮左右邊放的位置
+						/*m_ptPreUnit->m_vecPtsNextUnit.push_back(ptUnit);*/             // 考慮左右邊放的位置
+
+						// BUG : 前後連接有錯
+						if (m_ptPreUnit->m_rectConnectLeftTop.PtInRect(m_pointMouseStartPos))
+						{
+							m_ptPreUnit->m_vecPtsPreLeftUnit.push_back(ptUnit);
+						}
+						else if (m_ptPreUnit->m_rectConnectRightTop.PtInRect(m_pointMouseStartPos))
+						{
+							m_ptPreUnit->m_vecPtsPreRightUnit.push_back(ptUnit);
+						}
+						else if (m_ptPreUnit->m_rectConnectBottom.PtInRect(m_pointMouseStartPos))
+						{
+							m_ptPreUnit->m_vecPtsNextUnit.push_back(ptUnit);
+						}
+
 
 						if (ptUnit->m_rectConnectLeftTop.PtInRect(point))
 						{
@@ -1556,6 +1571,10 @@ void CMFCSimulatorDlg::OnLButtonUp(UINT nFlags, CPoint point)
 						else if (ptUnit->m_rectConnectRightTop.PtInRect(point))
 						{
 							m_ptNextUnit->m_vecPtsPreRightUnit.push_back(m_ptPreUnit);
+						}
+						else if (ptUnit->m_rectConnectBottom.PtInRect(point))
+						{
+							m_ptNextUnit->m_vecPtsNextUnit.push_back(m_ptPreUnit);
 						}
 
 						// 紀錄連接的元件指標
@@ -1604,7 +1623,7 @@ void CMFCSimulatorDlg::OnLButtonUp(UINT nFlags, CPoint point)
 
 
 
-
+// 廣優搜
 void TestInorder(UnitBase* ptUnit)
 {
 	if (ptUnit == nullptr)
@@ -1613,16 +1632,17 @@ void TestInorder(UnitBase* ptUnit)
 	}
 	else
 	{
-		if (ptUnit->m_vecPtsPreRightUnit.size() != 0)
+		if (ptUnit->m_vecPtsPreLeftUnit.size() != 0)
 		{
-			TestInorder(ptUnit->m_vecPtsPreRightUnit[0]);
+			TestInorder(ptUnit->m_vecPtsPreLeftUnit[0]);
 		}
 
 		AfxMessageBox(ptUnit->m_strUnitID);
 
-		if (ptUnit->m_vecPtsPreLeftUnit.size() != 0)
+
+		if (ptUnit->m_vecPtsPreRightUnit.size() != 0)
 		{
-			TestInorder(ptUnit->m_vecPtsPreLeftUnit[0]);
+			TestInorder(ptUnit->m_vecPtsPreRightUnit[0]);
 		}
 	}
 }

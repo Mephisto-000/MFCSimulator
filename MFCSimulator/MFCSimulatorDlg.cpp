@@ -1351,6 +1351,8 @@ void CMFCSimulatorDlg::OnLButtonDown(UINT nFlags, CPoint point)
 					// 更新按下滑鼠左鍵當下位置
 					m_pointMouseStartPos = point;
 
+					m_pointMouseInitialPos = point;
+
 					break;
 				}
 			}
@@ -1547,18 +1549,16 @@ void CMFCSimulatorDlg::OnLButtonUp(UINT nFlags, CPoint point)
 						m_ptNextUnit = ptUnit;
 
 						// 兩連接元件紀錄彼此的指標
-						/*m_ptPreUnit->m_vecPtsNextUnit.push_back(ptUnit);*/             // 考慮左右邊放的位置
-
-						// BUG : 前後連接有錯
-						if (m_ptPreUnit->m_rectConnectLeftTop.PtInRect(m_pointMouseStartPos))
+			           // 考慮放的位置
+						if (m_ptPreUnit->m_rectConnectLeftTop.PtInRect(m_pointMouseInitialPos))
 						{
 							m_ptPreUnit->m_vecPtsPreLeftUnit.push_back(ptUnit);
 						}
-						else if (m_ptPreUnit->m_rectConnectRightTop.PtInRect(m_pointMouseStartPos))
+						else if (m_ptPreUnit->m_rectConnectRightTop.PtInRect(m_pointMouseInitialPos))
 						{
 							m_ptPreUnit->m_vecPtsPreRightUnit.push_back(ptUnit);
 						}
-						else if (m_ptPreUnit->m_rectConnectBottom.PtInRect(m_pointMouseStartPos))
+						else if (m_ptPreUnit->m_rectConnectBottom.PtInRect(m_pointMouseInitialPos))
 						{
 							m_ptPreUnit->m_vecPtsNextUnit.push_back(ptUnit);
 						}

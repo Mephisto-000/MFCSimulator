@@ -67,6 +67,7 @@ public:
 	int m_iOffsetY;											// 拖曳Y位移
 
 
+	CPoint m_pointMouseInitialPos;                          // 紀錄滑鼠按下左鍵一開始的位置
 	CPoint m_pointMouseStartPos;                            // 紀錄滑鼠按下左鍵當下位置
 	CPoint m_pointMovingMouse;                              // 紀錄拖曳線當中，還未連接到另一個元件的滑鼠點
 

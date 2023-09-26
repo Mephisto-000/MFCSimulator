@@ -1637,13 +1637,15 @@ void TestInorder(UnitBase* ptUnit)
 			TestInorder(ptUnit->m_vecPtsPreLeftUnit[0]);
 		}
 
-		AfxMessageBox(ptUnit->m_strUnitID);
-
 
 		if (ptUnit->m_vecPtsPreRightUnit.size() != 0)
 		{
 			TestInorder(ptUnit->m_vecPtsPreRightUnit[0]);
 		}
+
+
+		AfxMessageBox(ptUnit->m_strUnitID);
+
 	}
 }
 

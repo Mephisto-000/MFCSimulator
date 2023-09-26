@@ -27,8 +27,9 @@ public:
 
 
 
-
-
+	CEdit m_editOperaChoose;
+	CString m_strOperaChoose;
+	CFont m_fontChooseText;
 
 
 	afx_msg void OnBnClickedButtonFunPlus();

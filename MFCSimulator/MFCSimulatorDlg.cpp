@@ -429,7 +429,7 @@ double CMFCSimulatorDlg::SetPostfixResult(UnitBase* ptUnit, double dTimeValue)
 		{
 			return SetPostfixResult(ptUnit->m_vecPtsPreLeftUnit[0], dTimeValue) - SetPostfixResult(ptUnit->m_vecPtsPreRightUnit[0], dTimeValue);
 		}
-		else if (ptUnit->m_strFuncOrOpera == "*")
+		else if (ptUnit->m_strFuncOrOpera == "X")
 		{
 			return SetPostfixResult(ptUnit->m_vecPtsPreLeftUnit[0], dTimeValue) * SetPostfixResult(ptUnit->m_vecPtsPreRightUnit[0], dTimeValue);
 		}

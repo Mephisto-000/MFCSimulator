@@ -6,6 +6,8 @@
 #include "afxdialogex.h"
 #include "UnitFunDlg.h"
 
+#include "MFCSimulatorDlg.h"
+
 
 // UnitFunDlg 對話方塊
 
@@ -14,6 +16,8 @@ IMPLEMENT_DYNAMIC(UnitFunDlg, CDialogEx)
 UnitFunDlg::UnitFunDlg(CWnd* pParent /*=nullptr*/)
 	: CDialogEx(IDD_DIALOG_UNIT_FUN, pParent)
 {
+	m_strOperaChoose = _T("請輸入");
+	m_fontChooseText.CreatePointFont(100, _T("Calibri"));
 
 }
 
@@ -24,6 +28,8 @@ UnitFunDlg::~UnitFunDlg()
 void UnitFunDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
+	DDX_Control(pDX, IDC_EDIT_OPERA_CHOOSE, m_editOperaChoose);
+	DDX_Text(pDX, IDC_EDIT_OPERA_CHOOSE, m_strOperaChoose);
 }
 
 
@@ -58,6 +64,14 @@ HBRUSH UnitFunDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 
 	// TODO:  在此變更 DC 的任何屬性
 
+	if (pWnd->GetDlgCtrlID() == IDC_EDIT_OPERA_CHOOSE)
+	{
+		pDC->SetTextColor(RGB(0, 0, 0));
+		pDC->SelectObject(&m_fontChooseText);
+	}
+
+
+
 	// TODO:  如果預設值並非想要的，則傳回不同的筆刷
 	return hbr;
 }
@@ -66,37 +80,57 @@ HBRUSH UnitFunDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 
 void UnitFunDlg::OnBnClickedButtonFunPlus()
 {
-	// TODO: 在此加入控制項告知處理常式程式碼
+
+	// 更新選擇的函式值
+	m_strOperaChoose = _T("+");
+	UpdateData(FALSE);
+
 }
 
 
 void UnitFunDlg::OnBnClickedButtonFunMinus()
 {
-	// TODO: 在此加入控制項告知處理常式程式碼
+
+	// 更新選擇的函式值
+	m_strOperaChoose = _T("-");
+	UpdateData(FALSE);
+
 }
 
 
 void UnitFunDlg::OnBnClickedButtonFunMultiply()
 {
-	// TODO: 在此加入控制項告知處理常式程式碼
+
+	// 更新選擇的函式值
+	m_strOperaChoose = _T("X");
+	UpdateData(FALSE);
+
 }
 
 
 void UnitFunDlg::OnBnClickedButtonFunDivision()
 {
-	// TODO: 在此加入控制項告知處理常式程式碼
+
+	// 更新選擇的函式值
+	m_strOperaChoose = _T("/");
+	UpdateData(FALSE);
+
 }
 
 
 void UnitFunDlg::OnBnClickedOk()
 {
-	// TODO: 在此加入控制項告知處理常式程式碼
+
+	// 將選擇的函式傳入父視窗
+	CMFCSimulatorDlg* parentDlg = (CMFCSimulatorDlg*)GetParent();
+	parentDlg->m_strFunOrOperChoose = m_strOperaChoose;
+
 	CDialogEx::OnOK();
 }
 
 
 void UnitFunDlg::OnBnClickedCancel()
 {
-	// TODO: 在此加入控制項告知處理常式程式碼
+
 	CDialogEx::OnCancel();
 }

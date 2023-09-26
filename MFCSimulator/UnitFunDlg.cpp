@@ -29,6 +29,12 @@ void UnitFunDlg::DoDataExchange(CDataExchange* pDX)
 
 BEGIN_MESSAGE_MAP(UnitFunDlg, CDialogEx)
 	ON_WM_CTLCOLOR()
+	ON_BN_CLICKED(IDC_BUTTON_FUN_PLUS, &UnitFunDlg::OnBnClickedButtonFunPlus)
+	ON_BN_CLICKED(IDC_BUTTON_FUN_MINUS, &UnitFunDlg::OnBnClickedButtonFunMinus)
+	ON_BN_CLICKED(IDC_BUTTON_FUN_MULTIPLY, &UnitFunDlg::OnBnClickedButtonFunMultiply)
+	ON_BN_CLICKED(IDC_BUTTON_FUN_DIVISION, &UnitFunDlg::OnBnClickedButtonFunDivision)
+	ON_BN_CLICKED(IDOK, &UnitFunDlg::OnBnClickedOk)
+	ON_BN_CLICKED(IDCANCEL, &UnitFunDlg::OnBnClickedCancel)
 END_MESSAGE_MAP()
 
 
@@ -56,3 +62,41 @@ HBRUSH UnitFunDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 	return hbr;
 }
 
+
+
+void UnitFunDlg::OnBnClickedButtonFunPlus()
+{
+	// TODO: 在此加入控制項告知處理常式程式碼
+}
+
+
+void UnitFunDlg::OnBnClickedButtonFunMinus()
+{
+	// TODO: 在此加入控制項告知處理常式程式碼
+}
+
+
+void UnitFunDlg::OnBnClickedButtonFunMultiply()
+{
+	// TODO: 在此加入控制項告知處理常式程式碼
+}
+
+
+void UnitFunDlg::OnBnClickedButtonFunDivision()
+{
+	// TODO: 在此加入控制項告知處理常式程式碼
+}
+
+
+void UnitFunDlg::OnBnClickedOk()
+{
+	// TODO: 在此加入控制項告知處理常式程式碼
+	CDialogEx::OnOK();
+}
+
+
+void UnitFunDlg::OnBnClickedCancel()
+{
+	// TODO: 在此加入控制項告知處理常式程式碼
+	CDialogEx::OnCancel();
+}

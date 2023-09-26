@@ -31,4 +31,10 @@ public:
 
 
 
+	afx_msg void OnBnClickedButtonFunPlus();
+	afx_msg void OnBnClickedButtonFunMinus();
+	afx_msg void OnBnClickedButtonFunMultiply();
+	afx_msg void OnBnClickedButtonFunDivision();
+	afx_msg void OnBnClickedOk();
+	afx_msg void OnBnClickedCancel();
 };

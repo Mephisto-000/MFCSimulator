@@ -104,7 +104,9 @@ public:
 	CButton m_buttonNOT;
 	CButton m_buttonFUN;
 	
+
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
+	afx_msg void OnLButtonDblClk(UINT nFlags, CPoint point);
 	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
 	afx_msg void OnLButtonUp(UINT nFlags, CPoint point);
 
@@ -141,8 +143,10 @@ public:
 
 	CString GetCurrentDir();                                // 取得 MFCSimulatorDlg.cpp 的絕對路徑
 
-	CFont m_fontLineModeState;                              // 自定 Line Mode 狀態字型
-	CFont m_fontLineModeText;								// 自定 Line Mode 標題字型
+	CString m_strFunOrOperChoose;                           // 暫時儲存選擇的函式或是四則運算子
+
+	CFont m_fontLineModeState;                              // 自訂 Line Mode 狀態字型
+	CFont m_fontLineModeText;								// 自訂 Line Mode 標題字型
 
 	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
 };

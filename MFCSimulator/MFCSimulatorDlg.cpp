@@ -8,6 +8,7 @@
 #include "MFCSimulatorDlg.h"
 #include "afxdialogex.h"
 #include "UnitInDlg.h"
+#include "UnitFunDlg.h"
 #include "SimulateStartDlg.h"
 
 #include "UnitIN.h"
@@ -57,6 +58,7 @@ void CAboutDlg::DoDataExchange(CDataExchange* pDX)
 }
 
 BEGIN_MESSAGE_MAP(CAboutDlg, CDialogEx)
+	ON_WM_LBUTTONDBLCLK()
 END_MESSAGE_MAP()
 
 
@@ -110,6 +112,8 @@ BEGIN_MESSAGE_MAP(CMFCSimulatorDlg, CDialogEx)
 	ON_WM_CTLCOLOR()
 	ON_BN_CLICKED(IDC_BUTTON_DELETE, &CMFCSimulatorDlg::OnBnClickedButtonDelete)
 	ON_BN_CLICKED(IDC_BUTTON_SIMULATE, &CMFCSimulatorDlg::OnBnClickedButtonSimulate)
+
+	ON_WM_LBUTTONDBLCLK()
 END_MESSAGE_MAP()
 
 
@@ -401,19 +405,19 @@ double CMFCSimulatorDlg::SetPostfixResult(UnitBase* ptUnit, double dTimeValue)
 	if (ptUnit != nullptr)
 	{	// 開始後序走訪
 
-		if (ptUnit->m_strFuncOrOpera == "sin")
+		if (ptUnit->m_strFuncOrOpera == "sin(t)")
 		{
 			return sin(SetPostfixResult(ptUnit->m_vecPtsPreLeftUnit[0], dTimeValue));
 		}
-		else if (ptUnit->m_strFuncOrOpera == "cos")
+		else if (ptUnit->m_strFuncOrOpera == "cos(t)")
 		{
 			return cos(SetPostfixResult(ptUnit->m_vecPtsPreLeftUnit[0], dTimeValue));
 		}
-		else if (ptUnit->m_strFuncOrOpera == "TRUE")
+		else if (ptUnit->m_strFuncOrOpera == "true")
 		{
 			return 1.0;
 		}
-		else if (ptUnit->m_strFuncOrOpera == "FALSE")
+		else if (ptUnit->m_strFuncOrOpera == "false")
 		{
 			return 0.0;
 		}
@@ -1435,6 +1439,86 @@ void CMFCSimulatorDlg::OnLButtonDown(UINT nFlags, CPoint point)
 
 
 
+// 點擊滑鼠左鍵兩下
+void CMFCSimulatorDlg::OnLButtonDblClk(UINT nFlags, CPoint point)
+{
+	// 得到操作視窗矩形資訊
+	CRect rectShowRegion;
+	GetDlgItem(IDC_STATIC_SHOW_REGION)->GetWindowRect(&rectShowRegion);
+
+	// 操作視窗長、寬
+	int iHeightShowRegion = rectShowRegion.Height();
+	int iWidthShowRegion = rectShowRegion.Width();
+
+	// 主視窗座標轉換為操作視窗的座標
+	ScreenToClient(&rectShowRegion);
+
+	// 滑鼠座標點轉換為操作視窗內的座標點
+	point.x = point.x - rectShowRegion.left;
+	point.y = point.y - rectShowRegion.top;
+
+
+	// 得到內含已創建元件的指針的 CList ，並取得 CList 的位置指針
+	POSITION posiUnit = m_listUnitPointers.GetHeadPosition();
+
+	while (posiUnit != nullptr)
+	{	// 走訪 CList 內的所有元素
+
+		UnitBase* ptUnit = m_listUnitPointers.GetNext(posiUnit);
+
+		// 得到元件的矩形
+		CRect rectUnit = GetUnitRect(ptUnit->m_pointUnitLocation);
+
+
+		if (rectUnit.PtInRect(point) && (m_bIsLineMode == FALSE))
+		{	// 確認滑鼠是否點取元件
+
+			if (ptUnit->m_strUnitID == "IN")
+			{
+
+				UnitInDlg dlgUnitInChoose;
+				dlgUnitInChoose.DoModal();
+				
+				AfxMessageBox(m_strFunOrOperChoose);
+
+				// 將從子視窗選擇的函式更新到元件內
+				ptUnit->m_strFuncOrOpera = m_strFunOrOperChoose;
+
+			}
+			else if (ptUnit->m_strUnitID == "FUN")
+			{
+
+				UnitFunDlg dlgUnitFun;
+				dlgUnitFun.DoModal();
+
+				AfxMessageBox(m_strFunOrOperChoose);
+
+				// 將從子視窗選擇的函式更新到元件內
+				ptUnit->m_strFuncOrOpera = m_strFunOrOperChoose;
+
+			}
+
+
+
+
+			break;
+		}
+
+
+
+
+	}
+
+
+
+
+	CDialogEx::OnLButtonDblClk(nFlags, point);
+}
+
+
+
+
+
 void CMFCSimulatorDlg::OnMouseMove(UINT nFlags, CPoint point)
 {
 	// 得到操作視窗矩形資訊
@@ -1647,32 +1731,35 @@ void CMFCSimulatorDlg::OnLButtonUp(UINT nFlags, CPoint point)
 
 
 
+//
+//// 廣優搜
+//void TestInorder(UnitBase* ptUnit)
+//{
+//	if (ptUnit == nullptr)
+//	{
+//		AfxMessageBox(_T("NULL"));
+//	}
+//	else
+//	{
+//		if (ptUnit->m_vecPtsPreLeftUnit.size() != 0)
+//		{
+//			TestInorder(ptUnit->m_vecPtsPreLeftUnit[0]);
+//		}
+//
+//
+//		if (ptUnit->m_vecPtsPreRightUnit.size() != 0)
+//		{
+//			TestInorder(ptUnit->m_vecPtsPreRightUnit[0]);
+//		}
+//
+//
+//		AfxMessageBox(ptUnit->m_strUnitID);
+//
+//	}
+//}
 
-// 廣優搜
-void TestInorder(UnitBase* ptUnit)
-{
-	if (ptUnit == nullptr)
-	{
-		AfxMessageBox(_T("NULL"));
-	}
-	else
-	{
-		if (ptUnit->m_vecPtsPreLeftUnit.size() != 0)
-		{
-			TestInorder(ptUnit->m_vecPtsPreLeftUnit[0]);
-		}
 
 
-		if (ptUnit->m_vecPtsPreRightUnit.size() != 0)
-		{
-			TestInorder(ptUnit->m_vecPtsPreRightUnit[0]);
-		}
-
-
-		AfxMessageBox(ptUnit->m_strUnitID);
-
-	}
-}
 
 
 
@@ -1680,23 +1767,12 @@ void TestInorder(UnitBase* ptUnit)
 void CMFCSimulatorDlg::OnBnClickedButtonSimulate()
 {
 
-	POSITION posiUnit = m_listUnitPointers.GetTailPosition();
-	while (posiUnit != nullptr)
-	{
-		POSITION posiCurUnit = posiUnit;
-		UnitBase* ptUnit = m_listUnitPointers.GetPrev(posiUnit);
+	//GetCalculateResult();
 
-		if (ptUnit->m_strUnitID == "OUT")
-		{
-			
-			
-			TestInorder(ptUnit);
-			
 
-			int test = 1;
-		}
-	}
+	SimulateStartDlg dlgResult;
 
-	AfxMessageBox(_T("Done"));
 
 }
+
+

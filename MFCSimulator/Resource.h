@@ -11,7 +11,6 @@
 #define IDD_DIALOG_UNIT_FUN             132
 #define IDB_BITMAP1                     135
 #define IDB_BITMAP_INITIAL              135
-#define IDD_DIALOG1                     136
 #define IDD_DIALOG_SIMULATE_START       136
 #define IDC_BUTTON_IN                   1001
 #define IDC_BUTTON_AND                  1002
@@ -39,6 +38,8 @@
 #define IDC_EDIT_SHOW_CHOOSE            1019
 #define IDC_STATIC_LINE_MODE_TEXT       1029
 #define IDC_STATIC_LINE_MODE_STATE      1030
+#define IDC_STATIC_TIME                 1030
+#define IDC_STATIC_RESULT               1031
 
 // Next default values for new objects
 // 
@@ -46,7 +47,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        138
 #define _APS_NEXT_COMMAND_VALUE         32771
-#define _APS_NEXT_CONTROL_VALUE         1030
+#define _APS_NEXT_CONTROL_VALUE         1032
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

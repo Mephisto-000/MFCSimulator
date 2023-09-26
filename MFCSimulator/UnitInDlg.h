@@ -27,5 +27,12 @@ public:
 	afx_msg void OnBnClickedButtonInTrue();
 	afx_msg void OnBnClickedButtonInSin();
 	afx_msg void OnBnClickedButtonInCos();
-	CEdit m_editShowChoose;
+
+	CEdit m_editShowChoose; 
+	CString m_strFunChoose;
+	CFont m_fontChooseText;
+
+	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
+	afx_msg void OnBnClickedOk();
+	afx_msg void OnBnClickedCancel();
 };

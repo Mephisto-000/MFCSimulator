@@ -14,7 +14,7 @@ public:
 
 // 對話方塊資料
 #ifdef AFX_DESIGN_TIME
-	enum { IDD = IDD_DIALOG1 };
+	enum { IDD = IDD_DIALOG_SIMULATE_START };
 #endif
 
 protected:
@@ -25,10 +25,12 @@ public:
 	virtual BOOL OnInitDialog();
 
 
-	
+
+	CStatic m_staticTimeShow;              // 顯示當下時間
+	CStatic m_staticResultShow;            // 顯示當下計算結果
 
 
+	CFont m_fontTimeAndResult;             // 自訂 時間與結果 狀態字型
 
-
-
+	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
 };

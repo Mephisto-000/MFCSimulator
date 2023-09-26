@@ -77,6 +77,7 @@ CMFCSimulatorDlg::CMFCSimulatorDlg(CWnd* pParent /*=nullptr*/)
 	m_iOffsetY = 0;
 	m_fontLineModeState.CreatePointFont(125, _T("Calibri"));
 	m_fontLineModeText.CreatePointFont(125, _T("Calibri"));
+	m_nTimerID = 0;
 }
 
 void CMFCSimulatorDlg::DoDataExchange(CDataExchange* pDX)
@@ -1498,19 +1499,10 @@ void CMFCSimulatorDlg::OnLButtonDblClk(UINT nFlags, CPoint point)
 
 			}
 
-
-
-
 			break;
 		}
 
-
-
-
 	}
-
-
-
 
 	CDialogEx::OnLButtonDblClk(nFlags, point);
 }
@@ -1769,9 +1761,10 @@ void CMFCSimulatorDlg::OnBnClickedButtonSimulate()
 
 	//GetCalculateResult();
 
-
+	// 啟動計時器，每一秒觸發一次
+	m_nTimerID = SetTimer(1, 1000, nullptr);
 	SimulateStartDlg dlgResult;
-
+	dlgResult.DoModal();
 
 }
 

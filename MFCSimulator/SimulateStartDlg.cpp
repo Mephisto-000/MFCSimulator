@@ -6,6 +6,8 @@
 #include "afxdialogex.h"
 #include "SimulateStartDlg.h"
 
+#include "MFCSimulatorDlg.h"
+
 
 // SimulateStartDlg 對話方塊
 
@@ -15,6 +17,10 @@ SimulateStartDlg::SimulateStartDlg(CWnd* pParent /*=nullptr*/)
 	: CDialogEx(IDD_DIALOG_SIMULATE_START, pParent)
 {
 	m_fontTimeAndResult.CreatePointFont(200, _T("Arial Black"));
+
+	m_dwStartTime = 0;
+	m_nTimerID = 0;
+
 }
 
 SimulateStartDlg::~SimulateStartDlg()
@@ -31,6 +37,7 @@ void SimulateStartDlg::DoDataExchange(CDataExchange* pDX)
 
 BEGIN_MESSAGE_MAP(SimulateStartDlg, CDialogEx)
 	ON_WM_CTLCOLOR()
+	ON_WM_TIMER()
 END_MESSAGE_MAP()
 
 
@@ -42,6 +49,8 @@ BOOL SimulateStartDlg::OnInitDialog()
 	CDialogEx::OnInitDialog();
 
 	// TODO:  在此加入額外的初始化
+
+	StartTimer();
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 	// EXCEPTION: OCX 屬性頁應傳回 FALSE
@@ -65,4 +74,44 @@ HBRUSH SimulateStartDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 
 	// TODO:  如果預設值並非想要的，則傳回不同的筆刷
 	return hbr;
+}
+
+
+void SimulateStartDlg::UpdateSimulate()
+{
+	DWORD dwCurrentTime = timeGetTime();
+
+	int iElapsedTime = (dwCurrentTime - m_dwStartTime) / 1000;
+
+
+
+}
+
+
+
+void SimulateStartDlg::StartTimer()
+{
+	m_dwStartTime = timeGetTime();
+
+	m_nTimerID = SetTimer(1, 1000, nullptr);
+}
+
+
+
+
+void SimulateStartDlg::OnTimer(UINT_PTR nIDEvent)
+{
+	// TODO: 在此加入您的訊息處理常式程式碼和 (或) 呼叫預設值
+
+	if (nIDEvent == 1)
+	{
+
+
+
+
+
+	}
+
+
+	CDialogEx::OnTimer(nIDEvent);
 }

@@ -6,6 +6,8 @@ UnitOR::UnitOR(CRect rectShowRegion, CRect rectButton) : UnitBase(rectShowRegion
 {
 	m_strUnitID = _T("OR");
 
+	m_strFuncOrOpera = _T("OR");
+
 
 	// 初始化連接點位置
 	m_pointConnectLeftTop = CPoint(0, 0);

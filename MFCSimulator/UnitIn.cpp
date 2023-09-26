@@ -8,6 +8,8 @@ UnitIN::UnitIN(CRect rectShowRegion, CRect rectButton) : UnitBase (rectShowRegio
 {
 	m_strUnitID = _T("IN");
 
+	m_strFuncOrOpera = _T("");
+
 	// 初始化連接點位置
 	m_pointConnectBottom = CPoint(m_iUnitWidth * 0.5, m_iUnitHeight);
 	m_rectConnectBottom.SetRect(m_pointConnectBottom.x - m_iConnectPtRadius, m_pointConnectBottom.y - m_iConnectPtRadius,

@@ -28,9 +28,15 @@ public:
 
 	CStatic m_staticTimeShow;              // 顯示當下時間
 	CStatic m_staticResultShow;            // 顯示當下計算結果
-
-
 	CFont m_fontTimeAndResult;             // 自訂 時間與結果 狀態字型
 
 	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
+
+	DWORD m_dwStartTime;                   // 計時開始的時間
+	UINT_PTR m_nTimerID;                   // 計時器 ID
+
+	
+	void StartTimer();
+	void UpdateSimulate();
+	afx_msg void OnTimer(UINT_PTR nIDEvent);
 };

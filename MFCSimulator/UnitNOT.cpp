@@ -6,6 +6,8 @@ UnitNOT::UnitNOT(CRect rectShowRegion, CRect rectButton) : UnitBase(rectShowRegi
 {
 	m_strUnitID = _T("NOT");
 
+	m_strFuncOrOpera = _T("NOT");
+
 
 	// 初始化連接點位置
 	// 頂部 : 

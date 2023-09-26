@@ -149,4 +149,8 @@ public:
 	CFont m_fontLineModeText;								// 自訂 Line Mode 標題字型
 
 	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
+
+
+	UINT_PTR m_nTimerID;                                    // 計時器 ID 
+
 };

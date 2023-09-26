@@ -6,6 +6,8 @@ UnitFUN::UnitFUN(CRect rectShowRegion, CRect rectButton) : UnitBase(rectShowRegi
 {
 	m_strUnitID = _T("FUN");
 
+	m_strFuncOrOpera = _T("");
+
 	// 初始化連接點位置
 	m_pointConnectLeftTop = CPoint(0, 0);
 	m_pointConnectRightTop = CPoint(m_iUnitWidth, 0);

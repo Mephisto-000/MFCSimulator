@@ -27,7 +27,7 @@ public:
 	
 	// 輸出處理
 	CString m_strFuncOrOpera;							  // 紀錄選擇的函數或是運算元
-	CString m_strOutValue;                                // 輸出的數值
+	double m_dOutValue;                                   // 輸出的數值
 
 	// 線段資料 
 	// 當頂部只有單一連接點時，將單一頂部點存於左上的點
@@ -62,10 +62,6 @@ public:
 	virtual void SetConnectPtAndRect (int iOffsetX, int iOffsetY) {};
 
 
-	// 設置選擇的函數或是四則運算元
-	virtual void SetFuncOrOpera (CString strChoose) {};
-
-
 	// 更新連接的元件
 	virtual void InsertUnit (UnitBase* ptNewUnit) {};
 
@@ -75,6 +71,6 @@ public:
 
 
 	// 輸出元件的結果
-	virtual void Result (CString strOutValue) {};
+	virtual void Result (double dTimeValue) {};
 };
 

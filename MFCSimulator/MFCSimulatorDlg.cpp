@@ -8,6 +8,7 @@
 #include "MFCSimulatorDlg.h"
 #include "afxdialogex.h"
 #include "UnitInDlg.h"
+#include "SimulateStartDlg.h"
 
 #include "UnitIN.h"
 #include "UnitOUT.h"
@@ -394,77 +395,101 @@ CString CMFCSimulatorDlg::GetCurrentDir()
 }
 
 
-// 判斷是否為運算元
-BOOL CMFCSimulatorDlg::IsOperator(CString strOperator)
+// 後序走訪
+double CMFCSimulatorDlg::SetPostfixResult(UnitBase* ptUnit, double dTimeValue)
 {
-	return (strOperator == "+" || strOperator == "-" || strOperator == "*" || strOperator == "/");
+	if (ptUnit != nullptr)
+	{	// 開始後序走訪
+
+		if (ptUnit->m_strFuncOrOpera == "sin")
+		{
+			return sin(SetPostfixResult(ptUnit->m_vecPtsPreLeftUnit[0], dTimeValue));
+		}
+		else if (ptUnit->m_strFuncOrOpera == "cos")
+		{
+			return cos(SetPostfixResult(ptUnit->m_vecPtsPreLeftUnit[0], dTimeValue));
+		}
+		else if (ptUnit->m_strFuncOrOpera == "TRUE")
+		{
+			return 1.0;
+		}
+		else if (ptUnit->m_strFuncOrOpera == "FALSE")
+		{
+			return 0.0;
+		}
+		else if (ptUnit->m_strFuncOrOpera == "+")
+		{
+			return SetPostfixResult(ptUnit->m_vecPtsPreLeftUnit[0], dTimeValue) + SetPostfixResult(ptUnit->m_vecPtsPreRightUnit[0], dTimeValue);
+		}
+		else if (ptUnit->m_strFuncOrOpera == "-")
+		{
+			return SetPostfixResult(ptUnit->m_vecPtsPreLeftUnit[0], dTimeValue) - SetPostfixResult(ptUnit->m_vecPtsPreRightUnit[0], dTimeValue);
+		}
+		else if (ptUnit->m_strFuncOrOpera == "*")
+		{
+			return SetPostfixResult(ptUnit->m_vecPtsPreLeftUnit[0], dTimeValue) * SetPostfixResult(ptUnit->m_vecPtsPreRightUnit[0], dTimeValue);
+		}
+		else if (ptUnit->m_strFuncOrOpera == "/")
+		{
+			return SetPostfixResult(ptUnit->m_vecPtsPreLeftUnit[0], dTimeValue) / SetPostfixResult(ptUnit->m_vecPtsPreRightUnit[0], dTimeValue);
+		}
+		else if (ptUnit->m_strFuncOrOpera == "AND")
+		{
+			return SetPostfixResult(ptUnit->m_vecPtsPreLeftUnit[0], dTimeValue) && SetPostfixResult(ptUnit->m_vecPtsPreRightUnit[0], dTimeValue);
+		}
+		else if (ptUnit->m_strFuncOrOpera == "OR")
+		{
+			return SetPostfixResult(ptUnit->m_vecPtsPreLeftUnit[0], dTimeValue) || SetPostfixResult(ptUnit->m_vecPtsPreRightUnit[0], dTimeValue);
+		}
+		else if (ptUnit->m_strFuncOrOpera == "NOT")
+		{
+			return !SetPostfixResult(ptUnit->m_vecPtsPreLeftUnit[0], dTimeValue);
+		}
+	}
 }
 
 
-// 判斷運算元優先等級
-int CMFCSimulatorDlg::GetOperatorPriority(CString strOperator)
+
+
+
+//void CMFCSimulatorDlg::SetPostfixResult(UnitBase* ptUnit)
+//{
+//	if (ptUnit != nullptr)
+//	{	// 開始後序走訪
+//
+//		if (ptUnit->m_vecPtsPreLeftUnit.size() != 0)
+//		{	// 遍歷走訪左子節點
+//
+//			SetPostfixResult(ptUnit);
+//		}
+//
+//		if (ptUnit->m_vecPtsPreRightUnit.size() != 0)
+//		{	// 遍歷走訪右子節點
+//
+//			SetPostfixResult(ptUnit);
+//		}
+//
+//		m_listSortedUnitPointers.AddHead(ptUnit);
+//
+//	}
+//}
+
+
+
+// 根據排序計算結果
+double CMFCSimulatorDlg::GetCalculateResult(double dTimeValue)
 {
-	if (strOperator == "*" || strOperator == "/")
+
+	POSITION posiUnit = m_listUnitPointers.GetTailPosition();
+	while (posiUnit != nullptr)
 	{
-		return 2;
+		UnitBase* ptUnit = m_listUnitPointers.GetPrev(posiUnit);
+
+		if (ptUnit->m_strUnitID == "OUT")
+		{
+			return SetPostfixResult(ptUnit, dTimeValue);
+		}
 	}
-	else if (strOperator == "+" || strOperator == "-")
-	{
-		return 1;
-	}
-
-	return 0;
-}
-
-// 計算 OUT 輸出結果
-double CMFCSimulatorDlg::EvaluateOutValue(UnitBase* ptUnit, double dTimeValue)
-{
-	//if (ptUnit == nullptr)
-	//{
-	//	return 0.0;
-	//}
-
-	//if (ptUnit->m_strOutValue == "sin")
-	//{
-	//	return sin(EvaluateOutValue(ptUnit->m_vecPtsPreUnit.back(), dTimeValue));
-	//}
-	//else if (ptUnit->m_strOutValue == "cos")
-	//{
-	//	return cos(EvaluateOutValue(ptUnit->m_vecPtsPreUnit.back(), dTimeValue));
-	//}
-	//else if (ptUnit->m_strOutValue == "1")
-	//{
-	//	return 1.0;
-	//}
-	//else if (ptUnit->m_strOutValue == "0")
-	//{
-	//	return 0.0;
-	//}
-	//else if (IsOperator(ptUnit->m_strOutValue) == TRUE)
-	//{
-	//	double dLeftValue = EvaluateOutValue(ptUnit->m_vecPtsPreUnit[0], dTimeValue);
-	//	double dRightValue = EvaluateOutValue(ptUnit->m_vecPtsPreUnit[1], dTimeValue);
-
-	//	if (ptUnit->m_strOutValue == "+")
-	//	{
-	//		return dLeftValue + dRightValue;
-	//	}
-	//	else if (ptUnit->m_strOutValue == "-")
-	//	{
-	//		return dLeftValue - dRightValue;  // Bugs : 修正元件區別左右
-	//	}
-	//	else if (ptUnit->m_strOutValue == "*")
-	//	{
-	//		return dLeftValue * dRightValue;
-	//	}
-	//	else if (ptUnit->m_strOutValue == "/")
-	//	{
-	//		return dLeftValue / dRightValue;  // Bugs : 修正元件區別左右
-	//	}
-	//}
-
-	return 0.0;
-
 }
 
 

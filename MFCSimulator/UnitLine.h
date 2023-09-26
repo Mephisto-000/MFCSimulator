@@ -21,9 +21,6 @@ public:
 	UnitLine(CRect rectShowRegion, CRect rectButton);
 
 
-    // 設置函數
-    virtual void SetFuncOrOpera(CString strChoose) override {};
-
     // 元件之間插入元件
     virtual void InsertUnit(UnitBase* ptNewUnit) override {};
 
@@ -31,7 +28,7 @@ public:
     virtual void UpdateDotData(CPoint pointNewLocation) override {};
 
     // 輸出元件的結果
-    virtual void Result(CString strOutValue) override {};
+    virtual void Result(double dTimeValue) override {};
 
 
 

@@ -5,7 +5,14 @@
 #include "math.h"
 #include <vector>
 
+#include <mmsystem.h>                                   // 包含 timeGetTime 函數的標頭
+
 #pragma once
+
+
+// 加入 mmysystem.h 中的 timeGetTime 時需加入以下連接庫
+// "winmm.lib" 是 Windows Multimedia API
+#pragma comment(lib, "winmm.lib ")
 
 #include "UnitBase.h"
 #include "UnitLine.h"
@@ -49,6 +56,7 @@ public:
 
 	CList<UnitBase*, UnitBase*> m_listUnitPointers;         // 紀錄已生成的元件
 	CList<UnitLine*, UnitLine*> m_listUnitLines;            // 紀錄連接線
+	CList<UnitBase*, UnitBase*> m_listSortedUnitPointers;   // 紀錄已排序的的元件
 
 	UnitBase* m_ptPreMovingUnit;							// 紀錄前一個點選的指標
 	UnitBase* m_ptMovingUnit;                               // 紀錄正在被滑鼠拖曳的指標，拖曳控件的情況
@@ -108,10 +116,15 @@ public:
 	void UnitInWindow();                                    // 開啟函數選擇視窗
 
 
-	BOOL IsOperator(CString strOperator);                   // 判斷是否為運算元
-	int GetOperatorPriority(CString strOperator);           // 判斷運算元優先等級
-	
-	double EvaluateOutValue(UnitBase* ptUnit, double dTimeValue);  // 計算 OUT 輸出結果
+	//BOOL IsOperator(CString strOperator);                   // 判斷是否為運算元
+	//int GetOperatorPriority(CString strOperator);           // 判斷運算元優先等級
+	//double EvaluateOutValue(UnitBase* ptUnit, double dTimeValue);  // 計算 OUT 輸出結果
+
+
+	double SetPostfixResult(UnitBase* ptUnit, double dTimeValue);             // 得到後序走訪結果
+
+	double GetCalculateResult(double dTimeValue);           // 根據排序計算結果
+
 
 
 	afx_msg void OnBnClickedButtonIn();						// 新增 IN 元件按鈕

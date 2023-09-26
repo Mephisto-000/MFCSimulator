@@ -88,12 +88,6 @@ void UnitFUN::SetConnectPtAndRect(int iOffsetX, int iOffsetY)
 }
 
 
-void UnitFUN::SetFuncOrOpera(CString strChoose)
-{
-	m_strFuncOrOpera = strChoose;
-}
-
-
 // 將要連接 FUN 或 OUT 元件的指標存入陣列
 void UnitFUN::InsertUnit(UnitBase* ptNewUnit)
 {
@@ -116,7 +110,7 @@ void UnitFUN::UpdateDotData(CPoint pointNewLocation)
 }
 
 
-void UnitFUN::Result(CString strOutValue)
+void UnitFUN::Result(double dTimeValue)
 {
 
 

@@ -85,12 +85,6 @@ void UnitAND::SetConnectPtAndRect(int iOffsetX, int iOffsetY)
 }
 
 
-void UnitAND::SetFuncOrOpera(CString strChoose)
-{
-
-}
-
-
 // 將要連接 FUN 或 OUT 元件的指標存入陣列
 void UnitAND::InsertUnit(UnitBase* ptNewUnit)
 {
@@ -106,7 +100,7 @@ void UnitAND::UpdateDotData(CPoint pointNewLocation)
 }
 
 
-void UnitAND::Result(CString strOutValue)
+void UnitAND::Result(double dTimeValue)
 {
 
 }

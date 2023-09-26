@@ -184,6 +184,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="framework.h" />
+    <ClInclude Include="SimulateStartDlg.h" />
     <ClInclude Include="UnitFunDlg.h" />
     <ClInclude Include="UnitIN.h" />
     <ClInclude Include="MFCSimulator.h" />
@@ -201,6 +202,7 @@
     <ClInclude Include="UnitOUT.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="SimulateStartDlg.cpp" />
     <ClCompile Include="UnitFunDlg.cpp" />
     <ClCompile Include="UnitIN.cpp" />
     <ClCompile Include="MFCSimulator.cpp" />

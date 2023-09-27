@@ -434,6 +434,18 @@ double CMFCSimulatorDlg::SetPostfixResult(UnitBase* ptUnit, double dTimeValue)
 	{
 		return dLeftResult / dRightResult;
 	}
+	else if (ptUnit->m_strFuncOrOpera == "AND")
+	{
+		return (dLeftResult && dRightResult);
+	}
+	else if (ptUnit->m_strFuncOrOpera == "OR")
+	{
+		return (dLeftResult || dRightResult);
+	}
+	else if (ptUnit->m_strFuncOrOpera == "NOT")
+	{
+		return !(dLeftResult);
+	}
 	else if (ptUnit->m_strFuncOrOpera == "sin(t)")
 	{
 		return sin(dTimeValue);

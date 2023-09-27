@@ -19,7 +19,8 @@ SimulateStartDlg::SimulateStartDlg(CWnd* pParent /*=nullptr*/)
 	m_fontTimeAndResult.CreatePointFont(200, _T("Arial Black"));
 
 	m_dwStartTime = 0;
-	m_nTimerID = 0;
+	m_nTimerID = 1;
+	m_dResultValue = 0.0;
 
 }
 
@@ -50,7 +51,7 @@ BOOL SimulateStartDlg::OnInitDialog()
 
 	// TODO:  在此加入額外的初始化
 
-	StartTimer();
+	SetTimer(m_nTimerID, 100, nullptr);
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 	// EXCEPTION: OCX 屬性頁應傳回 FALSE
@@ -79,39 +80,38 @@ HBRUSH SimulateStartDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 
 void SimulateStartDlg::UpdateSimulate()
 {
-	DWORD dwCurrentTime = timeGetTime();
-
-	int iElapsedTime = (dwCurrentTime - m_dwStartTime) / 1000;
 
 
+	CString strTimeValue;
+	strTimeValue.Format(_T("%.7f"), m_dCurTime);
+	m_staticTimeShow.SetWindowText(strTimeValue);
 
+	CMFCSimulatorDlg dlgMain;
+	m_dResultValue = dlgMain.SetPostfixResult(m_ptOutUnit, m_dCurTime);
+
+	CString strResult;
+	strResult.Format(_T("%.7f"), m_dResultValue);
+	m_staticResultShow.SetWindowText(strResult);
 }
-
-
-
-void SimulateStartDlg::StartTimer()
-{
-	m_dwStartTime = timeGetTime();
-
-	m_nTimerID = SetTimer(1, 1000, nullptr);
-}
-
-
 
 
 void SimulateStartDlg::OnTimer(UINT_PTR nIDEvent)
 {
-	// TODO: 在此加入您的訊息處理常式程式碼和 (或) 呼叫預設值
+	
+	DWORD dwRecordTime = timeGetTime();
 
-	if (nIDEvent == 1)
+
+	if (nIDEvent == m_nTimerID)
 	{
 
+		DWORD dwElapsedTime = dwRecordTime - m_dwStartTime;
+		double dSeconds = static_cast<double>(dwElapsedTime) / 1000.0;
 
-
-
+		m_dCurTime = dSeconds;
+		UpdateSimulate();
 
 	}
 
 
-	CDialogEx::OnTimer(nIDEvent);
+	CDialogEx::OnTimer(m_nTimerID);
 }

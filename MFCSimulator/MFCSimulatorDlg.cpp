@@ -77,7 +77,6 @@ CMFCSimulatorDlg::CMFCSimulatorDlg(CWnd* pParent /*=nullptr*/)
 	m_iOffsetY = 0;
 	m_fontLineModeState.CreatePointFont(125, _T("Calibri"));
 	m_fontLineModeText.CreatePointFont(125, _T("Calibri"));
-	m_nTimerID = 0;
 }
 
 void CMFCSimulatorDlg::DoDataExchange(CDataExchange* pDX)
@@ -403,54 +402,59 @@ CString CMFCSimulatorDlg::GetCurrentDir()
 // 後序走訪
 double CMFCSimulatorDlg::SetPostfixResult(UnitBase* ptUnit, double dTimeValue)
 {
-	if (ptUnit != nullptr)
-	{	// 開始後序走訪
 
-		if (ptUnit->m_strFuncOrOpera == "sin(t)")
-		{
-			return sin(SetPostfixResult(ptUnit->m_vecPtsPreLeftUnit[0], dTimeValue));
-		}
-		else if (ptUnit->m_strFuncOrOpera == "cos(t)")
-		{
-			return cos(SetPostfixResult(ptUnit->m_vecPtsPreLeftUnit[0], dTimeValue));
-		}
-		else if (ptUnit->m_strFuncOrOpera == "true")
-		{
-			return 1.0;
-		}
-		else if (ptUnit->m_strFuncOrOpera == "false")
-		{
-			return 0.0;
-		}
-		else if (ptUnit->m_strFuncOrOpera == "+")
-		{
-			return SetPostfixResult(ptUnit->m_vecPtsPreLeftUnit[0], dTimeValue) + SetPostfixResult(ptUnit->m_vecPtsPreRightUnit[0], dTimeValue);
-		}
-		else if (ptUnit->m_strFuncOrOpera == "-")
-		{
-			return SetPostfixResult(ptUnit->m_vecPtsPreLeftUnit[0], dTimeValue) - SetPostfixResult(ptUnit->m_vecPtsPreRightUnit[0], dTimeValue);
-		}
-		else if (ptUnit->m_strFuncOrOpera == "X")
-		{
-			return SetPostfixResult(ptUnit->m_vecPtsPreLeftUnit[0], dTimeValue) * SetPostfixResult(ptUnit->m_vecPtsPreRightUnit[0], dTimeValue);
-		}
-		else if (ptUnit->m_strFuncOrOpera == "/")
-		{
-			return SetPostfixResult(ptUnit->m_vecPtsPreLeftUnit[0], dTimeValue) / SetPostfixResult(ptUnit->m_vecPtsPreRightUnit[0], dTimeValue);
-		}
-		else if (ptUnit->m_strFuncOrOpera == "AND")
-		{
-			return SetPostfixResult(ptUnit->m_vecPtsPreLeftUnit[0], dTimeValue) && SetPostfixResult(ptUnit->m_vecPtsPreRightUnit[0], dTimeValue);
-		}
-		else if (ptUnit->m_strFuncOrOpera == "OR")
-		{
-			return SetPostfixResult(ptUnit->m_vecPtsPreLeftUnit[0], dTimeValue) || SetPostfixResult(ptUnit->m_vecPtsPreRightUnit[0], dTimeValue);
-		}
-		else if (ptUnit->m_strFuncOrOpera == "NOT")
-		{
-			return !SetPostfixResult(ptUnit->m_vecPtsPreLeftUnit[0], dTimeValue);
-		}
+	double dLeftResult = 0.0;
+	
+	double dRightResult = 0.0;
+
+	if (ptUnit->m_vecPtsPreLeftUnit.size() != 0)
+	{
+		dLeftResult = SetPostfixResult(ptUnit->m_vecPtsPreLeftUnit[0], dTimeValue);
 	}
+
+	if (ptUnit->m_vecPtsPreRightUnit.size() != 0)
+	{
+		dRightResult = SetPostfixResult(ptUnit->m_vecPtsPreRightUnit[0], dTimeValue);
+	}
+
+
+	if (ptUnit->m_strFuncOrOpera == "+")
+	{
+		return dLeftResult + dRightResult;
+	}
+	else if (ptUnit->m_strFuncOrOpera == "-")
+	{
+		return dLeftResult - dRightResult;
+	}
+	else if (ptUnit->m_strFuncOrOpera == "X")
+	{
+		return dLeftResult * dRightResult;
+	}
+	else if (ptUnit->m_strFuncOrOpera == "/")
+	{
+		return dLeftResult / dRightResult;
+	}
+	else if (ptUnit->m_strFuncOrOpera == "sin(t)")
+	{
+		return sin(dTimeValue);
+	}
+	else if (ptUnit->m_strFuncOrOpera == "cos(t)")
+	{
+		return cos(dTimeValue);
+	}
+	else if (ptUnit->m_strFuncOrOpera == "true")
+	{
+		return 1.0;
+	}
+	else if (ptUnit->m_strFuncOrOpera == "false")
+	{
+		return 0.0;
+	}
+	else
+	{
+		return dLeftResult;
+	}
+
 }
 
 
@@ -479,23 +483,6 @@ double CMFCSimulatorDlg::SetPostfixResult(UnitBase* ptUnit, double dTimeValue)
 //	}
 //}
 
-
-
-// 根據排序計算結果
-double CMFCSimulatorDlg::GetCalculateResult(double dTimeValue)
-{
-
-	POSITION posiUnit = m_listUnitPointers.GetTailPosition();
-	while (posiUnit != nullptr)
-	{
-		UnitBase* ptUnit = m_listUnitPointers.GetPrev(posiUnit);
-
-		if (ptUnit->m_strUnitID == "OUT")
-		{
-			return SetPostfixResult(ptUnit, dTimeValue);
-		}
-	}
-}
 
 
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -1751,20 +1738,80 @@ void CMFCSimulatorDlg::OnLButtonUp(UINT nFlags, CPoint point)
 //}
 
 
+// 根據排序計算結果
+double CMFCSimulatorDlg::GetCalculateResult(double dTimeValue)
+{
 
+	POSITION posiUnit = m_listUnitPointers.GetTailPosition();
+	while (posiUnit != nullptr)
+	{
+		UnitBase* ptUnit = m_listUnitPointers.GetPrev(posiUnit);
 
+		if (ptUnit->m_strUnitID == "OUT")
+		{
 
+			double dTest3 = 0.0;
+			dTest3 = SetPostfixResult(ptUnit, dTimeValue);
+
+			int it5 = 7;
+
+			return dTest3;
+		}
+	}
+}
 
 // 開始模擬
 void CMFCSimulatorDlg::OnBnClickedButtonSimulate()
 {
 
-	//GetCalculateResult();
 
-	// 啟動計時器，每一秒觸發一次
-	m_nTimerID = SetTimer(1, 1000, nullptr);
-	SimulateStartDlg dlgResult;
-	dlgResult.DoModal();
+
+
+	POSITION posiUnit = m_listUnitPointers.GetTailPosition();
+	while (posiUnit != nullptr)
+	{
+		UnitBase* ptUnit = m_listUnitPointers.GetPrev(posiUnit);
+
+		if (ptUnit->m_strUnitID == "OUT")
+		{
+			UnitBase* ptUnitResultOut = ptUnit;
+
+			m_dwStartTime = timeGetTime();
+
+
+			double dTest = GetCalculateResult(M_PI / 4);
+
+			CString strTest;
+			strTest.Format(_T("%.7f"), dTest);
+
+			//AfxMessageBox(strTest);
+
+			SimulateStartDlg dlgResult;
+			dlgResult.m_dwStartTime = m_dwStartTime;
+			dlgResult.m_ptOutUnit = ptUnitResultOut;
+			dlgResult.DoModal();
+
+
+
+		}
+	}
+
+
+
+	//m_dwStartTime = timeGetTime();
+	//
+
+	//double dTest = GetCalculateResult(M_PI/4);
+
+	//CString strTest;
+	//strTest.Format(_T("%.7f"), dTest);
+
+	//AfxMessageBox(strTest);
+
+	//SimulateStartDlg dlgResult;
+	//dlgResult.m_dwStartTime = m_dwStartTime;
+	//dlgResult.m_ptOutUnit = ptUnitResultOut;
+	//dlgResult.DoModal();
 
 }
 

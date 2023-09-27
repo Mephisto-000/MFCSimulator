@@ -2,6 +2,7 @@
 // MFCSimulatorDlg.h: 標頭檔
 //
 
+#define _USE_MATH_DEFINES
 #include "math.h"
 #include <vector>
 
@@ -151,6 +152,6 @@ public:
 	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
 
 
-	UINT_PTR m_nTimerID;                                    // 計時器 ID 
+	DWORD m_dwStartTime;
 
 };

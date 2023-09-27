@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include "afxdialogex.h"
 
+#include "UnitBase.h"
 
 // SimulateStartDlg 對話方塊
 
@@ -35,8 +36,14 @@ public:
 	DWORD m_dwStartTime;                   // 計時開始的時間
 	UINT_PTR m_nTimerID;                   // 計時器 ID
 
+	double m_dCurTime;
 	
-	void StartTimer();
 	void UpdateSimulate();
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
+
+	double m_dResultValue;
+
+	CList<UnitBase*, UnitBase*> m_listUnitResult;
+
+	UnitBase* m_ptOutUnit;
 };

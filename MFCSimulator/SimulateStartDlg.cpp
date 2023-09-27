@@ -39,6 +39,7 @@ void SimulateStartDlg::DoDataExchange(CDataExchange* pDX)
 BEGIN_MESSAGE_MAP(SimulateStartDlg, CDialogEx)
 	ON_WM_CTLCOLOR()
 	ON_WM_TIMER()
+	ON_WM_PAINT()
 END_MESSAGE_MAP()
 
 
@@ -51,7 +52,7 @@ BOOL SimulateStartDlg::OnInitDialog()
 
 	// TODO:  在此加入額外的初始化
 
-	SetTimer(m_nTimerID, 100, nullptr);
+	SetTimer(m_nTimerID, 50, nullptr);
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 	// EXCEPTION: OCX 屬性頁應傳回 FALSE
@@ -114,4 +115,19 @@ void SimulateStartDlg::OnTimer(UINT_PTR nIDEvent)
 
 
 	CDialogEx::OnTimer(m_nTimerID);
+}
+
+
+void SimulateStartDlg::OnPaint()
+{
+	CPaintDC dc(this); // device context for painting
+	// TODO: 在此加入您的訊息處理常式程式碼
+	// 不要呼叫圖片訊息的 CDialogEx::OnPaint()
+
+
+
+
+
+
+
 }

@@ -46,4 +46,5 @@ public:
 	CList<UnitBase*, UnitBase*> m_listUnitResult;
 
 	UnitBase* m_ptOutUnit;
+	afx_msg void OnPaint();
 };

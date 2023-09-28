@@ -131,3 +131,16 @@ void SimulateStartDlg::OnPaint()
 
 
 }
+
+
+void SimulateStartDlg::DrawToBuffer(CDC* pDC)
+{
+
+
+
+
+
+
+
+
+}

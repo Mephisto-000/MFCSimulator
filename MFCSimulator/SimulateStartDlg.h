@@ -31,7 +31,6 @@ public:
 	CStatic m_staticResultShow;            // 顯示當下計算結果
 	CFont m_fontTimeAndResult;             // 自訂 時間與結果 狀態字型
 
-	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
 
 	DWORD m_dwStartTime;                   // 計時開始的時間
 	UINT_PTR m_nTimerID;                   // 計時器 ID
@@ -39,12 +38,16 @@ public:
 	double m_dCurTime;
 	
 	void UpdateSimulate();
-	afx_msg void OnTimer(UINT_PTR nIDEvent);
+	void DrawToBuffer(CDC* pDC);							// 雙緩衝更新區域函數
 
 	double m_dResultValue;
 
 	CList<UnitBase*, UnitBase*> m_listUnitResult;
 
 	UnitBase* m_ptOutUnit;
+
+
+	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
+	afx_msg void OnTimer(UINT_PTR nIDEvent);
 	afx_msg void OnPaint();
 };

@@ -1479,7 +1479,6 @@ void CMFCSimulatorDlg::OnLButtonDblClk(UINT nFlags, CPoint point)
 				UnitInDlg dlgUnitInChoose;
 				dlgUnitInChoose.DoModal();
 				
-				AfxMessageBox(m_strFunOrOperChoose);
 
 				// 將從子視窗選擇的函式更新到元件內
 				ptUnit->m_strFuncOrOpera = m_strFunOrOperChoose;
@@ -1490,8 +1489,6 @@ void CMFCSimulatorDlg::OnLButtonDblClk(UINT nFlags, CPoint point)
 
 				UnitFunDlg dlgUnitFun;
 				dlgUnitFun.DoModal();
-
-				AfxMessageBox(m_strFunOrOperChoose);
 
 				// 將從子視窗選擇的函式更新到元件內
 				ptUnit->m_strFuncOrOpera = m_strFunOrOperChoose;

@@ -30,10 +30,19 @@ public:
 	CStatic m_staticTimeShow;              // 顯示當下時間
 	CStatic m_staticResultShow;            // 顯示當下計算結果
 	CFont m_fontTimeAndResult;             // 自訂 時間與結果 狀態字型
+	CFont m_fontTimeAndResultText;         // 自訂 時間與結果 標誌字型
 
 
 	DWORD m_dwStartTime;                   // 計時開始的時間
 	UINT_PTR m_nTimerID;                   // 計時器 ID
+
+
+	CStatic m_staticTimeText;
+	CStatic m_staticResultText;
+
+	CButton m_buttonStart;
+	CButton m_buttonStop;
+
 
 	double m_dCurTime;
 	
@@ -47,7 +56,12 @@ public:
 	UnitBase* m_ptOutUnit;
 
 
+
+
+
 	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
 	afx_msg void OnPaint();
+	afx_msg void OnBnClickedButtonStart();
+	afx_msg void OnBnClickedButtonStop();
 };

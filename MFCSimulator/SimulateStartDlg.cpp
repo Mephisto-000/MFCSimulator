@@ -17,6 +17,7 @@ SimulateStartDlg::SimulateStartDlg(CWnd* pParent /*=nullptr*/)
 	: CDialogEx(IDD_DIALOG_SIMULATE_START, pParent)
 {
 	m_fontTimeAndResult.CreatePointFont(200, _T("Arial Black"));
+	m_fontTimeAndResultText.CreatePointFont(150, _T("Arial Black"));
 
 	m_dwStartTime = 0;
 	m_nTimerID = 1;
@@ -33,6 +34,10 @@ void SimulateStartDlg::DoDataExchange(CDataExchange* pDX)
 	CDialogEx::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_STATIC_TIME, m_staticTimeShow);
 	DDX_Control(pDX, IDC_STATIC_RESULT, m_staticResultShow);
+	DDX_Control(pDX, IDC_STATIC_TIME_TEXT, m_staticTimeText);
+	DDX_Control(pDX, IDC_STATIC_RESULT_TEXT, m_staticResultText);
+	DDX_Control(pDX, IDC_BUTTON_START, m_buttonStart);
+	DDX_Control(pDX, IDC_BUTTON_STOP, m_buttonStop);
 }
 
 
@@ -40,6 +45,8 @@ BEGIN_MESSAGE_MAP(SimulateStartDlg, CDialogEx)
 	ON_WM_CTLCOLOR()
 	ON_WM_TIMER()
 	ON_WM_PAINT()
+	ON_BN_CLICKED(IDC_BUTTON_START, &SimulateStartDlg::OnBnClickedButtonStart)
+	ON_BN_CLICKED(IDC_BUTTON_STOP, &SimulateStartDlg::OnBnClickedButtonStop)
 END_MESSAGE_MAP()
 
 
@@ -68,8 +75,15 @@ HBRUSH SimulateStartDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 
 	if ((pWnd->GetDlgCtrlID() == IDC_STATIC_TIME) || (pWnd->GetDlgCtrlID() == IDC_STATIC_RESULT))
 	{
-		pDC->SetTextColor(RGB(0, 0, 0));
+		pDC->SetTextColor(RGB(255, 0, 0));
 		pDC->SelectObject(&m_fontTimeAndResult);
+	}
+
+	if ((pWnd->GetDlgCtrlID() == IDC_STATIC_TIME_TEXT) || (pWnd->GetDlgCtrlID() == IDC_STATIC_RESULT_TEXT))
+	{
+
+		pDC->SetTextColor(RGB(0, 0, 0));
+		pDC->SelectObject(&m_fontTimeAndResultText);
 	}
 
 
@@ -84,14 +98,14 @@ void SimulateStartDlg::UpdateSimulate()
 
 
 	CString strTimeValue;
-	strTimeValue.Format(_T("%.7f"), m_dCurTime);
+	strTimeValue.Format(_T("%.3f"), m_dCurTime);
 	m_staticTimeShow.SetWindowText(strTimeValue);
 
 	CMFCSimulatorDlg dlgMain;
 	m_dResultValue = dlgMain.SetPostfixResult(m_ptOutUnit, m_dCurTime);
 
 	CString strResult;
-	strResult.Format(_T("%.7f"), m_dResultValue);
+	strResult.Format(_T("%.4f"), m_dResultValue);
 	m_staticResultShow.SetWindowText(strResult);
 }
 
@@ -143,4 +157,19 @@ void SimulateStartDlg::DrawToBuffer(CDC* pDC)
 
 
 
+}
+
+
+
+// 模擬開始
+void SimulateStartDlg::OnBnClickedButtonStart()
+{
+	// TODO: 在此加入控制項告知處理常式程式碼
+}
+
+
+// 模擬停止
+void SimulateStartDlg::OnBnClickedButtonStop()
+{
+	// TODO: 在此加入控制項告知處理常式程式碼
 }

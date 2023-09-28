@@ -42,6 +42,10 @@
 #define IDC_STATIC_LINE_MODE_STATE      1030
 #define IDC_STATIC_TIME                 1030
 #define IDC_STATIC_RESULT               1031
+#define IDC_STATIC_TIME_TEXT            1032
+#define IDC_STATIC_RESULT_TEXT          1033
+#define IDC_BUTTON_START                1034
+#define IDC_BUTTON_STOP                 1035
 
 // Next default values for new objects
 // 
@@ -49,7 +53,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        138
 #define _APS_NEXT_COMMAND_VALUE         32771
-#define _APS_NEXT_CONTROL_VALUE         1032
+#define _APS_NEXT_CONTROL_VALUE         1035
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

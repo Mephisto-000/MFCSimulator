@@ -1798,7 +1798,7 @@ void CMFCSimulatorDlg::OnBnClickedButtonSimulate()
 			//AfxMessageBox(strTest);
 
 			SimulateStartDlg dlgResult;
-			dlgResult.m_dwStartTime = m_dwStartTime;
+			//dlgResult.m_dwStartTime = m_dwStartTime;
 			dlgResult.m_ptOutUnit = ptUnitResultOut;
 			dlgResult.DoModal();
 

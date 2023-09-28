@@ -2,6 +2,7 @@
 #include "afxdialogex.h"
 
 #include "UnitBase.h"
+#include <queue>
 
 // SimulateStartDlg 對話方塊
 
@@ -35,23 +36,22 @@ public:
 
 	DWORD m_dwStartTime;                   // 計時開始的時間
 	UINT_PTR m_nTimerID;                   // 計時器 ID
-
+	double m_dCurTime;
 
 	CStatic m_staticTimeText;
 	CStatic m_staticResultText;
 
 	CButton m_buttonStart;
 	CButton m_buttonStop;
-
-
-	double m_dCurTime;
 	
 	void UpdateSimulate();
 
 	void DrawToBuffer(CDC* pDC);							// 雙緩衝更新區域函數
 	void DrawGrid(CDC* pDC);                                // 畫出顯示區背景網格
+	void DrawWave(CDC* pDC);                                // 畫出波型
 
-	double m_dResultValue;
+	double m_dResultValue;                                  // 計算結果值
+	std::queue<double> m_queueResultValue;                    // 繪圖用計算結果佇列
 
 	CList<UnitBase*, UnitBase*> m_listUnitResult;
 

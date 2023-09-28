@@ -62,8 +62,6 @@ BOOL SimulateStartDlg::OnInitDialog()
 
 	// TODO:  在此加入額外的初始化
 
-	SetTimer(m_nTimerID, 50, nullptr);
-
 	return TRUE;  // return TRUE unless you set the focus to a control
 	// EXCEPTION: OCX 屬性頁應傳回 FALSE
 }
@@ -96,9 +94,9 @@ HBRUSH SimulateStartDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 }
 
 
+// 更新數值計算結果
 void SimulateStartDlg::UpdateSimulate()
 {
-
 
 	CString strTimeValue;
 	strTimeValue.Format(_T("%.3f"), m_dCurTime);
@@ -127,6 +125,11 @@ void SimulateStartDlg::OnTimer(UINT_PTR nIDEvent)
 
 		m_dCurTime = dSeconds;
 		UpdateSimulate();
+
+		// 將計算結果儲存於佇列中
+		m_queueResultValue.push(m_dResultValue);
+
+		OnPaint();
 
 	}
 
@@ -180,13 +183,13 @@ void SimulateStartDlg::DrawGrid(CDC* pDC)
 
 
 	// 設置網格線
-	CPen penGrid(PS_SOLID, 1, RGB(0, 130, 66));  // 亮綠色網格線
+	CPen penGrid(PS_SOLID, 1, RGB(0, 130, 70));  // 亮綠色網格線
 	CPen* pOldPenGrid = pDC->SelectObject(&penGrid);
 
 
 	// 繪製垂直線
 	for (int iVertical = 0; iVertical <= rectSimShowRegion.right; iVertical += 10)
-	{	// 每隔 5 像素繪製一條線
+	{	// 每隔 10 像素繪製一條線
 
 		pDC->MoveTo(iVertical, 0);
 		pDC->LineTo(iVertical, rectSimShowRegion.bottom);
@@ -196,7 +199,7 @@ void SimulateStartDlg::DrawGrid(CDC* pDC)
 
 	// 繪製水平線
 	for (int iHorizontal = 0; iHorizontal <= rectSimShowRegion.bottom; iHorizontal += 10)
-	{	// 每隔 5 像素繪製一條線
+	{	// 每隔 10 像素繪製一條線
 
 		pDC->MoveTo(0, iHorizontal);
 		pDC->LineTo(rectSimShowRegion.right, iHorizontal);
@@ -204,6 +207,77 @@ void SimulateStartDlg::DrawGrid(CDC* pDC)
 	}
 
 	pDC->SelectObject(pOldPenGrid);
+
+}
+
+
+// 繪製波曲線
+void SimulateStartDlg::DrawWave(CDC* pDC)
+{
+	
+	// 取得操作視窗矩形資訊
+	CWnd* pSimShowRegion = GetDlgItem(IDC_STATIC_RESULT_SHOW);
+	CRect rectSimShowRegion;
+
+	pSimShowRegion->GetClientRect(&rectSimShowRegion);
+	int iWidthSimShowRegion = rectSimShowRegion.Width();
+	int iHeightSimShowRegion = rectSimShowRegion.Height();
+
+
+	// 設置波線
+	CPen penWave(PS_SOLID, 8, RGB(255, 0, 0));
+	CPen* pOldPenWave = pDC->SelectObject(&penWave);
+
+	double dXStep = 0.1;								// 每格像素為 0.1 單位
+	int iNumberPoints = rectSimShowRegion.Width();      // 一個周期內點的數量與顯示區域的寬對應
+
+	if (m_queueResultValue.size() > rectSimShowRegion.Width())
+	{
+		m_queueResultValue.pop();
+	}
+
+
+
+	std::queue<double> queueCurResult = m_queueResultValue;
+
+	for (int i = 0; i < m_queueResultValue.size(); i++)
+	{
+
+		double dX = i * dXStep;
+		double dY = 1 * queueCurResult.front();
+
+		// 將波形點映射到屏幕
+		int iScreenX = i;                   // 一個單位對應一個像素
+		int iScreenY = rectSimShowRegion.CenterPoint().y - static_cast<int>(dY * 100);
+		//pDC->SetPixel(iScreenX, iScreenY, RGB(255, 0, 0));
+
+		pDC->MoveTo(CPoint(iScreenX, iScreenY));
+		queueCurResult.pop();
+		
+		
+		int iScreenX2 = i;                   // 一個單位對應一個像素
+		int iScreenY2 = rectSimShowRegion.CenterPoint().y - static_cast<int>(dY * 100);
+		pDC->LineTo(CPoint(iScreenX2, iScreenY2));
+
+	}
+
+
+
+	
+	//for (int i = 0; i < iNumberPoints; i++)
+	//{
+
+	//	double dX = i * dXStep;
+	//	double dY = 1 * m_dResultValue;
+
+	//	// 將波形點映射到屏幕
+	//	int iScreenX = i;                   // 一個單位對應一個像素
+	//	int iScreenY = rectSimShowRegion.CenterPoint().y - static_cast<int>(dY * 100);
+	//	pDC->SetPixel(iScreenX, iScreenY, RGB(255, 0, 0));
+	//}
+
+
+	pDC->SelectObject(pOldPenWave);
 
 }
 
@@ -232,19 +306,20 @@ void SimulateStartDlg::DrawToBuffer(CDC* pDC)
 	DrawGrid(pDC);
 
 
+	DrawWave(pDC);
+
 
 }
+
 
 
 
 // 模擬開始
 void SimulateStartDlg::OnBnClickedButtonStart()
 {
-	// TODO: 在此加入控制項告知處理常式程式碼
 
-
-
-
+	m_dwStartTime = timeGetTime();
+	SetTimer(m_nTimerID, 50, nullptr);
 
 }
 
@@ -255,9 +330,24 @@ void SimulateStartDlg::OnBnClickedButtonStop()
 	// TODO: 在此加入控制項告知處理常式程式碼
 
 
+	int iTotalQueueSize = m_queueResultValue.size();
 
 
+	KillTimer(m_nTimerID);
+	if (m_queueResultValue.empty() != TRUE)
+	{
+		for (int i = 0; i < iTotalQueueSize; i++)
+		{
+			m_queueResultValue.pop();
+		}
 
+	}
+
+	CRect rectSimShowRegion;
+	GetDlgItem(IDC_STATIC_RESULT_SHOW)->GetWindowRect(&rectSimShowRegion);
+	GetDlgItem(IDC_STATIC_RESULT_SHOW)->GetParent()->ScreenToClient(rectSimShowRegion);
+	InvalidateRect(&rectSimShowRegion, TRUE);
+	UpdateWindow();
 }
 
 

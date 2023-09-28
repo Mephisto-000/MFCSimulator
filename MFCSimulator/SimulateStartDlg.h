@@ -47,7 +47,9 @@ public:
 	double m_dCurTime;
 	
 	void UpdateSimulate();
+
 	void DrawToBuffer(CDC* pDC);							// 雙緩衝更新區域函數
+	void DrawGrid(CDC* pDC);                                // 畫出顯示區背景網格
 
 	double m_dResultValue;
 

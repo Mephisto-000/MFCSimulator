@@ -171,6 +171,43 @@ void SimulateStartDlg::OnPaint()
 }
 
 
+void SimulateStartDlg::DrawGrid(CDC* pDC)
+{
+	// 取得操作視窗矩形資訊
+	CWnd* pSimShowRegion = GetDlgItem(IDC_STATIC_RESULT_SHOW);
+	CRect rectSimShowRegion;
+	pSimShowRegion->GetClientRect(&rectSimShowRegion);
+
+
+	// 設置網格線
+	CPen penGrid(PS_SOLID, 1, RGB(0, 130, 66));  // 亮綠色網格線
+	CPen* pOldPenGrid = pDC->SelectObject(&penGrid);
+
+
+	// 繪製垂直線
+	for (int iVertical = 0; iVertical <= rectSimShowRegion.right; iVertical += 10)
+	{	// 每隔 5 像素繪製一條線
+
+		pDC->MoveTo(iVertical, 0);
+		pDC->LineTo(iVertical, rectSimShowRegion.bottom);
+
+	}
+
+
+	// 繪製水平線
+	for (int iHorizontal = 0; iHorizontal <= rectSimShowRegion.bottom; iHorizontal += 10)
+	{	// 每隔 5 像素繪製一條線
+
+		pDC->MoveTo(0, iHorizontal);
+		pDC->LineTo(rectSimShowRegion.right, iHorizontal);
+
+	}
+
+	pDC->SelectObject(pOldPenGrid);
+
+}
+
+
 void SimulateStartDlg::DrawToBuffer(CDC* pDC)
 {
 
@@ -191,6 +228,8 @@ void SimulateStartDlg::DrawToBuffer(CDC* pDC)
 	pDC->FillRect(&rectSimShowRegion, &brushSimShowRegion);
 	pDC->SelectObject(pOldBrushSimShowRegion);
 
+	// 繪製網格
+	DrawGrid(pDC);
 
 
 

@@ -1009,14 +1009,14 @@ void CMFCSimulatorDlg::OnBnClickedButtonLine()
 	{
 		m_bIsLineMode = TRUE;
 
-		m_staticLineState.SetWindowText(_T("ON"));
+		m_staticLineState.SetWindowText(_T("Line"));
 
 	}
 	else
 	{
 		m_bIsLineMode = FALSE;
 
-		m_staticLineState.SetWindowText(_T("OFF"));
+		m_staticLineState.SetWindowText(_T("Normal"));
 
 	}
 
@@ -1773,7 +1773,9 @@ double CMFCSimulatorDlg::GetCalculateResult(double dTimeValue)
 void CMFCSimulatorDlg::OnBnClickedButtonSimulate()
 {
 
+	m_bIsLineMode = FALSE;
 
+	m_staticLineState.SetWindowText(_T("Simulation"));
 
 
 	POSITION posiUnit = m_listUnitPointers.GetTailPosition();
@@ -1807,20 +1809,7 @@ void CMFCSimulatorDlg::OnBnClickedButtonSimulate()
 
 
 
-	//m_dwStartTime = timeGetTime();
-	//
-
-	//double dTest = GetCalculateResult(M_PI/4);
-
-	//CString strTest;
-	//strTest.Format(_T("%.7f"), dTest);
-
-	//AfxMessageBox(strTest);
-
-	//SimulateStartDlg dlgResult;
-	//dlgResult.m_dwStartTime = m_dwStartTime;
-	//dlgResult.m_ptOutUnit = ptUnitResultOut;
-	//dlgResult.DoModal();
+	m_staticLineState.SetWindowText(_T("Normal"));
 
 }
 

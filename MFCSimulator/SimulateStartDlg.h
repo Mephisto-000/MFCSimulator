@@ -64,4 +64,5 @@ public:
 	afx_msg void OnPaint();
 	afx_msg void OnBnClickedButtonStart();
 	afx_msg void OnBnClickedButtonStop();
+
 };

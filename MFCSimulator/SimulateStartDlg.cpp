@@ -165,6 +165,11 @@ void SimulateStartDlg::DrawToBuffer(CDC* pDC)
 void SimulateStartDlg::OnBnClickedButtonStart()
 {
 	// TODO: 在此加入控制項告知處理常式程式碼
+
+
+
+
+
 }
 
 
@@ -172,4 +177,12 @@ void SimulateStartDlg::OnBnClickedButtonStart()
 void SimulateStartDlg::OnBnClickedButtonStop()
 {
 	// TODO: 在此加入控制項告知處理常式程式碼
+
+
+
+
+
 }
+
+
+

@@ -56,7 +56,7 @@ public:
 	UnitBase* m_ptOutUnit;
 
 
-
+	COLORREF m_colorSimShowRegion;
 
 
 	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
@@ -65,4 +65,5 @@ public:
 	afx_msg void OnBnClickedButtonStart();
 	afx_msg void OnBnClickedButtonStop();
 
+	CStatic m_staticResultShowRegion;
 };

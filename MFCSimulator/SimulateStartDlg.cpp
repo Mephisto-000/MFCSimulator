@@ -23,6 +23,8 @@ SimulateStartDlg::SimulateStartDlg(CWnd* pParent /*=nullptr*/)
 	m_nTimerID = 1;
 	m_dResultValue = 0.0;
 
+	m_colorSimShowRegion = RGB(0, 0, 0);
+
 }
 
 SimulateStartDlg::~SimulateStartDlg()
@@ -38,6 +40,7 @@ void SimulateStartDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_STATIC_RESULT_TEXT, m_staticResultText);
 	DDX_Control(pDX, IDC_BUTTON_START, m_buttonStart);
 	DDX_Control(pDX, IDC_BUTTON_STOP, m_buttonStop);
+	DDX_Control(pDX, IDC_STATIC_RESULT_SHOW, m_staticResultShowRegion);
 }
 
 
@@ -134,15 +137,36 @@ void SimulateStartDlg::OnTimer(UINT_PTR nIDEvent)
 
 void SimulateStartDlg::OnPaint()
 {
-	CPaintDC dc(this); // device context for painting
+	CPaintDC dc(this);
 	// TODO: 在此加入您的訊息處理常式程式碼
 	// 不要呼叫圖片訊息的 CDialogEx::OnPaint()
 
+	// 取得操作視窗矩形資訊
+	CWnd* pSimShowRegion = GetDlgItem(IDC_STATIC_RESULT_SHOW);
+	CRect rectSimShowRegion;
+
+	pSimShowRegion->GetClientRect(&rectSimShowRegion);
+	int iWidthSimShowRegion = rectSimShowRegion.Width();
+	int iHeightSimShowRegion = rectSimShowRegion.Height();
+
+	CDC* pdcSimShowRegion = pSimShowRegion->GetDC();
+	pSimShowRegion->UpdateWindow();
+
+	CDC memDC;
+	CBitmap memBitmap;
 
 
+	// 創建雙緩衝
+	memDC.CreateCompatibleDC(pdcSimShowRegion);
+	memBitmap.CreateCompatibleBitmap(pdcSimShowRegion, rectSimShowRegion.Width(), rectSimShowRegion.Height());
+	CBitmap* pOldMemBitMap = memDC.SelectObject(&memBitmap);
 
+	DrawToBuffer(&memDC);
 
-
+	pdcSimShowRegion->BitBlt(0, 0, iWidthSimShowRegion, iHeightSimShowRegion, &memDC, 0, 0, SRCCOPY);
+	memDC.SelectObject(pOldMemBitMap);
+	memBitmap.DeleteObject();
+	memDC.DeleteDC();
 
 }
 
@@ -150,9 +174,22 @@ void SimulateStartDlg::OnPaint()
 void SimulateStartDlg::DrawToBuffer(CDC* pDC)
 {
 
+	// 取得操作視窗矩形資訊
+	CWnd* pSimShowRegion = GetDlgItem(IDC_STATIC_RESULT_SHOW);
+	CRect rectSimShowRegion;
+
+	pSimShowRegion->GetClientRect(&rectSimShowRegion);
+	int iWidthSimShowRegion = rectSimShowRegion.Width();
+	int iHeightSimShowRegion = rectSimShowRegion.Height();
 
 
+	CBrush brushSimShowRegion;
+	CBrush* pOldBrushSimShowRegion = pDC->SelectObject(&brushSimShowRegion);
 
+	brushSimShowRegion.CreateSolidBrush(m_colorSimShowRegion);
+	pDC->Rectangle(rectSimShowRegion);
+	pDC->FillRect(&rectSimShowRegion, &brushSimShowRegion);
+	pDC->SelectObject(pOldBrushSimShowRegion);
 
 
 

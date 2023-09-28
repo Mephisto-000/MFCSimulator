@@ -132,6 +132,15 @@ void SimulateStartDlg::OnTimer(UINT_PTR nIDEvent)
 		// 將計算結果儲存於佇列中
 		m_queueResultValue.push(m_dResultValue);
 
+		CWnd* pSimShowRegion = GetDlgItem(IDC_STATIC_RESULT_SHOW);
+		CRect rectSimShowRegion;
+
+		pSimShowRegion->GetClientRect(&rectSimShowRegion);
+		if (m_queueResultValue.size() > rectSimShowRegion.Width())
+		{
+			m_queueResultValue.pop();
+		}
+		
 		OnPaint();
 
 	}
@@ -326,10 +335,10 @@ void SimulateStartDlg::DrawWave(CDC* pDC)
 	double dXStep = 0.1;								// 每格像素為 0.1 單位
 	int iNumberPoints = rectSimShowRegion.Width();      // 一個周期內點的數量與顯示區域的寬對應
 
-	if (m_queueResultValue.size() > rectSimShowRegion.Width())
+	/*if (m_queueResultValue.size() > rectSimShowRegion.Width())
 	{
 		m_queueResultValue.pop();
-	}
+	}*/
 
 
 

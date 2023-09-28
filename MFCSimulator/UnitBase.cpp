@@ -40,12 +40,12 @@ UnitBase::~UnitBase()
 {
 	if (m_vecPtsPreLeftUnit.empty() != TRUE)
 	{
-		// 釋放陣列內的指標記憶體
-		for (int i = 0; i < m_vecPtsPreLeftUnit.size(); i++)
-		{
-			UnitBase* ptTemp = m_vecPtsPreLeftUnit[i];
-			delete ptTemp;
-		}
+		//// 釋放陣列內的指標記憶體
+		//for (int i = 0; i < m_vecPtsPreLeftUnit.size(); i++)
+		//{
+		//	UnitBase* ptTemp = m_vecPtsPreLeftUnit[i];
+		//	delete ptTemp;
+		//}
 
 		// 清空陣列元素，再宣告一個空陣列與其做交換釋放記憶體
 		m_vecPtsPreLeftUnit.clear();
@@ -56,12 +56,12 @@ UnitBase::~UnitBase()
 
 	if (m_vecPtsPreRightUnit.empty() != TRUE)
 	{
-		// 釋放陣列內的指標記憶體
-		for (int i = 0; i < m_vecPtsPreRightUnit.size(); i++)
-		{
-			UnitBase* ptTemp = m_vecPtsPreRightUnit[i];
-			delete ptTemp;
-		}
+		//// 釋放陣列內的指標記憶體
+		//for (int i = 0; i < m_vecPtsPreRightUnit.size(); i++)
+		//{
+		//	UnitBase* ptTemp = m_vecPtsPreRightUnit[i];
+		//	delete ptTemp;
+		//}
 
 		// 清空陣列元素，再宣告一個空陣列與其做交換釋放記憶體
 		m_vecPtsPreRightUnit.clear();
@@ -86,12 +86,12 @@ UnitBase::~UnitBase()
 
 	if (m_vecPtsNextUnit.empty() != TRUE)
 	{
-		// 釋放陣列內的指標記憶體
-		for (int i = 0; i < m_vecPtsNextUnit.size(); i++)
-		{
-			UnitBase* ptTemp = m_vecPtsNextUnit[i];
-			delete ptTemp;
-		}
+		//// 釋放陣列內的指標記憶體
+		//for (int i = 0; i < m_vecPtsNextUnit.size(); i++)
+		//{
+		//	UnitBase* ptTemp = m_vecPtsNextUnit[i];
+		//	delete ptTemp;
+		//}
 
 		// 清空陣列元素，再宣告一個空陣列與其做交換釋放記憶體
 		m_vecPtsNextUnit.clear();

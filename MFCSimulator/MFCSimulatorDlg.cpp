@@ -83,9 +83,9 @@ CMFCSimulatorDlg::~CMFCSimulatorDlg()
 {
 
 	POSITION posiUnit = m_listUnitPointers.GetTailPosition();
-	if (posiUnit != nullptr)
+	while (posiUnit != nullptr)
 	{
-		UnitLine* ptUnit = m_listUnitLines.GetPrev(posiUnit);
+		UnitBase* ptUnit = m_listUnitPointers.GetPrev(posiUnit);
 		delete ptUnit;
 	}
 	
@@ -93,7 +93,7 @@ CMFCSimulatorDlg::~CMFCSimulatorDlg()
 
 
 	POSITION posiLineUnit = m_listUnitLines.GetTailPosition();
-	if (posiLineUnit != nullptr)
+	while (posiLineUnit != nullptr)
 	{
 		UnitLine* ptLineUnit = m_listUnitLines.GetPrev(posiLineUnit);
 		delete ptLineUnit;

@@ -24,7 +24,7 @@ class CMFCSimulatorDlg : public CDialogEx
 // 建構
 public:
 	CMFCSimulatorDlg(CWnd* pParent = nullptr);	// 標準建構函式
-
+	~CMFCSimulatorDlg();
 // 對話方塊資料
 #ifdef AFX_DESIGN_TIME
 	enum { IDD = IDD_MFCSIMULATOR_DIALOG };
@@ -57,7 +57,6 @@ public:
 
 	CList<UnitBase*, UnitBase*> m_listUnitPointers;         // 紀錄已生成的元件
 	CList<UnitLine*, UnitLine*> m_listUnitLines;            // 紀錄連接線
-	CList<UnitBase*, UnitBase*> m_listSortedUnitPointers;   // 紀錄已排序的的元件
 
 	UnitBase* m_ptPreMovingUnit;							// 紀錄前一個點選的指標
 	UnitBase* m_ptMovingUnit;                               // 紀錄正在被滑鼠拖曳的指標，拖曳控件的情況
@@ -115,8 +114,7 @@ public:
 
 	void DrawToBuffer(CDC* pDC);							// 雙緩衝更新區域函數
 
-	
-	void UnitInWindow();                                    // 開啟函數選擇視窗
+
 
 
 	//BOOL IsOperator(CString strOperator);                   // 判斷是否為運算元
@@ -154,4 +152,6 @@ public:
 
 	DWORD m_dwStartTime;
 
+	
+	afx_msg void OnDestroy();
 };

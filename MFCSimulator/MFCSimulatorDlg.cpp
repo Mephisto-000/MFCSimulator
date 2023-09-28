@@ -79,6 +79,37 @@ CMFCSimulatorDlg::CMFCSimulatorDlg(CWnd* pParent /*=nullptr*/)
 	m_fontLineModeText.CreatePointFont(125, _T("Calibri"));
 }
 
+CMFCSimulatorDlg::~CMFCSimulatorDlg()
+{
+
+	POSITION posiUnit = m_listUnitPointers.GetTailPosition();
+	if (posiUnit != nullptr)
+	{
+		UnitLine* ptUnit = m_listUnitLines.GetPrev(posiUnit);
+		delete ptUnit;
+	}
+	
+	m_listUnitPointers.RemoveAll();
+
+
+	POSITION posiLineUnit = m_listUnitLines.GetTailPosition();
+	if (posiLineUnit != nullptr)
+	{
+		UnitLine* ptLineUnit = m_listUnitLines.GetPrev(posiLineUnit);
+		delete ptLineUnit;
+	}
+
+	m_listUnitLines.RemoveAll();
+
+
+	//delete m_ptPreMovingUnit;
+	//delete m_ptMovingUnit;
+	//delete m_ptMovingLine;
+	//delete m_ptPreUnit;
+	//delete m_ptNextUnit;
+
+}
+
 void CMFCSimulatorDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
@@ -114,6 +145,7 @@ BEGIN_MESSAGE_MAP(CMFCSimulatorDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_BUTTON_SIMULATE, &CMFCSimulatorDlg::OnBnClickedButtonSimulate)
 
 	ON_WM_LBUTTONDBLCLK()
+	ON_WM_DESTROY()
 END_MESSAGE_MAP()
 
 
@@ -470,30 +502,6 @@ double CMFCSimulatorDlg::SetPostfixResult(UnitBase* ptUnit, double dTimeValue)
 }
 
 
-
-
-
-//void CMFCSimulatorDlg::SetPostfixResult(UnitBase* ptUnit)
-//{
-//	if (ptUnit != nullptr)
-//	{	// 開始後序走訪
-//
-//		if (ptUnit->m_vecPtsPreLeftUnit.size() != 0)
-//		{	// 遍歷走訪左子節點
-//
-//			SetPostfixResult(ptUnit);
-//		}
-//
-//		if (ptUnit->m_vecPtsPreRightUnit.size() != 0)
-//		{	// 遍歷走訪右子節點
-//
-//			SetPostfixResult(ptUnit);
-//		}
-//
-//		m_listSortedUnitPointers.AddHead(ptUnit);
-//
-//	}
-//}
 
 
 
@@ -1812,5 +1820,18 @@ void CMFCSimulatorDlg::OnBnClickedButtonSimulate()
 	m_staticLineState.SetWindowText(_T("Normal"));
 
 }
+
+
+
+
+void CMFCSimulatorDlg::OnDestroy()
+{
+
+
+	CDialogEx::OnDestroy();
+
+	// TODO: 在此加入您的訊息處理常式程式碼
+}
+
 
 

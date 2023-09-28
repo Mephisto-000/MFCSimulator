@@ -53,7 +53,6 @@ public:
 	double m_dResultValue;                                  // 計算結果值
 	std::queue<double> m_queueResultValue;                    // 繪圖用計算結果佇列
 
-	CList<UnitBase*, UnitBase*> m_listUnitResult;
 
 	UnitBase* m_ptOutUnit;
 

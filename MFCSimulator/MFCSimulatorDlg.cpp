@@ -146,6 +146,8 @@ BEGIN_MESSAGE_MAP(CMFCSimulatorDlg, CDialogEx)
 
 	ON_WM_LBUTTONDBLCLK()
 	ON_WM_DESTROY()
+	ON_BN_CLICKED(IDC_BUTTON_SAVE, &CMFCSimulatorDlg::OnBnClickedButtonSave)
+	ON_BN_CLICKED(IDC_BUTTON_OPEN, &CMFCSimulatorDlg::OnBnClickedButtonOpen)
 END_MESSAGE_MAP()
 
 
@@ -1835,3 +1837,30 @@ void CMFCSimulatorDlg::OnDestroy()
 
 
 
+
+// 存檔
+void CMFCSimulatorDlg::OnBnClickedButtonSave()
+{
+	// TODO: 在此加入控制項告知處理常式程式碼
+
+
+
+
+
+
+}
+
+
+// 讀檔
+void CMFCSimulatorDlg::OnBnClickedButtonOpen()
+{
+	// TODO: 在此加入控制項告知處理常式程式碼
+
+
+
+
+
+
+
+
+}

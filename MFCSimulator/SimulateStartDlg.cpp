@@ -140,12 +140,12 @@ void SimulateStartDlg::OnTimer(UINT_PTR nIDEvent)
 		// 將計算結果儲存於佇列中
 		if (m_queueResultValue.size() > rectSimShowRegion.Width())
 		{
-			m_queueResultValue.pop();
-			m_queueResultValue.push(m_dResultValue);
+			m_queueResultValue.pop_front();
+			m_queueResultValue.push_back(m_dResultValue);
 		}
 		else
 		{
-			m_queueResultValue.push(m_dResultValue);
+			m_queueResultValue.push_back(m_dResultValue);
 		}
 		
 		OnPaint();
@@ -344,26 +344,58 @@ void SimulateStartDlg::DrawWave(CDC* pDC)
 
 
 
-	/*std::queue<double> queueCurResult = m_queueResultValue;*/
-	m_queueCurValue = m_queueResultValue;
+
+	//m_queueCurValue = m_queueResultValue;
 
 	for (int i = 0; i < m_queueResultValue.size(); i++)
 	{
 
-		/*double dX = i * dXStep;*/
-		double dY = 1 * m_queueCurValue.front(); 
+
+
+		double dY = 1 * m_queueResultValue[0+i];
 
 		// 將波形點映射到屏幕
 		int iScreenX = i;  // 一個單位對應 1 個像素
 		int iScreenY = rectSimShowRegion.CenterPoint().y - static_cast<int>(dY * 100);
 
 		pDC->MoveTo(CPoint(iScreenX, iScreenY));
-		m_queueCurValue.pop();
-		
-		
-		int iScreenX2 = i;									 // 一個單位對應 1 個像素
-		int iScreenY2 = rectSimShowRegion.CenterPoint().y - static_cast<int>(dY * 100);
-		pDC->LineTo(CPoint(iScreenX2, iScreenY2));
+
+		if ((m_queueResultValue.size() >= 2) && (i + 1 < m_queueResultValue.size()))
+		{
+			double dY2 = 1 * m_queueResultValue[i+1];
+
+			int iScreenX2 = i;									 // 一個單位對應 1 個像素
+			int iScreenY2 = rectSimShowRegion.CenterPoint().y - static_cast<int>(dY2 * 100);
+			pDC->LineTo(CPoint(iScreenX2, iScreenY2));
+		}
+		else
+		{
+			double dY2 = 1 * m_queueResultValue[0];
+
+			int iScreenX2 = i;									 // 一個單位對應 1 個像素
+			int iScreenY2 = rectSimShowRegion.CenterPoint().y - static_cast<int>(dY2 * 100);
+			pDC->LineTo(CPoint(iScreenX2, iScreenY2));
+		}
+
+
+
+
+
+
+
+		//double dY = 1 * m_queueCurValue.front(); 
+
+		//// 將波形點映射到屏幕
+		//int iScreenX = i;  // 一個單位對應 1 個像素
+		//int iScreenY = rectSimShowRegion.CenterPoint().y - static_cast<int>(dY * 100);
+
+		//pDC->MoveTo(CPoint(iScreenX, iScreenY));
+		//m_queueCurValue.pop();
+		//
+		//
+		//int iScreenX2 = i;									 // 一個單位對應 1 個像素
+		//int iScreenY2 = rectSimShowRegion.CenterPoint().y - static_cast<int>(dY * 100);
+		//pDC->LineTo(CPoint(iScreenX2, iScreenY2));
 
 	}
 
@@ -443,7 +475,7 @@ void SimulateStartDlg::OnBnClickedButtonStop()
 	{
 		for (int i = 0; i < iTotalQueueSize; i++)
 		{
-			m_queueResultValue.pop();
+			m_queueResultValue.pop_front();
 		}
 
 	}

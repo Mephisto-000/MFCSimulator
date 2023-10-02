@@ -2,7 +2,7 @@
 #include "afxdialogex.h"
 
 #include "UnitBase.h"
-#include <queue>
+#include <deque>
 
 // SimulateStartDlg 對話方塊
 
@@ -51,8 +51,8 @@ public:
 	void DrawWave(CDC* pDC);                                // 畫出波型
 
 	double m_dResultValue;                                    // 計算結果值
-	std::queue<double> m_queueResultValue;                    // 繪圖用計算結果佇列
-	std::queue<double> m_queueCurValue;                       // 記錄當下結果佇列
+	std::deque<double> m_queueResultValue;                    // 繪圖用計算結果佇列
+	std::deque<double> m_queueCurValue;                       // 記錄當下結果佇列
 
 
 	UnitBase* m_ptOutUnit;

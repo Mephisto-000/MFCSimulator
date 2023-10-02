@@ -77,6 +77,8 @@ CMFCSimulatorDlg::CMFCSimulatorDlg(CWnd* pParent /*=nullptr*/)
 	m_iOffsetY = 0;
 	m_fontLineModeState.CreatePointFont(125, _T("Calibri"));
 	m_fontLineModeText.CreatePointFont(125, _T("Calibri"));
+	m_iListUnitAmount = 0;
+	m_iListUnitLineAmount = 0;
 }
 
 CMFCSimulatorDlg::~CMFCSimulatorDlg()
@@ -1621,11 +1623,6 @@ void CMFCSimulatorDlg::OnLButtonUp(UINT nFlags, CPoint point)
 
 
 
-			//CRect rectLeftTopCheck = ptUnit->m_rectConnectLeftTop;
-			//CRect rectRightTopCheck = ptUnit->m_rectConnectRightTop;
-			//CRect rectBottomCheck = ptUnit->m_rectConnectBottom;
-
-
 
 			if ((ptUnit->m_bMoveState == TRUE) && (m_bIsLineMode == FALSE))
 			{	// 更新元件移動的狀態
@@ -1654,6 +1651,13 @@ void CMFCSimulatorDlg::OnLButtonUp(UINT nFlags, CPoint point)
 
 						// 紀錄連線終點的元件
 						m_ptNextUnit = ptUnit;
+
+
+						// TODO : 其他不合理連線
+						if ((m_ptPreUnit->m_strUnitID == "IN") && (m_ptNextUnit->m_strUnitID == "IN"))
+						{
+							break;
+						}
 
 						// 兩連接元件紀錄彼此的指標
 			           // 考慮放的位置
@@ -1788,6 +1792,30 @@ void CMFCSimulatorDlg::OnBnClickedButtonSimulate()
 	m_staticLineState.SetWindowText(_T("Simulation"));
 
 
+	//POSITION posiUnit = m_listUnitPointers.GetTailPosition();
+	//while (posiUnit != nullptr)
+	//{
+	//	UnitBase* ptUnit = m_listUnitPointers.GetPrev(posiUnit);
+
+	//	if (ptUnit->m_strUnitID == "OUT")
+	//	{
+	//		UnitBase* ptUnitResultOut = ptUnit;
+
+
+
+	//		//AfxMessageBox(strTest);
+
+	//		SimulateStartDlg dlgResult;
+	//		//dlgResult.m_dwStartTime = m_dwStartTime;
+	//		dlgResult.m_ptOutUnit = ptUnitResultOut;
+	//		dlgResult.DoModal();
+
+
+
+	//	}
+	//}
+
+	UnitBase* ptUnitResultOut = NULL;
 	POSITION posiUnit = m_listUnitPointers.GetTailPosition();
 	while (posiUnit != nullptr)
 	{
@@ -1795,28 +1823,14 @@ void CMFCSimulatorDlg::OnBnClickedButtonSimulate()
 
 		if (ptUnit->m_strUnitID == "OUT")
 		{
-			UnitBase* ptUnitResultOut = ptUnit;
-
-			m_dwStartTime = timeGetTime();
-
-
-			double dTest = GetCalculateResult(M_PI / 4);
-
-			CString strTest;
-			strTest.Format(_T("%.7f"), dTest);
-
-			//AfxMessageBox(strTest);
-
-			SimulateStartDlg dlgResult;
-			//dlgResult.m_dwStartTime = m_dwStartTime;
-			dlgResult.m_ptOutUnit = ptUnitResultOut;
-			dlgResult.DoModal();
-
-
-
+			ptUnitResultOut = ptUnit;
 		}
 	}
 
+
+	SimulateStartDlg dlgResult;
+	dlgResult.m_ptOutUnit = ptUnitResultOut;
+	dlgResult.DoModal();
 
 
 	m_staticLineState.SetWindowText(_T("Normal"));
@@ -1841,11 +1855,188 @@ void CMFCSimulatorDlg::OnDestroy()
 // 存檔
 void CMFCSimulatorDlg::OnBnClickedButtonSave()
 {
-	// TODO: 在此加入控制項告知處理常式程式碼
+
+	CFileDialog dlgSave(FALSE, _T(".txt"), NULL, OFN_OVERWRITEPROMPT, _T("文本文件 (*.txt)|*.txt|所有文件 (*.*)|*.*||"));
+
+	if (dlgSave.DoModal() == IDOK)
+	{
+		CString strFilePath = dlgSave.GetPathName();
+		/*CFile file;*/
+		CStdioFile file;
+
+		// 創建並寫入存檔的 .txt 檔案
+		if (file.Open(strFilePath, CFile::modeWrite | CFile::modeCreate))
+		{
+			m_iListUnitAmount = m_listUnitPointers.GetCount();
+			
+			POSITION posiUnit = m_listUnitPointers.GetHeadPosition();
+			while (posiUnit != nullptr)
+			{
+				
+				UnitBase* ptUnit = m_listUnitPointers.GetNext(posiUnit);
+
+				// 元件位置
+				CString strPointUnitLocation;
+				strPointUnitLocation.Format(_T("(%d, %d)"), ptUnit->m_pointUnitLocation.x, ptUnit->m_pointUnitLocation.y);
+				strPointUnitLocation + _T("\r\n");  // 每行數據換行
+				file.WriteString(strPointUnitLocation);
+
+				// 元件矩形長
+				CString strUnitHeight;
+				strUnitHeight.Format(_T("%d"), ptUnit->m_iUnitHeight);
+				strUnitHeight + _T("\r\n");  // 每行數據換行
+				file.WriteString(strUnitHeight);
+
+				// 元件矩形寬
+				CString strUnitWidth;
+				strUnitWidth.Format(_T("%d"), ptUnit->m_iUnitWidth);
+				strUnitWidth + _T("\r\n");
+				file.WriteString(strUnitWidth);
+
+				// 元件類型
+				CString strUnitID;
+				strUnitID = ptUnit->m_strUnitID + _T("\r\n");
+				file.WriteString(strUnitID);
+
+				// 元件選取狀態
+				CString strFocusState;
+				strFocusState.Format(_T("%s"), ptUnit->m_bFocusState ? _T("TRUE") : _T("FALSE"));
+				strFocusState + _T("\r\n");
+				file.WriteString(strFocusState);
+
+				// 選擇的函數或是運算元
+				CString strFuncOrOpera;
+				strFuncOrOpera = ptUnit->m_strFuncOrOpera + _T("\r\n");
+				file.WriteString(strFuncOrOpera);
+
+				// 輸出的數值
+				CString strOutValue;
+				strOutValue.Format(_T("%.5f"), ptUnit->m_dOutValue);
+				strOutValue + _T("\r\n");
+				file.WriteString(strOutValue);
+
+				// 線段資料 
+				// 當頂部只有單一連接點時，將單一頂部點存於左上的點
+				// 用於分辨左右支點 
+				// 左上連接點 : 
+				CString strPointConnectLeftTop;
+				strPointConnectLeftTop.Format(_T("(%d, %d)"), ptUnit->m_pointConnectLeftTop.x, ptUnit->m_pointConnectLeftTop.y);
+				strPointConnectLeftTop + _T("\r\n");
+				file.WriteString(strPointConnectLeftTop);
+
+				// 右上連接點 : 
+				CString strPointConnectRightTop;
+				strPointConnectRightTop.Format(_T("(%d, %d)"), ptUnit->m_pointConnectRightTop.x, ptUnit->m_pointConnectRightTop.y);
+				strPointConnectRightTop + _T("\r\n");
+				file.WriteString(strPointConnectRightTop);
+
+				// 下方連接點 : 
+				CString strPointConnectBottom;
+				strPointConnectBottom.Format(_T("(%d, %d)"), ptUnit->m_pointConnectBottom.x, ptUnit->m_pointConnectBottom.y);
+				strPointConnectBottom + _T("\r\n");
+				file.WriteString(strPointConnectBottom);
+
+				// 左上連接點矩形 : 
+				CString strRectConnectLeftTop;
+				strRectConnectLeftTop.Format(_T("(%d, %d, %d, %d)"),
+					ptUnit->m_rectConnectLeftTop.left, ptUnit->m_rectConnectLeftTop.top,
+					ptUnit->m_rectConnectLeftTop.right, ptUnit->m_rectConnectLeftTop.bottom);
+				strRectConnectLeftTop + _T("\r\n");
+				file.WriteString(strRectConnectLeftTop);
+
+				// 右上連接點矩形 : 
+				CString strRectConnectRightTop;
+				strRectConnectRightTop.Format(_T("(%d, %d, %d, %d)"),
+					ptUnit->m_rectConnectRightTop.left, ptUnit->m_rectConnectRightTop.top,
+					ptUnit->m_rectConnectRightTop.right, ptUnit->m_rectConnectRightTop.bottom);
+				strRectConnectRightTop + _T("\r\n");
+				file.WriteString(strRectConnectRightTop);
+				
+				// 下方連接點矩形 :
+				CString strRectConnectBottom;
+				strRectConnectBottom.Format(_T("%d, %d, %d, %d"),
+					ptUnit->m_rectConnectBottom.left, ptUnit->m_rectConnectBottom.top,
+					ptUnit->m_rectConnectBottom.right, ptUnit->m_rectConnectBottom.bottom);
+				strRectConnectBottom + _T("\r\n");
+				file.WriteString(strRectConnectBottom);
+
+				// 連接點半徑 : 
+				CString strConnectPtRadius;
+				strConnectPtRadius.Format(_T("%d"), ptUnit->m_iConnectPtRadius);
+				strConnectPtRadius + _T("\r\n");
+				file.WriteString(strConnectPtRadius);
+
+				// 連線狀態 : 
+				CString strConnectPointStatus;
+				strConnectPointStatus.Format(_T("%s"), ptUnit->m_bConnectPoint ? _T("TRUE") : _T("FALSE"));
+				strConnectPointStatus + _T("\r\n");
+				file.WriteString(strConnectPointStatus);
+
+				// 用於繪圖
+				// 線段連接點 : 
+				ptUnit->m_iConnectPtAmount = ptUnit->m_vecConnectPt.size();
+				CString strConnectPtAmount;  // 連接點數量
+				strConnectPtAmount.Format(_T("%d"), ptUnit->m_iConnectPtAmount);
+				strConnectPtAmount + _T("\r\n");
+				file.WriteString(strConnectPtAmount);
+
+				if (ptUnit->m_iConnectPtAmount > 0)
+				{
+					for (int i = 0; i < ptUnit->m_iConnectPtAmount; i++)
+					{
+						CString strTmpPoint;
+						strTmpPoint.Format(_T("(%d, %d)"), ptUnit->m_vecConnectPt[i].x, ptUnit->m_vecConnectPt[i].y);
+						strTmpPoint + _T("\r\n");
+						file.WriteString(strTmpPoint);
+					}
+				}
+
+				// 線段接點矩形 : 
+				ptUnit->m_iConnectPtRectAmount = ptUnit->m_vecConnectPtRect.size();
+				CString strConnectPtRectAmount;  // 連接點外接矩形數量
+				strConnectPtRectAmount.Format(_T("%d"), ptUnit->m_iConnectPtRectAmount);
+				strConnectPtRectAmount + _T("\r\n");
+				file.WriteString(strConnectPtRectAmount);
+
+				if (ptUnit->m_iConnectPtRectAmount > 0)
+				{
+					for (int i = 0; i < ptUnit->m_iConnectPtRectAmount; i++)
+					{
+						CString strTmpRect;
+						strTmpRect.Format(_T("(%d, %d, %d, %d)"),
+							ptUnit->m_vecConnectPtRect[i].left, ptUnit->m_vecConnectPtRect[i].top,
+							ptUnit->m_vecConnectPtRect[i].right, ptUnit->m_vecConnectPtRect[i].bottom);
+						strTmpRect + _T("\r\n");
+						file.WriteString(strTmpRect);
+					}
+				}
 
 
+				// 指向前一個左邊的指標 ; 
+				ptUnit->m_iPreLeftPt = ptUnit->m_vecPtsPreLeftUnit.size();
+				CString strPreLeftPt;
+				strPreLeftPt.Format(_T("%d"), ptUnit->m_iPreLeftPt);
+				strPreLeftPt + _T("\r\n");
+				file.WriteString(strPreLeftPt);
+
+				if (ptUnit->m_iPreLeftPt > 0)
+				{
+					for (int i = 0; i < ptUnit->m_iPreLeftPt; i++)
+					{
+
+					}
 
 
+				}
+
+
+			}
+
+
+		}
+
+
+	}
 
 
 }

@@ -50,8 +50,9 @@ public:
 	void DrawGrid(CDC* pDC);                                // 畫出顯示區背景網格
 	void DrawWave(CDC* pDC);                                // 畫出波型
 
-	double m_dResultValue;                                  // 計算結果值
+	double m_dResultValue;                                    // 計算結果值
 	std::queue<double> m_queueResultValue;                    // 繪圖用計算結果佇列
+	std::queue<double> m_queueCurValue;                       // 記錄當下結果佇列
 
 
 	UnitBase* m_ptOutUnit;

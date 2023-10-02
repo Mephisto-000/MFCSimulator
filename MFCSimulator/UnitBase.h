@@ -11,11 +11,14 @@ public:
 
 	// TODO 分辨左右
 	std::vector<UnitBase*> m_vecPtsPreLeftUnit;			  // 指向前一個左邊分支元件的指標陣列，或是只有單一指向前一個分支元件的指標陣列
-	std::vector<UnitBase*>  m_vecPtsPreRightUnit;		  // 指向前一個右邊分支元件的指標陣列
-
-	//std::vector<UnitBase*> m_vecPtsPreUnit;               // 指向前一個元件的指標陣列
-	
+	std::vector<UnitBase*>  m_vecPtsPreRightUnit;		  // 指向前一個右邊分支元件的指標陣列	
 	std::vector<UnitBase*> m_vecPtsNextUnit;              // 指向下一個元件的指標陣列
+
+	int m_iPreLeftPt;									  // 左邊指向前分支連接的元件數量
+	int m_iPreRightPt;									  // 右邊指向前分支連接的元件數量
+	int m_iNextPt;                                        // 指向下一個分支連接的元件數量
+
+
 	
 	// 元件資料
 	CPoint m_pointUnitLocation;                           // 元件位置，元件矩形左上角的點
@@ -43,11 +46,13 @@ public:
 	// 用於繪圖 : 
 	std::vector<CPoint> m_vecConnectPt;			          // 線段連接點
 	std::vector<CRect> m_vecConnectPtRect;                // 線段連接點矩形
+	int m_iConnectPtAmount;								  // 線段連接點數量
+	int m_iConnectPtRectAmount;                           // 線段連接點矩形數量
 	
 
 	int m_iConnectPtRadius;                               // 連接點半徑
 	BOOL m_bConnectPoint;                                 // 確認是否被連接
-	
+
 
 
 
@@ -72,5 +77,10 @@ public:
 
 	// 輸出元件的結果
 	virtual void Result (double dTimeValue) {};
+
+
+	//// 序列化函數，用於儲存和讀取
+	//virtual void Serialize(CArchive& ar);
+
 };
 

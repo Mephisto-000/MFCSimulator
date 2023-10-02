@@ -129,16 +129,23 @@ void SimulateStartDlg::OnTimer(UINT_PTR nIDEvent)
 		m_dCurTime = dSeconds;
 		UpdateSimulate();
 
-		// 將計算結果儲存於佇列中
-		m_queueResultValue.push(m_dResultValue);
+
+
 
 		CWnd* pSimShowRegion = GetDlgItem(IDC_STATIC_RESULT_SHOW);
 		CRect rectSimShowRegion;
 
 		pSimShowRegion->GetClientRect(&rectSimShowRegion);
+
+		// 將計算結果儲存於佇列中
 		if (m_queueResultValue.size() > rectSimShowRegion.Width())
 		{
 			m_queueResultValue.pop();
+			m_queueResultValue.push(m_dResultValue);
+		}
+		else
+		{
+			m_queueResultValue.push(m_dResultValue);
 		}
 		
 		OnPaint();
@@ -337,23 +344,24 @@ void SimulateStartDlg::DrawWave(CDC* pDC)
 
 
 
-	std::queue<double> queueCurResult = m_queueResultValue;
+	/*std::queue<double> queueCurResult = m_queueResultValue;*/
+	m_queueCurValue = m_queueResultValue;
 
 	for (int i = 0; i < m_queueResultValue.size(); i++)
 	{
 
 		/*double dX = i * dXStep;*/
-		double dY = 1 * queueCurResult.front();
+		double dY = 1 * m_queueCurValue.front(); 
 
 		// 將波形點映射到屏幕
 		int iScreenX = i;  // 一個單位對應 1 個像素
 		int iScreenY = rectSimShowRegion.CenterPoint().y - static_cast<int>(dY * 100);
 
 		pDC->MoveTo(CPoint(iScreenX, iScreenY));
-		queueCurResult.pop();
+		m_queueCurValue.pop();
 		
 		
-		int iScreenX2 = i;                   // 一個單位對應 1 個像素
+		int iScreenX2 = i;									 // 一個單位對應 1 個像素
 		int iScreenY2 = rectSimShowRegion.CenterPoint().y - static_cast<int>(dY * 100);
 		pDC->LineTo(CPoint(iScreenX2, iScreenY2));
 
@@ -416,7 +424,7 @@ void SimulateStartDlg::OnBnClickedButtonStart()
 {
 
 	m_dwStartTime = timeGetTime();
-	SetTimer(m_nTimerID, 20, nullptr);
+	SetTimer(m_nTimerID, 10, nullptr);
 
 }
 

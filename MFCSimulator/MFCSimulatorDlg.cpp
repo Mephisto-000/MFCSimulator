@@ -1653,10 +1653,103 @@ void CMFCSimulatorDlg::OnLButtonUp(UINT nFlags, CPoint point)
 						m_ptNextUnit = ptUnit;
 
 
-						// TODO : 其他不合理連線
+						// 不合理連線警告
 						if ((m_ptPreUnit->m_strUnitID == "IN") && (m_ptNextUnit->m_strUnitID == "IN"))
 						{
+							AfxMessageBox(_T("連線錯誤"));
 							break;
+						}
+						else if ((m_ptPreUnit->m_strUnitID == "OUT") && (m_ptNextUnit->m_strUnitID == "OUT"))
+						{
+							AfxMessageBox(_T("連線錯誤"));
+							break;
+						}
+
+						if ((m_ptPreUnit->m_strUnitID == "FUN") && (m_ptNextUnit->m_strUnitID == "FUN") && 
+							(m_ptPreUnit->m_rectConnectLeftTop.PtInRect(m_pointMouseInitialPos)))
+						{
+							if ((m_ptNextUnit->m_rectConnectLeftTop.PtInRect(point)) || (m_ptNextUnit->m_rectConnectRightTop.PtInRect(point)))
+							{
+								AfxMessageBox(_T("連線錯誤"));
+								break;
+							}
+						}
+						else if ((m_ptPreUnit->m_strUnitID == "FUN") && (m_ptNextUnit->m_strUnitID == "FUN") && (m_ptPreUnit->m_rectConnectRightTop.PtInRect(m_pointMouseInitialPos)))
+						{
+							if ((m_ptNextUnit->m_rectConnectLeftTop.PtInRect(point)) || (m_ptNextUnit->m_rectConnectRightTop.PtInRect(point)))
+							{
+								AfxMessageBox(_T("連線錯誤"));
+								break;
+							}
+						}
+						else if ((m_ptPreUnit->m_strUnitID == "FUN") && (m_ptNextUnit->m_strUnitID == "FUN") && (m_ptPreUnit->m_rectConnectBottom.PtInRect(m_pointMouseInitialPos)))
+						{
+							AfxMessageBox(_T("連線錯誤"));
+							break;
+						}
+
+
+						if ((m_ptPreUnit->m_strUnitID == "AND") && (m_ptNextUnit->m_strUnitID == "AND") && (m_ptPreUnit->m_rectConnectLeftTop.PtInRect(m_pointMouseInitialPos)))
+						{
+							if ((m_ptNextUnit->m_rectConnectLeftTop.PtInRect(point)) || (m_ptNextUnit->m_rectConnectRightTop.PtInRect(point)))
+							{
+								AfxMessageBox(_T("連線錯誤"));
+								break;
+							}
+						}
+						else if ((m_ptPreUnit->m_strUnitID == "AND") && (m_ptNextUnit->m_strUnitID == "AND") && (m_ptPreUnit->m_rectConnectRightTop.PtInRect(m_pointMouseInitialPos)))
+						{
+							if ((m_ptNextUnit->m_rectConnectLeftTop.PtInRect(point)) || (m_ptNextUnit->m_rectConnectRightTop.PtInRect(point)))
+							{
+								AfxMessageBox(_T("連線錯誤"));
+								break;
+							}
+						}
+						else if ((m_ptPreUnit->m_strUnitID == "AND") && (m_ptNextUnit->m_strUnitID == "AND") && (m_ptPreUnit->m_rectConnectBottom.PtInRect(m_pointMouseInitialPos)))
+						{
+							AfxMessageBox(_T("連線錯誤"));
+							break;
+						}
+
+
+						if ((m_ptPreUnit->m_strUnitID == "OR") && (m_ptNextUnit->m_strUnitID == "OR") && (m_ptPreUnit->m_rectConnectLeftTop.PtInRect(m_pointMouseInitialPos)))
+						{
+							if ((m_ptNextUnit->m_rectConnectLeftTop.PtInRect(point)) || (m_ptNextUnit->m_rectConnectRightTop.PtInRect(point)))
+							{
+								AfxMessageBox(_T("連線錯誤"));
+								break;
+							}
+						}
+						else if ((m_ptPreUnit->m_strUnitID == "OR") && (m_ptNextUnit->m_strUnitID == "OR") && (m_ptPreUnit->m_rectConnectRightTop.PtInRect(m_pointMouseInitialPos)))
+						{
+							if ((m_ptNextUnit->m_rectConnectLeftTop.PtInRect(point)) || (m_ptNextUnit->m_rectConnectRightTop.PtInRect(point)))
+							{
+								AfxMessageBox(_T("連線錯誤"));
+								break;
+							}
+						}
+						else if ((m_ptPreUnit->m_strUnitID == "OR") && (m_ptNextUnit->m_strUnitID == "OR") && (m_ptPreUnit->m_rectConnectBottom.PtInRect(m_pointMouseInitialPos)))
+						{
+							AfxMessageBox(_T("連線錯誤"));
+							break;
+						}
+
+
+						if ((m_ptPreUnit->m_strUnitID == "NOT") && (m_ptNextUnit->m_strUnitID == "NOT") && (m_ptPreUnit->m_rectConnectLeftTop.PtInRect(m_pointMouseInitialPos)))
+						{
+							if (m_ptNextUnit->m_rectConnectLeftTop.PtInRect(point))
+							{
+								AfxMessageBox(_T("連線錯誤"));
+								break;
+							}
+						}
+						else if ((m_ptPreUnit->m_strUnitID == "NOT") && (m_ptNextUnit->m_strUnitID == "NOT") && (m_ptPreUnit->m_rectConnectBottom.PtInRect(m_pointMouseInitialPos)))
+						{
+							if (m_ptNextUnit->m_rectConnectBottom.PtInRect(point))
+							{
+								AfxMessageBox(_T("連線錯誤"));
+								break;
+							}
 						}
 
 						// 兩連接元件紀錄彼此的指標
@@ -1731,34 +1824,6 @@ void CMFCSimulatorDlg::OnLButtonUp(UINT nFlags, CPoint point)
 	CDialogEx::OnLButtonUp(nFlags, point);
 }
 
-
-
-//
-//// 廣優搜
-//void TestInorder(UnitBase* ptUnit)
-//{
-//	if (ptUnit == nullptr)
-//	{
-//		AfxMessageBox(_T("NULL"));
-//	}
-//	else
-//	{
-//		if (ptUnit->m_vecPtsPreLeftUnit.size() != 0)
-//		{
-//			TestInorder(ptUnit->m_vecPtsPreLeftUnit[0]);
-//		}
-//
-//
-//		if (ptUnit->m_vecPtsPreRightUnit.size() != 0)
-//		{
-//			TestInorder(ptUnit->m_vecPtsPreRightUnit[0]);
-//		}
-//
-//
-//		AfxMessageBox(ptUnit->m_strUnitID);
-//
-//	}
-//}
 
 
 // 根據排序計算結果

@@ -20,6 +20,7 @@ SimulateStartDlg::SimulateStartDlg(CWnd* pParent /*=nullptr*/)
 	m_fontTimeAndResultText.CreatePointFont(150, _T("Arial Black"));
 
 	m_dwStartTime = 0;
+	m_dCurTime = 0.0;
 	m_nTimerID = 1;
 	m_dResultValue = 0.0;
 
@@ -344,75 +345,26 @@ void SimulateStartDlg::DrawWave(CDC* pDC)
 
 
 
-
-	//m_queueCurValue = m_queueResultValue;
-
-	for (int i = 0; i < m_queueResultValue.size(); i++)
+	for (int i = 1; i < m_queueResultValue.size(); i++)
 	{
-
-
-
-		double dY = 1 * m_queueResultValue[0+i];
+		double dY = 1 * m_queueResultValue[i-1];
 
 		// 將波形點映射到屏幕
 		int iScreenX = i;  // 一個單位對應 1 個像素
-		int iScreenY = rectSimShowRegion.CenterPoint().y - static_cast<int>(dY * 100);
+		int iScreenY = rectSimShowRegion.CenterPoint().y - static_cast<int>(dY * 100 + 0.5);
 
 		pDC->MoveTo(CPoint(iScreenX, iScreenY));
 
-		if ((m_queueResultValue.size() >= 2) && (i + 1 < m_queueResultValue.size()))
+		if ((m_queueResultValue.size() >= 2) && (i+1) < m_queueResultValue.size())
 		{
-			double dY2 = 1 * m_queueResultValue[i+1];
+			double dY2 = 1 * m_queueResultValue[i];
 
 			int iScreenX2 = i;									 // 一個單位對應 1 個像素
-			int iScreenY2 = rectSimShowRegion.CenterPoint().y - static_cast<int>(dY2 * 100);
+			int iScreenY2 = rectSimShowRegion.CenterPoint().y - static_cast<int>(dY2 * 100 + 0.5);
 			pDC->LineTo(CPoint(iScreenX2, iScreenY2));
 		}
-		else
-		{
-			double dY2 = 1 * m_queueResultValue[0];
-
-			int iScreenX2 = i;									 // 一個單位對應 1 個像素
-			int iScreenY2 = rectSimShowRegion.CenterPoint().y - static_cast<int>(dY2 * 100);
-			pDC->LineTo(CPoint(iScreenX2, iScreenY2));
-		}
-
-
-
-
-
-
-
-		//double dY = 1 * m_queueCurValue.front(); 
-
-		//// 將波形點映射到屏幕
-		//int iScreenX = i;  // 一個單位對應 1 個像素
-		//int iScreenY = rectSimShowRegion.CenterPoint().y - static_cast<int>(dY * 100);
-
-		//pDC->MoveTo(CPoint(iScreenX, iScreenY));
-		//m_queueCurValue.pop();
-		//
-		//
-		//int iScreenX2 = i;									 // 一個單位對應 1 個像素
-		//int iScreenY2 = rectSimShowRegion.CenterPoint().y - static_cast<int>(dY * 100);
-		//pDC->LineTo(CPoint(iScreenX2, iScreenY2));
 
 	}
-
-
-
-	
-	//for (int i = 0; i < iNumberPoints; i++)
-	//{
-
-	//	double dX = i * dXStep;
-	//	double dY = 1 * m_dResultValue;
-
-	//	// 將波形點映射到屏幕
-	//	int iScreenX = i;                   // 一個單位對應一個像素
-	//	int iScreenY = rectSimShowRegion.CenterPoint().y - static_cast<int>(dY * 100);
-	//	pDC->SetPixel(iScreenX, iScreenY, RGB(255, 0, 0));
-	//}
 
 	pDC->SelectObject(pOldPenWave);
 

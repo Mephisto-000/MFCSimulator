@@ -38,6 +38,9 @@ UnitBase::UnitBase(CRect rectShowRegion, CRect rectButton)
 	m_iPreRightPt = 0;
 	m_iNextPt = 0;
 
+	m_iUnitSaveNum = 0;
+
+
 }
 
 

@@ -27,6 +27,7 @@ public:
 	CString m_strUnitID;                                  // 元件類型
 	BOOL m_bMoveState;                                    // 確認是否被拖曳
 	BOOL m_bFocusState;                                   // 確認是否被點取
+	int m_iUnitSaveNum;                                   // 紀錄元件生成順序
 	
 	// 輸出處理
 	CString m_strFuncOrOpera;							  // 紀錄選擇的函數或是運算元

@@ -1994,6 +1994,17 @@ void CMFCSimulatorDlg::OnBnClickedButtonSave()
 			strLineEnd.Format(_T("%d"), iLineEndUnitNum);
 			WritePrivateProfileString(strLineNum, _T("LineEndUnit"), strLineEnd, strSaveFilePath);
 
+			// 線段繪圖連接點起點編號
+			int iConnectPrePtIndex = ptLineUnit->m_iConnectPrePtIndex;
+			CString strConnectPrePtIndex;
+			strConnectPrePtIndex.Format(_T("%d"), iConnectPrePtIndex);
+			WritePrivateProfileString(strLineNum, _T("LineStartIndex"), strConnectPrePtIndex, strSaveFilePath);
+
+			// 線段繪圖連接點終點編號
+			int iConnectNextPtIndex = ptLineUnit->m_iConnectNextPtIndex;
+			CString strConnectNextPtIndex;
+			strConnectNextPtIndex.Format(_T("%d"), iConnectNextPtIndex);
+			WritePrivateProfileString(strLineNum, _T("LineEndIndex"), strConnectNextPtIndex, strSaveFilePath);
 
 
 			iLineNum++;
@@ -2034,37 +2045,210 @@ void CMFCSimulatorDlg::OnBnClickedButtonOpen()
 	if (dlgLoadFile.DoModal())
 	{
 		
+
+		// 操作視窗矩形
+		CRect rectShowRegion;
+
+		// 元件矩形
+		CRect rectUnit;
+
+		// 得到操作視窗矩形
+		m_staticShowRegion.GetWindowRect(&rectShowRegion);
+
+
+		// 操作視窗長、寬
+		int iHeightShowRegion = rectShowRegion.Height();
+		int iWidthShowRegion = rectShowRegion.Width();
+
+
+
+
 		strLoadFilePath = dlgLoadFile.GetPathName();
 		
 		int iUnitTotalNum = GetPrivateProfileInt(_T("TotalNum"), _T("Units"), -1, strLoadFilePath);
-
 		
+
+
+
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		for (int i = 0; i < iUnitTotalNum; i++)
 		{
 			CString strNum;
-			CString strID;
+			
+			CString strBuff;
+			
 			strNum.Format(_T("%d"), i);
-			GetPrivateProfileString(strNum, _T("ID"), _T("NULL"), strID.GetBuffer(MAX_PATH), MAX_PATH, strLoadFilePath);
-			strID.ReleaseBuffer();
-			/*AfxMessageBox(strID.GetBuffer(0));*/
-
+			GetPrivateProfileString(strNum, _T("ID"), _T("NULL"), strBuff.GetBuffer(MAX_PATH), MAX_PATH, strLoadFilePath);
+			strBuff.ReleaseBuffer();
 			// 判斷元件種類
-			CString strFlag = strID.GetBuffer(0);
+			CString strFlag = strBuff.GetBuffer(0);
+
+			// 元件位置
+			int iLOcationX = GetPrivateProfileInt(strNum, _T("LocationX"), -1, strLoadFilePath);
+			int iLOcationY = GetPrivateProfileInt(strNum, _T("LocationY"), -1, strLoadFilePath);
+
+			// 元件函數或是運算元種類
+			GetPrivateProfileString(strNum, _T("FunOrOpera"), _T(""), strBuff.GetBuffer(MAX_PATH), MAX_PATH, strLoadFilePath);
+			strBuff.ReleaseBuffer();
+			CString strFunOrOpera = strBuff.GetBuffer(0);
+			
+
 
 			if (strFlag == _T("IN"))
 			{
-				
+				// 得到元件矩形
+				m_buttonIN.GetWindowRect(&rectUnit);
+
+				// 元件矩形長寬
+				int iWidthUnit = rectUnit.Width();
+				int iHeightUnit = rectUnit.Height();
+
+				// 新建一個新 IN 元件
+				UnitIN* ptNewUnitIN = new UnitIN(rectShowRegion, rectUnit);
+
+				ptNewUnitIN->m_pointUnitLocation = CPoint(iLOcationX, iLOcationY);
+
+				ptNewUnitIN->SetConnectPtAndRect(iLOcationX, iLOcationY);
+
+				ptNewUnitIN->m_iUnitSaveNum = i;
+
+				ptNewUnitIN->m_strFuncOrOpera = strFunOrOpera;
 
 
+				// 放進紀錄 Pointer 的串列結構
+				m_listUnitPointers.AddTail(ptNewUnitIN);
+			}
+			else if (strFlag == _T("OUT"))
+			{
+				// 得到元件矩形
+				m_buttonOUT.GetWindowRect(&rectUnit);
+
+				// 元件矩形長寬
+				int iWidthUnit = rectUnit.Width();
+				int iHeightUnit = rectUnit.Height();
+
+				// 新建一個新元件
+				UnitOUT* ptNewUnitOUT = new UnitOUT(rectShowRegion, rectUnit);
+
+
+				ptNewUnitOUT->m_pointUnitLocation = CPoint(iLOcationX, iLOcationY);
+
+				ptNewUnitOUT->SetConnectPtAndRect(iLOcationX, iLOcationY);
+
+				ptNewUnitOUT->m_iUnitSaveNum = i;
+
+				ptNewUnitOUT->m_strFuncOrOpera = strFunOrOpera;
+
+				// 放進紀錄 Pointer 的串列結構
+				m_listUnitPointers.AddTail(ptNewUnitOUT);
+			}
+			else if (strFlag == _T("AND"))
+			{
+
+				// 得到元件矩形
+				m_buttonAND.GetWindowRect(&rectUnit);
+
+				// 元件矩形長寬
+				int iWidthUnit = rectUnit.Width();
+				int iHeightUnit = rectUnit.Height();
+
+				// 新建一個新元件
+				UnitAND* ptNewUnitAND = new UnitAND(rectShowRegion, rectUnit);
+
+				ptNewUnitAND->m_pointUnitLocation = CPoint(iLOcationX, iLOcationY);
+
+				ptNewUnitAND->SetConnectPtAndRect(iLOcationX, iLOcationY);
+
+				ptNewUnitAND->m_iUnitSaveNum = i;
+
+				ptNewUnitAND->m_strFuncOrOpera = strFunOrOpera;
+
+				// 放進紀錄 Pointer 的串列結構
+				m_listUnitPointers.AddTail(ptNewUnitAND);
 
 			}
+			else if (strFlag == _T("OR"))
+			{
+				// 得到元件矩形
+				m_buttonOR.GetWindowRect(&rectUnit);
 
+				// 元件矩形長寬
+				int iWidthUnit = rectUnit.Width();
+				int iHeightUnit = rectUnit.Height();
 
-			
+				// 新建一個新元件
+				UnitOR* ptNewUnitOR = new UnitOR(rectShowRegion, rectUnit);
+
+				ptNewUnitOR->m_pointUnitLocation = CPoint(iLOcationX, iLOcationY);
+
+				ptNewUnitOR->SetConnectPtAndRect(iLOcationX, iLOcationY);
+
+				ptNewUnitOR->m_iUnitSaveNum = i;
+
+				ptNewUnitOR->m_strFuncOrOpera = strFunOrOpera;
+
+				// 放進紀錄 Pointer 的串列結構
+				m_listUnitPointers.AddTail(ptNewUnitOR);
+
+			}
+			else if (strFlag == _T("NOT"))
+			{
+
+				// 得到元件矩形
+				m_buttonNOT.GetWindowRect(&rectUnit);
+
+				// 元件矩形長寬
+				int iWidthUnit = rectUnit.Width();
+				int iHeightUnit = rectUnit.Height();
+
+				// 新建一個新元件
+				UnitNOT* ptNewUnitNOT = new UnitNOT(rectShowRegion, rectUnit);
+
+				ptNewUnitNOT->m_pointUnitLocation = CPoint(iLOcationX, iLOcationY);
+
+				ptNewUnitNOT->SetConnectPtAndRect(iLOcationX, iLOcationY);
+
+				ptNewUnitNOT->m_iUnitSaveNum = i;
+
+				ptNewUnitNOT->m_strFuncOrOpera = strFunOrOpera;
+
+				// 放進紀錄 Pointer 的串列結構
+				m_listUnitPointers.AddTail(ptNewUnitNOT);
+
+			}
+			else if (strFlag == _T("FUN"))
+			{
+				
+				// 得到元件矩形
+				m_buttonFUN.GetWindowRect(&rectUnit);
+
+				// 元件矩形長寬
+				int iWidthUnit = rectUnit.Width();
+				int iHeightUnit = rectUnit.Height();
+
+				// 新建一個新元件
+				UnitFUN* ptNewUnitFUN = new UnitFUN(rectShowRegion, rectUnit);
+
+				ptNewUnitFUN->m_pointUnitLocation = CPoint(iLOcationX, iLOcationY);
+
+				ptNewUnitFUN->SetConnectPtAndRect(iLOcationX, iLOcationY);
+
+				ptNewUnitFUN->m_iUnitSaveNum = i;
+
+				ptNewUnitFUN->m_strFuncOrOpera = strFunOrOpera;
+
+				// 放進紀錄 Pointer 的串列結構
+				m_listUnitPointers.AddTail(ptNewUnitFUN);
+
+			}
 		}
-
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		
 
 	}
+
+	// 更新操作視窗	
+	Invalidate();
+	UpdateWindow();
 }

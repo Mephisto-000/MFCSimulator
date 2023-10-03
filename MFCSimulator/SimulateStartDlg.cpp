@@ -21,6 +21,7 @@ SimulateStartDlg::SimulateStartDlg(CWnd* pParent /*=nullptr*/)
 
 	m_dwStartTime = 0;
 	m_dCurTime = 0.0;
+	m_dSimTime = 0.0;
 	m_nTimerID = 1;
 	m_dResultValue = 0.0;
 
@@ -107,7 +108,8 @@ void SimulateStartDlg::UpdateSimulate()
 	m_staticTimeShow.SetWindowText(strTimeValue);
 
 	CMFCSimulatorDlg dlgMain;
-	m_dResultValue = dlgMain.SetPostfixResult(m_ptOutUnit, m_dCurTime);
+	/*m_dResultValue = dlgMain.SetPostfixResult(m_ptOutUnit, m_dCurTime);*/
+	m_dResultValue = dlgMain.SetPostfixResult(m_ptOutUnit, m_dSimTime);
 
 	CString strResult;
 	strResult.Format(_T("%.4f"), m_dResultValue);
@@ -128,6 +130,8 @@ void SimulateStartDlg::OnTimer(UINT_PTR nIDEvent)
 		double dSeconds = static_cast<double>(dwElapsedTime) / 1000.0;
 
 		m_dCurTime = dSeconds;
+		m_dSimTime += 0.01;
+		//m_dSimTime = round(dSeconds * 100) / 100;  // 四捨五入到小數點後1位
 		UpdateSimulate();
 
 
@@ -350,12 +354,12 @@ void SimulateStartDlg::DrawWave(CDC* pDC)
 		double dY = 1 * m_queueResultValue[i-1];
 
 		// 將波形點映射到屏幕
-		int iScreenX = i;  // 一個單位對應 1 個像素
+		int iScreenX = i-1;  // 一個單位對應 1 個像素
 		int iScreenY = rectSimShowRegion.CenterPoint().y - static_cast<int>(dY * 100 + 0.5);
 
 		pDC->MoveTo(CPoint(iScreenX, iScreenY));
 
-		if ((m_queueResultValue.size() >= 2) && (i+1) < m_queueResultValue.size())
+		if (m_queueResultValue.size() >= 2)
 		{
 			double dY2 = 1 * m_queueResultValue[i];
 
@@ -421,6 +425,7 @@ void SimulateStartDlg::OnBnClickedButtonStop()
 
 	int iTotalQueueSize = m_queueResultValue.size();
 
+	m_dSimTime = 0.0;
 
 	KillTimer(m_nTimerID);
 	if (m_queueResultValue.empty() != TRUE)

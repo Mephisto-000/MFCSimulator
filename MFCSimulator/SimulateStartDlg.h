@@ -37,6 +37,7 @@ public:
 	DWORD m_dwStartTime;                   // 計時開始的時間
 	UINT_PTR m_nTimerID;                   // 計時器 ID
 	double m_dCurTime;
+	double m_dSimTime;
 
 	CStatic m_staticTimeText;
 	CStatic m_staticResultText;

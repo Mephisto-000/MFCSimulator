@@ -2000,8 +2000,19 @@ void CMFCSimulatorDlg::OnBnClickedButtonSave()
 
 		}
 
+		// 紀錄生成元件個數
+		CString strUnitTotalNum;
+		int iUnitTotalNum = m_listUnitPointers.GetSize();
+		strUnitTotalNum.Format(_T("%d"), iUnitTotalNum);
+		WritePrivateProfileString(_T("TotalNum"), _T("Units"), strUnitTotalNum, strSaveFilePath);
 
-		AfxMessageBox(_T("Save Done!"));
+		CString strUnitLineTotalNum;
+		int iUnitLineTotalNum = m_listUnitLines.GetSize();
+		strUnitLineTotalNum.Format(_T("%d"), iUnitLineTotalNum);
+		WritePrivateProfileString(_T("TotalNum"), _T("Lines"), strUnitLineTotalNum, strSaveFilePath);
+
+
+		AfxMessageBox(_T("Saved Successfully"));
 	}
 	
 
@@ -2012,12 +2023,48 @@ void CMFCSimulatorDlg::OnBnClickedButtonSave()
 void CMFCSimulatorDlg::OnBnClickedButtonOpen()
 {
 	
+	// 清空之前所記取的元件以及線段
+	m_listUnitPointers.RemoveAll();
+	m_listUnitLines.RemoveAll();
+
+	CString strLoadFilePath;
+	CFileDialog dlgLoadFile(TRUE, NULL, NULL, OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT,
+		_T("All Files(*.ini)|*.ini|所有文件(*.*)|*.*|"), NULL);
+
+	if (dlgLoadFile.DoModal())
+	{
+		
+		strLoadFilePath = dlgLoadFile.GetPathName();
+		
+		int iUnitTotalNum = GetPrivateProfileInt(_T("TotalNum"), _T("Units"), -1, strLoadFilePath);
+
+		
+		for (int i = 0; i < iUnitTotalNum; i++)
+		{
+			CString strNum;
+			CString strID;
+			strNum.Format(_T("%d"), i);
+			GetPrivateProfileString(strNum, _T("ID"), _T("NULL"), strID.GetBuffer(MAX_PATH), MAX_PATH, strLoadFilePath);
+			strID.ReleaseBuffer();
+			/*AfxMessageBox(strID.GetBuffer(0));*/
+
+			// 判斷元件種類
+			CString strFlag = strID.GetBuffer(0);
+
+			if (strFlag == _T("IN"))
+			{
+				
 
 
 
+			}
 
 
+			
+		}
 
 
+		
 
+	}
 }

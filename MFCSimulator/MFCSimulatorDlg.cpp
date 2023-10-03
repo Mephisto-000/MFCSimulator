@@ -1937,7 +1937,7 @@ void CMFCSimulatorDlg::OnBnClickedButtonSave()
 		_T("All Files(*.ini)|*.ini|所有文件(*.*)|*.*|"), NULL);
 
 	
-	if (dlgSaveFile.DoModal())
+	if (dlgSaveFile.DoModal() == IDOK)
 	{
 
 		strSaveFilePath = dlgSaveFile.GetPathName();
@@ -2025,6 +2025,12 @@ void CMFCSimulatorDlg::OnBnClickedButtonSave()
 
 		AfxMessageBox(_T("Saved Successfully"));
 	}
+	else
+	{
+
+
+		AfxMessageBox(_T("Cancel"));
+	}
 	
 
 }
@@ -2034,17 +2040,17 @@ void CMFCSimulatorDlg::OnBnClickedButtonSave()
 void CMFCSimulatorDlg::OnBnClickedButtonOpen()
 {
 	
-	// 清空之前所記取的元件以及線段
-	m_listUnitPointers.RemoveAll();
-	m_listUnitLines.RemoveAll();
 
 	CString strLoadFilePath;
 	CFileDialog dlgLoadFile(TRUE, NULL, NULL, OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT,
 		_T("All Files(*.ini)|*.ini|所有文件(*.*)|*.*|"), NULL);
 
-	if (dlgLoadFile.DoModal())
+	if (dlgLoadFile.DoModal() == IDOK)
 	{
 		
+		// 清空之前所記取的元件以及線段
+		m_listUnitPointers.RemoveAll();
+		m_listUnitLines.RemoveAll();
 
 		// 操作視窗矩形
 		CRect rectShowRegion;
@@ -2244,11 +2250,16 @@ void CMFCSimulatorDlg::OnBnClickedButtonOpen()
 		}
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-		
+	
+
+		// 更新操作視窗	
+		Invalidate();
+		UpdateWindow();
 
 	}
+	else
+	{
 
-	// 更新操作視窗	
-	Invalidate();
-	UpdateWindow();
+		AfxMessageBox(_T("Cancel"));
+	}
 }

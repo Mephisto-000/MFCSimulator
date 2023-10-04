@@ -20,6 +20,7 @@ public:
 
 	UnitLine(CRect rectShowRegion, CRect rectButton);
 
+    ~UnitLine();
 
     // 元件之間插入元件
     virtual void InsertUnit(UnitBase* ptNewUnit) override {};

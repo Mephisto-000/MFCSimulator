@@ -1174,7 +1174,7 @@ void CMFCSimulatorDlg::OnBnClickedButtonDelete()
 				}
 			}
 
-
+			// TODO : 把線段刪乾淨
 			// 清除連接的線
 			POSITION posiLineUnit = m_listUnitLines.GetTailPosition();
 			while (posiLineUnit != nullptr)

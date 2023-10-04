@@ -12,4 +12,8 @@ UnitLine::UnitLine(CRect rectShowRegion, CRect rectButton) : UnitBase(rectShowRe
 }
 
 
+UnitLine::~UnitLine()
+{
+
+}
 

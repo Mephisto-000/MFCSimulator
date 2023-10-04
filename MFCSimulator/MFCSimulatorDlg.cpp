@@ -1979,7 +1979,7 @@ void CMFCSimulatorDlg::OnBnClickedButtonSave()
 			}
 			else
 			{
-				WritePrivateProfileString(strSaveNum, _T("LeftTopConnect"), _T("NULL"), strSaveFilePath);
+				WritePrivateProfileString(strSaveNum, _T("LeftTopConnect"), _T(""), strSaveFilePath);
 			}
 
 			if (ptUnit->m_vecPtsPreRightUnit.empty() != TRUE)
@@ -1990,7 +1990,7 @@ void CMFCSimulatorDlg::OnBnClickedButtonSave()
 			}
 			else
 			{
-				WritePrivateProfileString(strSaveNum, _T("RightTopConnect"), _T("NULL"), strSaveFilePath);
+				WritePrivateProfileString(strSaveNum, _T("RightTopConnect"), _T(""), strSaveFilePath);
 			}
 
 			CString strNext;
@@ -2011,7 +2011,7 @@ void CMFCSimulatorDlg::OnBnClickedButtonSave()
 			}
 			else
 			{
-				WritePrivateProfileString(strSaveNum, _T("NextConnect"), _T("NULL"), strSaveFilePath);
+				WritePrivateProfileString(strSaveNum, _T("NextConnect"), _T(""), strSaveFilePath);
 			}
 			
 		}
@@ -2072,8 +2072,6 @@ void CMFCSimulatorDlg::OnBnClickedButtonSave()
 	}
 	else
 	{
-
-
 		AfxMessageBox(_T("Cancel"));
 	}
 	
@@ -2118,14 +2116,14 @@ void CMFCSimulatorDlg::OnBnClickedButtonOpen()
 		
 		int iUnitTotalNum = GetPrivateProfileInt(_T("TotalNum"), _T("Units"), -1, strLoadFilePath);
 		
-
+		int iLineUnitTotalNNum = GetPrivateProfileInt(_T("TotalNum"), _T("Lines"), -1, strLoadFilePath);
 
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		for (int i = 0; i < iUnitTotalNum; i++)
 		{
 			CString strNum;
-			
+			 
 			CString strBuff;
 			
 			strNum.Format(_T("%d"), i);
@@ -2293,7 +2291,107 @@ void CMFCSimulatorDlg::OnBnClickedButtonOpen()
 
 			}
 		}
+
+
+		// 處理指標連接
+
+		for (int i = 0; i < iUnitTotalNum; i++)
+		{
+
+			CString strNum;
+
+			CString strBuff;
+
+			strNum.Format(_T("%d"), i);
+
+			// 元件連接的指標
+			// 左上 : 
+			int iLeftTopPt = GetPrivateProfileInt(strNum, _T("LeftTopConnect"), -1, strLoadFilePath);
+			// 右上 : 
+			int iRightTopPt = GetPrivateProfileInt(strNum, _T("RightTopConnect"), -1, strLoadFilePath);
+			// 下方 : 
+			int iNextPt = GetPrivateProfileInt(strNum, _T("NextConnect"), -1, strLoadFilePath);
+
+			POSITION posiUnit = m_listUnitPointers.GetHeadPosition();
+			while (posiUnit != nullptr)
+			{
+				UnitBase* ptUnit = m_listUnitPointers.GetNext(posiUnit);
+				if (ptUnit->m_iUnitSaveNum == i)
+				{
+					POSITION posiConnect = m_listUnitPointers.GetHeadPosition();
+					while (posiConnect != nullptr)
+					{
+						UnitBase* ptConnectUnit = m_listUnitPointers.GetNext(posiConnect);
+						if (ptConnectUnit->m_iUnitSaveNum == iLeftTopPt)
+						{
+							ptUnit->m_vecPtsPreLeftUnit.push_back(ptConnectUnit);
+						}
+						else if (ptConnectUnit->m_iUnitSaveNum == iRightTopPt)
+						{
+							ptUnit->m_vecPtsPreRightUnit.push_back(ptConnectUnit);
+						}
+						else if (ptConnectUnit->m_iUnitSaveNum == iNextPt)
+						{
+							ptUnit->m_vecPtsNextUnit.push_back(ptConnectUnit);
+						}
+
+					}
+				}
+
+
+			}
+		}
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+		for (int i = 0; i < iLineUnitTotalNNum; i++)
+		{
+			CString strLineNum;
+
+			CString strBuff;
+
+			strLineNum.Format(_T("%d"), i);
+			strLineNum = _T("Line") + strLineNum;
+
+
+			// 連線起點
+			int iStartUnit = GetPrivateProfileInt(strLineNum, _T("LineStartUnit"), -1, strLoadFilePath);
+			// 連線終點
+			int iEndUnit = GetPrivateProfileInt(strLineNum, _T("LineEndUnit"), -1, strLoadFilePath);
+			// 連線繪圖起點序號
+			int iStartIndex = GetPrivateProfileInt(strLineNum, _T("LineStartIndex"), -1, strLoadFilePath);
+			// 連線繪圖終點序號
+			int iEndIndex = GetPrivateProfileInt(strLineNum, _T("LineEndIndex"), -1, strLoadFilePath);
+
+
+			// 新增連線線段物件
+			UnitLine* ptNewUnitLine = new UnitLine(rectShowRegion, rectUnit);
+
+			POSITION posiUnit = m_listUnitPointers.GetHeadPosition();
+			while (posiUnit != nullptr)
+			{
+				UnitBase* ptUnit = m_listUnitPointers.GetNext(posiUnit);
+
+				// 存取起點的元件指標
+				if (ptUnit->m_iUnitSaveNum == iStartUnit)
+				{
+					ptNewUnitLine->m_vecPtsPreLeftUnit.push_back(ptUnit);
+				}
+				else if (ptUnit->m_iUnitSaveNum == iEndUnit)
+				{
+					ptNewUnitLine->m_vecPtsNextUnit.push_back(ptUnit);
+				}
+			}
+			
+			ptNewUnitLine->m_iConnectPrePtIndex = iStartIndex;
+			ptNewUnitLine->m_iConnectNextPtIndex = iEndIndex;
+
+			ptNewUnitLine->m_bIsConnect = TRUE;
+
+			m_listUnitLines.AddTail(ptNewUnitLine);
+
+		}
+
+
 
 	
 

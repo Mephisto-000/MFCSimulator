@@ -1969,6 +1969,51 @@ void CMFCSimulatorDlg::OnBnClickedButtonSave()
 			WritePrivateProfileString(strSaveNum, _T("LocationX"), strLocaX, strSaveFilePath);
 			WritePrivateProfileString(strSaveNum, _T("LocationY"), strLocaY, strSaveFilePath);
 
+			// 元件連接編號(左上、右上、下方)
+
+			if (ptUnit->m_vecPtsPreLeftUnit.empty() != TRUE)
+			{
+				CString strLeftTop;
+				strLeftTop.Format(_T("%d"), ptUnit->m_vecPtsPreLeftUnit[0]->m_iUnitSaveNum);
+				WritePrivateProfileString(strSaveNum, _T("LeftTopConnect"), strLeftTop, strSaveFilePath);
+			}
+			else
+			{
+				WritePrivateProfileString(strSaveNum, _T("LeftTopConnect"), _T("NULL"), strSaveFilePath);
+			}
+
+			if (ptUnit->m_vecPtsPreRightUnit.empty() != TRUE)
+			{
+				CString strRightTop;
+				strRightTop.Format(_T("%d"), ptUnit->m_vecPtsPreRightUnit[0]->m_iUnitSaveNum);
+				WritePrivateProfileString(strSaveNum, _T("RightTopConnect"), strRightTop, strSaveFilePath);
+			}
+			else
+			{
+				WritePrivateProfileString(strSaveNum, _T("RightTopConnect"), _T("NULL"), strSaveFilePath);
+			}
+
+			CString strNext;
+			if (ptUnit->m_vecPtsNextUnit.size() > 1)
+			{
+				CString strNextNum;
+				for (int i = 0; i < ptUnit->m_vecPtsNextUnit.size(); i++)
+				{
+					strNextNum.Format(_T("%d"), i);
+					strNext.Format(_T("%d"), ptUnit->m_vecPtsNextUnit[i]->m_iUnitSaveNum);
+					WritePrivateProfileString(strSaveNum, _T("NextConnect") + strNextNum, strNext, strSaveFilePath);
+				}
+			}
+			else if (ptUnit->m_vecPtsNextUnit.size() == 1)
+			{
+				strNext.Format(_T("%d"), ptUnit->m_vecPtsNextUnit[0]->m_iUnitSaveNum);
+				WritePrivateProfileString(strSaveNum, _T("NextConnect"), strNext, strSaveFilePath);
+			}
+			else
+			{
+				WritePrivateProfileString(strSaveNum, _T("NextConnect"), _T("NULL"), strSaveFilePath);
+			}
+			
 		}
 
 		int iLineNum = 0;

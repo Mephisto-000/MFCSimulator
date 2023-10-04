@@ -31,9 +31,6 @@ SimulateStartDlg::SimulateStartDlg(CWnd* pParent /*=nullptr*/)
 
 SimulateStartDlg::~SimulateStartDlg()
 {
-
-
-
 }
 
 void SimulateStartDlg::DoDataExchange(CDataExchange* pDX)

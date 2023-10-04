@@ -130,7 +130,18 @@ void SimulateStartDlg::OnTimer(UINT_PTR nIDEvent)
 		double dSeconds = static_cast<double>(dwElapsedTime) / 1000.0;
 
 		m_dCurTime = dSeconds;
-		m_dSimTime += 0.01;
+
+
+		if (m_dSimTime >= 2*M_PI)
+		{
+			m_dSimTime = 0.0;
+			m_dSimTime += (2*M_PI) / 100;
+		}
+		else 
+		{
+			m_dSimTime += (2*M_PI) / 100;
+		}
+		
 		//m_dSimTime = round(dSeconds * 100) / 100;  // 四捨五入到小數點後1位
 		UpdateSimulate();
 

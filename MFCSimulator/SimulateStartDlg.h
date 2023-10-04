@@ -2,7 +2,11 @@
 #include "afxdialogex.h"
 
 #include "UnitBase.h"
+#include <cmath>
 #include <deque>
+
+
+#define _USE_MATH_DEFINES // for C++
 
 // SimulateStartDlg 對話方塊
 

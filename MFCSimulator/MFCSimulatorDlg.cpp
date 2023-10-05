@@ -249,6 +249,12 @@ HBRUSH CMFCSimulatorDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 ////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////
 // double 四捨五入轉型 int
+//
+// Input : 
+//			dValue : double 類型資料
+//
+// Output : 
+//			static_cast<int>(dValue + 0.5) : 四捨五入至整數，並轉型為 int 類型資料
 int RouundDoubleToInt(double dValue)
 {
 	return static_cast<int>(dValue + 0.5);
@@ -677,8 +683,8 @@ void CMFCSimulatorDlg::DrawToBuffer(CDC* pDC)
 			pDC->Rectangle(rectUnit);
 			pDC->FillRect(&rectUnit, &brushInRect);
 			pDC->SetBkMode(TRANSPARENT);
-			pDC->TextOut((rectUnit.left + rectUnit.right) * 0.5 - 10, (rectUnit.top + rectUnit.bottom) * 0.5 - 8,
-				ptUnit->m_strUnitID);
+			pDC->TextOut(RouundDoubleToInt((rectUnit.left + rectUnit.right) * 0.5 - 10), RouundDoubleToInt((rectUnit.top + rectUnit.bottom) * 0.5 - 8),
+						 ptUnit->m_strUnitID);
 			pDC->SelectObject(ptOldPenFocusRect);
 		}
 		else
@@ -686,8 +692,8 @@ void CMFCSimulatorDlg::DrawToBuffer(CDC* pDC)
 			pDC->Rectangle(rectUnit);
 			pDC->FillRect(&rectUnit, &brushInRect);
 			pDC->SetBkMode(TRANSPARENT);
-			pDC->TextOut((rectUnit.left + rectUnit.right) * 0.5 - 10, (rectUnit.top + rectUnit.bottom) * 0.5 - 8,
-				ptUnit->m_strUnitID);
+			pDC->TextOut(RouundDoubleToInt((rectUnit.left + rectUnit.right) * 0.5 - 10), RouundDoubleToInt((rectUnit.top + rectUnit.bottom) * 0.5 - 8),
+						 ptUnit->m_strUnitID);
 
 
 		}

@@ -80,9 +80,12 @@ CMFCSimulatorDlg::CMFCSimulatorDlg(CWnd* pParent /*=nullptr*/)
 	m_iListUnitLineAmount = 0;
 }
 
+
+// 視窗解構子
 CMFCSimulatorDlg::~CMFCSimulatorDlg()
 {
 
+	// 刪除生成元件所配置的記憶體
 	POSITION posiUnit = m_listUnitPointers.GetTailPosition();
 	while (posiUnit != nullptr)
 	{
@@ -90,9 +93,12 @@ CMFCSimulatorDlg::~CMFCSimulatorDlg()
 		delete ptUnit;
 	}
 	
+
+	// 清空記錄生成元件的 CList
 	m_listUnitPointers.RemoveAll();
 
 
+	// 刪除生成線段所配置的記憶體
 	POSITION posiLineUnit = m_listUnitLines.GetTailPosition();
 	while (posiLineUnit != nullptr)
 	{
@@ -100,9 +106,12 @@ CMFCSimulatorDlg::~CMFCSimulatorDlg()
 		delete ptLineUnit;
 	}
 
+
+	// 清空記錄生成線段的 CList
 	m_listUnitLines.RemoveAll();
 
 }
+
 
 void CMFCSimulatorDlg::DoDataExchange(CDataExchange* pDX)
 {
@@ -118,6 +127,7 @@ void CMFCSimulatorDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_STATIC_LINE_MODE_TEXT, m_staticLineModeText);
 	DDX_Control(pDX, IDC_BUTTON_LINE, m_buttonLINE);
 }
+
 
 BEGIN_MESSAGE_MAP(CMFCSimulatorDlg, CDialogEx)
 	ON_WM_SYSCOMMAND()
@@ -187,6 +197,7 @@ BOOL CMFCSimulatorDlg::OnInitDialog()
 	return FALSE;  // 傳回 TRUE，除非您對控制項設定焦點
 }
 
+
 void CMFCSimulatorDlg::OnSysCommand(UINT nID, LPARAM lParam)
 {
 	if ((nID & 0xFFF0) == IDM_ABOUTBOX)
@@ -212,7 +223,6 @@ BOOL CAboutDlg::OnInitDialog()
 	return TRUE;  // return TRUE unless you set the focus to a control
 	// EXCEPTION: OCX 屬性頁應傳回 FALSE
 }
-
 
 
 HBRUSH CMFCSimulatorDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
@@ -245,7 +255,13 @@ int RouundDoubleToInt(double dValue)
 }
 
 
-// 從元件矩形左上角位置來得到元件矩形
+// 從元件矩形左上角點位置來得到元件矩形
+//
+// Input : 
+//			ptLeftTop : 元件左上角座標點
+//
+// Output : 
+//			CRect(ptLeftTop, ptRightButtom) : 元件矩形		
 CRect CMFCSimulatorDlg::GetUnitRect(CPoint ptLeftTop)
 {
 	// 元件矩形
@@ -264,17 +280,27 @@ CRect CMFCSimulatorDlg::GetUnitRect(CPoint ptLeftTop)
 
 
 // 從元件左上角位置來得到元件連接點外接矩形
+//
+// Input : 
+//			ptUnit : 元件指標
+//
+// Output : 
+//			vecConnectPtRects : 儲存元件矩形所有連接點的外切矩形資料，
+//								資料類型為 CRect
 std::vector<CRect> CMFCSimulatorDlg::GetConnectRects(CUnitBase* ptUnit)
 {
+
 	int iUnitW = ptUnit->m_iUnitWidth;
 	int iUnitH = ptUnit->m_iUnitHeight;
 	int iRadius = ptUnit->m_iConnectPtRadius;
+
 	CPoint pointLocation = ptUnit->m_pointUnitLocation;
 
 	std::vector<CRect> vecConnectPtRects;
 
+	// 根據不同元件的類型回傳外切矩形陣列
 	if (ptUnit->m_strUnitID == "IN")
-	{	
+	{	// 當元件為 IN
 
 		// 下方中點位置
 		CPoint pointConnect;
@@ -282,18 +308,21 @@ std::vector<CRect> CMFCSimulatorDlg::GetConnectRects(CUnitBase* ptUnit)
 		pointConnect.x = pointLocation.x + iUnitW * 0.5;
 		pointConnect.y = pointLocation.y + iUnitH;
 
-		CRect rectConnect(CPoint(pointConnect.x - iRadius, pointConnect.y - iRadius),     // Left, Top
-						  CPoint(pointConnect.x + iRadius, pointConnect.y + iRadius));    // Right, Bottom
+		CRect rectConnect(CPoint(pointConnect.x - iRadius, pointConnect.y - iRadius),
+						  CPoint(pointConnect.x + iRadius, pointConnect.y + iRadius));
 
 		vecConnectPtRects.push_back(rectConnect);
 
 		return 	vecConnectPtRects;
+
 	}
 	else if (ptUnit->m_strUnitID == "OUT")
-	{
-		// 上方中點位置
+	{	// 當元件為 OUT
+
+
 		CPoint pointConnect;
 
+		// 上方中點位置
 		pointConnect.x = pointLocation.x + iUnitW * 0.5;
 		pointConnect.y = pointLocation.y + 0;
 
@@ -303,42 +332,46 @@ std::vector<CRect> CMFCSimulatorDlg::GetConnectRects(CUnitBase* ptUnit)
 		vecConnectPtRects.push_back(rectConnect);
 
 		return 	vecConnectPtRects;
+
 	}
 	else if (ptUnit->m_strUnitID == "NOT")
-	{
-		// 上方中點位置
+	{	// 當元件為 NOT
+
+
 		CPoint pointConnect;
 
+		// 上方中點位置
 		pointConnect.x = pointLocation.x + iUnitW * 0.5;
 		pointConnect.y = pointLocation.y + 0;
 
-		CRect rectConnectUp(CPoint(pointConnect.x - iRadius, pointConnect.y - iRadius),     // Left, Top
-						    CPoint(pointConnect.x + iRadius, pointConnect.y + iRadius));    // Right, Bottom
+		CRect rectConnectUp(CPoint(pointConnect.x - iRadius, pointConnect.y - iRadius),
+						    CPoint(pointConnect.x + iRadius, pointConnect.y + iRadius));
 
 		vecConnectPtRects.push_back(rectConnectUp);
 
 		// 下方中點位置
-
 		pointConnect.x = pointLocation.x + iUnitW * 0.5;
 		pointConnect.y = pointLocation.y + iUnitH;
 
-		CRect rectConnectDown(CPoint(pointConnect.x - iRadius, pointConnect.y - iRadius),     // Left, Top
-							  CPoint(pointConnect.x + iRadius, pointConnect.y + iRadius));    // Right, Bottom
+		CRect rectConnectDown(CPoint(pointConnect.x - iRadius, pointConnect.y - iRadius),
+							  CPoint(pointConnect.x + iRadius, pointConnect.y + iRadius));
 
 		vecConnectPtRects.push_back(rectConnectDown);
 
 		return vecConnectPtRects;
+
 	}
 	else
-	{
+	{	// 元件為 AND、OR、FUN
+
 		// 左上角
 		CPoint pointConnectLeftUp;
 
 		pointConnectLeftUp.x = pointLocation.x + 0;
 		pointConnectLeftUp.y = pointLocation.y + 0;
 
-		CRect rectConnectLeftUp(CPoint(pointConnectLeftUp.x - iRadius, pointConnectLeftUp.y - iRadius),     // Left, Top
-						        CPoint(pointConnectLeftUp.x + iRadius, pointConnectLeftUp.y + iRadius));    // Right, Bottom
+		CRect rectConnectLeftUp(CPoint(pointConnectLeftUp.x - iRadius, pointConnectLeftUp.y - iRadius),
+						        CPoint(pointConnectLeftUp.x + iRadius, pointConnectLeftUp.y + iRadius));
 
 		vecConnectPtRects.push_back(rectConnectLeftUp);
 
@@ -365,14 +398,19 @@ std::vector<CRect> CMFCSimulatorDlg::GetConnectRects(CUnitBase* ptUnit)
 		vecConnectPtRects.push_back(rectConnectDown);
 
 		return vecConnectPtRects;
+
 	}
-		
-
-
 }
 
 
-// 計算兩點距離
+// 計算線段長度
+//
+// Input : 
+//			pointStart : 線段起點座標
+//			pointEnd   : 線段終點座標
+//
+// Output : 
+//			dLen : 線段長度
 double CMFCSimulatorDlg::TwoPtsDistance(CPoint pointStart, CPoint pointEnd)
 {
 	double dLen = sqrt(pow((pointEnd.x - pointStart.x), 2) + pow((pointEnd.y - pointStart.y), 2));
@@ -382,6 +420,14 @@ double CMFCSimulatorDlg::TwoPtsDistance(CPoint pointStart, CPoint pointEnd)
 
 
 // 計算滑鼠座標點到線段距離
+//
+// Input : 
+//			pointMouse : 滑鼠位置座標
+//			pointStart : 線段起點座標
+//			pointEnd   : 線段終點座標
+//
+// Output : 
+//			TwoPtsDistance : 計算滑鼠座標點到線段的長度
 double CMFCSimulatorDlg::PointToLineDistance(CPoint pointMouse, CPoint pointStart, CPoint pointEnd)
 {
 	double dLenStartToEnd = TwoPtsDistance(pointStart, pointEnd);
@@ -414,10 +460,14 @@ double CMFCSimulatorDlg::PointToLineDistance(CPoint pointMouse, CPoint pointStar
 
 	// 給出滑鼠座標點與其投影點距離
 	return TwoPtsDistance(pointMouse, pointProject);
+
 }
 
 
 // 取得 MFCSimulatorDlg.cpp 的絕對路徑
+//
+// Output : 
+//			path : ... \\MFCSimulator
 CString CMFCSimulatorDlg::GetCurrentDir()
 {
 	
@@ -425,11 +475,8 @@ CString CMFCSimulatorDlg::GetCurrentDir()
 	GetCurrentDirectory(MAX_PATH, path);
 
 	return path;
+
 }
-
-
-
-
 
 
 
@@ -469,10 +516,9 @@ void CMFCSimulatorDlg::OnPaint()
 		CRect rectShowRegion;
 
 		pShowRegion->GetClientRect(&rectShowRegion);
+
 		int iWidthShowRegion = rectShowRegion.Width();
 		int iHeightShowRegion = rectShowRegion.Height();
-
-		
 
 		m_hBitmapImgBg = (HBITMAP)::LoadImage(NULL, m_strShowRegionImgBgPath, IMAGE_BITMAP,
 			rectShowRegion.Width(), rectShowRegion.Height(), LR_LOADFROMFILE);
@@ -487,7 +533,8 @@ void CMFCSimulatorDlg::OnPaint()
 		CBitmap memBitmap;
 
 		if (m_hBitmapImgBg != nullptr)
-		{
+		{	// 給予初始的背景 Bitmap
+
 			memBitmap.Attach(m_hBitmapImgBg);
 			BITMAP bmp;
 			memBitmap.GetBitmap(&bmp);
@@ -498,7 +545,7 @@ void CMFCSimulatorDlg::OnPaint()
 		memDC.CreateCompatibleDC(pdcShowRegion);
 		CBitmap* pOldMemBitMap = memDC.SelectObject(&memBitmap);
 
-
+		// 雙緩衝繪圖
 		DrawToBuffer(&memDC);
 
 
@@ -508,18 +555,18 @@ void CMFCSimulatorDlg::OnPaint()
 		memDC.DeleteDC();
 
 	}
-
 }
 
 
+// 雙緩衝繪圖
 void CMFCSimulatorDlg::DrawToBuffer(CDC* pDC)
 {
-
 
 	CWnd* pShowRegion = GetDlgItem(IDC_STATIC_SHOW_REGION);
 	CRect rectShowRegion;
 
 	pShowRegion->GetClientRect(&rectShowRegion);
+
 	int iWidthShowRegion = rectShowRegion.Width();
 	int iHeightShowRegion = rectShowRegion.Height();
 
@@ -527,29 +574,33 @@ void CMFCSimulatorDlg::DrawToBuffer(CDC* pDC)
 	CBrush* pOldbrushShowRegion = pDC->SelectObject(&brushShowRegion);
 
 
-
 	if (g_bShowRegionBgImgChange == FALSE)
-	{
-		// 操作視窗初始上色
+	{	// 沒有背景圖片更改的情況
+
+		// 操作視窗上色
 		brushShowRegion.CreateSolidBrush(m_colorShowRegionBg);
+
 		pDC->Rectangle(rectShowRegion);
 		pDC->FillRect(&rectShowRegion, &brushShowRegion);
 		pDC->SelectObject(pOldbrushShowRegion);
 	}
 
-
-
-
+	// 取得儲存生成的元件 CList
 	POSITION posiUnit = m_listUnitPointers.GetTailPosition();
 
+	// 取得儲存生成的線段 CList
 	POSITION posiLineUnit = m_listUnitLines.GetTailPosition();
 
-
-
+	// 已連接線段畫筆
 	CPen penConnectLine(PS_SOLID, 14, RGB(0, 0, 255));
+
+	// 拖曳中接線段畫筆
 	CPen penMovingLine(PS_DASH, 1, RGB(255, 0, 0));
+
+	// 被點選接線畫筆
 	CPen penFocusLine(PS_SOLID, 14, RGB(255, 0, 0));
 
+	// 繪製所有已儲存線段
 	while (posiLineUnit != nullptr)
 	{
 		CUnitLine* ptLineUnit = m_listUnitLines.GetPrev(posiLineUnit);
@@ -586,10 +637,6 @@ void CMFCSimulatorDlg::DrawToBuffer(CDC* pDC)
 	}
 
 
-
-
-
-
 	// 元件矩形顏色
 	CBrush brushInRect;
 	brushInRect.CreateSolidBrush(RGB(192, 192, 192));  // 灰色
@@ -604,7 +651,7 @@ void CMFCSimulatorDlg::DrawToBuffer(CDC* pDC)
 	pDC->SetTextColor(RGB(0, 0, 0));
 	pDC->SelectObject(&brushInRect);
 
-
+	// 繪製所有已儲存元件
 	while (posiUnit != nullptr)
 	{
 		
@@ -618,7 +665,6 @@ void CMFCSimulatorDlg::DrawToBuffer(CDC* pDC)
 		{
 			pDC->Ellipse(vecConnectPtRect[i]);
 		}
-
 
 		CPoint pointUnitLeftTop = ptUnit->m_pointUnitLocation;
 
@@ -645,11 +691,8 @@ void CMFCSimulatorDlg::DrawToBuffer(CDC* pDC)
 
 
 		}
-		
 	}
 }
-
-
 
 
 // 當使用者拖曳最小化視窗時，
@@ -669,9 +712,10 @@ void CMFCSimulatorDlg::OnBnClickedButtonBgImg()
 
 	if (IDOK == filesDlg.DoModal())
 	{
+		// 存取圖片路徑
 		m_strShowRegionImgBgPath = filesDlg.GetPathName();
 
-		//// 載入圖片
+		// 載入圖片
 		CRect rectShowRegion;
 		m_staticShowRegion.GetWindowRect(&rectShowRegion);
 
@@ -681,13 +725,15 @@ void CMFCSimulatorDlg::OnBnClickedButtonBgImg()
 		// 更新操作視窗是否更換背景圖片狀態
 		g_bShowRegionBgImgChange = TRUE;
 
-
 		// 更新操作視窗	
-		//Invalidate();
-		//UpdateWindow();	
 		OnPaint();
 	}
+	else
+	{
+		AfxMessageBox(_T("Cancel"));
+	}
 }
+
 
 // 設定操作視窗背景顏色
 void CMFCSimulatorDlg::OnBnClickedButtonBgColor()
@@ -716,13 +762,6 @@ void CMFCSimulatorDlg::OnBnClickedButtonBgColor()
 		UpdateWindow();
 	}
 }
-
-
-
-
-
-
-
 
 
  //函數輸入鈕 "IN"
@@ -942,12 +981,16 @@ void CMFCSimulatorDlg::OnBnClickedButtonLine()
 {
 
 	if (m_bIsLineMode == FALSE)
-	{
+	{	// 開啟連線模式
+
+		// 更新連線模式狀態
 		m_bIsLineMode = TRUE;
 
+		// 顯示狀態
 		m_staticLineState.SetWindowText(_T("Line"));
 
-
+		////////////////////////////////////////////////////////////////////////////////////////
+		// 關閉生成元件的按鈕以及刪除、讀檔、存檔、模擬按鈕
 		CButton* ptButtonIN = (CButton*)GetDlgItem(IDC_BUTTON_IN);
 		ptButtonIN->EnableWindow(FALSE);
 		CButton* ptButtonOUT = (CButton*)GetDlgItem(IDC_BUTTON_OUT);
@@ -968,15 +1011,20 @@ void CMFCSimulatorDlg::OnBnClickedButtonLine()
 		ptButtonSAVE->EnableWindow(FALSE);
 		CButton* ptButtonOPEN = (CButton*)GetDlgItem(IDC_BUTTON_OPEN);
 		ptButtonOPEN->EnableWindow(FALSE);
-
+		////////////////////////////////////////////////////////////////////////////////////////
 
 	}
 	else
-	{
+	{	// 關閉連線模式
+
+		// 更新連線模式狀態
 		m_bIsLineMode = FALSE;
 
+		// 顯示狀態
 		m_staticLineState.SetWindowText(_T("Normal"));
 
+		////////////////////////////////////////////////////////////////////////////////////////
+		// 開啟生成元件的按鈕以及刪除、讀檔、存檔、模擬按鈕
 		CButton* ptButtonIN = (CButton*)GetDlgItem(IDC_BUTTON_IN);
 		ptButtonIN->EnableWindow(TRUE);
 		CButton* ptButtonOUT = (CButton*)GetDlgItem(IDC_BUTTON_OUT);
@@ -997,12 +1045,12 @@ void CMFCSimulatorDlg::OnBnClickedButtonLine()
 		ptButtonSAVE->EnableWindow(TRUE);
 		CButton* ptButtonOPEN = (CButton*)GetDlgItem(IDC_BUTTON_OPEN);
 		ptButtonOPEN->EnableWindow(TRUE);
+		////////////////////////////////////////////////////////////////////////////////////////
 	}
-
 }
 
 
-// 刪除元件或線段
+// 刪除元件或線段按鈕
 void CMFCSimulatorDlg::OnBnClickedButtonDelete()
 {
 
@@ -1015,9 +1063,6 @@ void CMFCSimulatorDlg::OnBnClickedButtonDelete()
 
 		if (ptCurUnit->m_bFocusState == TRUE)
 		{	// 確認元件是否為被選取狀態
-
-
-
 
 			if (ptCurUnit->m_vecPtsPreLeftUnit.empty() != TRUE)
 			{	// 確認指向前一個元件的指標陣列是否為空
@@ -1049,9 +1094,6 @@ void CMFCSimulatorDlg::OnBnClickedButtonDelete()
 					}
 				}
 			}
-
-
-
 
 			if (ptCurUnit->m_vecPtsPreRightUnit.empty() != TRUE)
 			{	// 確認指向前一個元件的指標陣列是否為空
@@ -1101,7 +1143,8 @@ void CMFCSimulatorDlg::OnBnClickedButtonDelete()
 
 
 					if (vecNextLeftToCur.empty() != TRUE)
-					{
+					{	// 左連接點指標陣列
+
 						for (int j = 0; j < vecNextLeftToCur.size(); j++)
 						{	// 遍歷"後一個元件指向下一個元件的指標陣列"
 
@@ -1121,7 +1164,8 @@ void CMFCSimulatorDlg::OnBnClickedButtonDelete()
 
 
 					if (vecNextRightToCur.empty() != TRUE)
-					{
+					{	// 右連接點指標陣列
+
 						for (int j = 0; j < vecNextRightToCur.size(); j++)
 						{	// 遍歷"後一個元件指向下一個元件的指標陣列"
 
@@ -1141,7 +1185,6 @@ void CMFCSimulatorDlg::OnBnClickedButtonDelete()
 				}
 			}
 
-			// TODO : 把線段刪乾淨
 			// 清除連接的線
 			POSITION posiLineUnit = m_listUnitLines.GetTailPosition();
 			while (posiLineUnit != nullptr)
@@ -1183,7 +1226,6 @@ void CMFCSimulatorDlg::OnBnClickedButtonDelete()
 			delete ptCurUnit;
 		}
 	}
-
 
 
 	POSITION posiLineUnit = m_listUnitLines.GetTailPosition();
@@ -1253,7 +1295,7 @@ void CMFCSimulatorDlg::OnBnClickedButtonDelete()
 
 
 
-
+// 按下滑鼠左鍵
 void CMFCSimulatorDlg::OnLButtonDown(UINT nFlags, CPoint point)
 {
 	// 得到操作視窗矩形資訊
@@ -1343,7 +1385,7 @@ void CMFCSimulatorDlg::OnLButtonDown(UINT nFlags, CPoint point)
 					// 紀錄連線的連接點編號
 					ptNewUnitLine->m_iConnectPrePtIndex = i;
 
-					// 
+					// 紀錄連線的連接點座標點
 					ptNewUnitLine->m_pointMovingLinePos = ptUnit->m_vecConnectPt[i];
 
 					// 暫時紀錄移動中的線段指標
@@ -1411,16 +1453,13 @@ void CMFCSimulatorDlg::OnLButtonDown(UINT nFlags, CPoint point)
 	}
 	////////////////////////////////////////////////////////
 
-
 	OnPaint();
 
 	CDialogEx::OnLButtonDown(nFlags, point);
 }
 
 
-
-
-// 點擊滑鼠左鍵兩下
+// 雙擊滑鼠左鍵
 void CMFCSimulatorDlg::OnLButtonDblClk(UINT nFlags, CPoint point)
 {
 	// 得到操作視窗矩形資訊
@@ -1455,18 +1494,17 @@ void CMFCSimulatorDlg::OnLButtonDblClk(UINT nFlags, CPoint point)
 		{	// 確認滑鼠是否點取元件
 
 			if (ptUnit->m_strUnitID == "IN")
-			{
+			{	// 點取 IN 元件
 
 				CUnitInDlg dlgUnitInChoose;
 				dlgUnitInChoose.DoModal();
 				
-
 				// 將從子視窗選擇的函式更新到元件內
 				ptUnit->m_strFuncOrOpera = m_strFunOrOperChoose;
 
 			}
 			else if (ptUnit->m_strUnitID == "FUN")
-			{
+			{	// 點取 FUN 元件
 
 				CUnitFunDlg dlgUnitFun;
 				dlgUnitFun.DoModal();
@@ -1478,16 +1516,14 @@ void CMFCSimulatorDlg::OnLButtonDblClk(UINT nFlags, CPoint point)
 
 			break;
 		}
-
 	}
 
 	CDialogEx::OnLButtonDblClk(nFlags, point);
+
 }
 
 
-
-
-
+// 拖曳滑鼠
 void CMFCSimulatorDlg::OnMouseMove(UINT nFlags, CPoint point)
 {
 	// 得到操作視窗矩形資訊
@@ -1552,7 +1588,7 @@ void CMFCSimulatorDlg::OnMouseMove(UINT nFlags, CPoint point)
 }
 
 
-
+// 放開滑鼠左鍵
 void CMFCSimulatorDlg::OnLButtonUp(UINT nFlags, CPoint point)
 {
 	// 得到操作視窗矩形資訊
@@ -1565,8 +1601,6 @@ void CMFCSimulatorDlg::OnLButtonUp(UINT nFlags, CPoint point)
 	// 滑鼠座標點轉換為操作視窗內的座標點
 	point.x = point.x - rectShowRegion.left;
 	point.y = point.y - rectShowRegion.top;
-
-
 
 
 	if (m_bIsDragging)
@@ -1589,8 +1623,6 @@ void CMFCSimulatorDlg::OnLButtonUp(UINT nFlags, CPoint point)
 
 			// 得到連接點外切矩形
 			std::vector<CRect> rectConnectPts = ptUnit->m_vecConnectPtRect;
-
-
 
 
 			if ((ptUnit->m_bMoveState == TRUE) && (m_bIsLineMode == FALSE))
@@ -1621,7 +1653,7 @@ void CMFCSimulatorDlg::OnLButtonUp(UINT nFlags, CPoint point)
 						// 紀錄連線終點的元件
 						m_ptNextUnit = ptUnit;
 
-
+						/////////////////////////////////////////////////////////////////////////////////////////////
 						// 不合理連線警告
 						if ((m_ptPreUnit->m_strUnitID == "IN") && (m_ptNextUnit->m_strUnitID == "IN"))
 						{
@@ -1732,11 +1764,10 @@ void CMFCSimulatorDlg::OnLButtonUp(UINT nFlags, CPoint point)
 							AfxMessageBox(_T("連線錯誤"));
 							break;
 						}
-
-
-
+						/////////////////////////////////////////////////////////////////////////////////////////////
+						/////////////////////////////////////////////////////////////////////////////////////////////
 						// 兩連接元件紀錄彼此的指標
-			           // 考慮放的位置
+			            // 考慮放的位置
 						if (m_ptPreUnit->m_rectConnectLeftTop.PtInRect(m_pointMouseInitialPos))
 						{
 							m_ptPreUnit->m_vecPtsPreLeftUnit.push_back(ptUnit);
@@ -1763,7 +1794,7 @@ void CMFCSimulatorDlg::OnLButtonUp(UINT nFlags, CPoint point)
 						{
 							m_ptNextUnit->m_vecPtsNextUnit.push_back(m_ptPreUnit);
 						}
-
+						/////////////////////////////////////////////////////////////////////////////////////////////
 						// 紀錄連接的元件指標
 						ptLineUnit->m_vecPtsNextUnit.push_back(ptUnit);
 
@@ -1809,66 +1840,63 @@ void CMFCSimulatorDlg::OnLButtonUp(UINT nFlags, CPoint point)
 
 
 
-// 開始模擬
+// 啟動模擬的按鈕
 void CMFCSimulatorDlg::OnBnClickedButtonSimulate()
 {
-
+	// 關閉連線狀態
 	m_bIsLineMode = FALSE;
 
+	// 記錄是否點選 OUT 元件
 	BOOL bIsChooseOUT = FALSE;
 
+	// 更新模式狀態
 	m_staticLineState.SetWindowText(_T("Simulation"));
 
+	// 記錄選取的 OUT 元件指標
+	CUnitBase* ptUnitResultOut = nullptr;
 
-	CUnitBase* ptUnitResultOut = NULL;
+	// 檢查所有已生成元件
 	POSITION posiUnit = m_listUnitPointers.GetTailPosition();
 	while (posiUnit != nullptr)
 	{
 		CUnitBase* ptUnit = m_listUnitPointers.GetPrev(posiUnit);
 
 		if ((ptUnit->m_strUnitID == "OUT") && (ptUnit->m_bFocusState == TRUE))
-		{
+		{	// 檢查是否選取並點選 OUT 元件
+
 			ptUnitResultOut = ptUnit;
 			bIsChooseOUT = TRUE;
 		}
 	}
 
 	if (bIsChooseOUT == TRUE)
-	{
+	{	// 確認點選並選取 OUT 元件後，開啟模擬視窗
+
 		CSimulateStartDlg dlgResult;
+
+		// 將選取的 OUT 元件指標傳入模擬的子視窗類別
 		dlgResult.m_ptOutUnit = ptUnitResultOut;
+
 		dlgResult.DoModal();
 	}
 	else
-	{
+	{	// 沒有點選並選取 OUT 元件
+
 		AfxMessageBox(_T("Please choose and click an OUT unit."));
 	}
 
+	// 結束模擬或是離開模擬視窗後更新模式狀態
 	m_staticLineState.SetWindowText(_T("Normal"));
 
 }
 
 
-
-
-void CMFCSimulatorDlg::OnDestroy()
-{
-
-
-	CDialogEx::OnDestroy();
-
-	// TODO: 在此加入您的訊息處理常式程式碼
-}
-
-
-
-
 // 存檔
 void CMFCSimulatorDlg::OnBnClickedButtonSave()
 {
-
-
-	int iNum = 0; // 紀錄元件建立順序
+	
+	// 將所有已生成的元件標記生成的順序
+	int iNum = 0; // 紀錄元件建立的順序
 	POSITION posiAllUnit = m_listUnitPointers.GetHeadPosition();
 	while (posiAllUnit != nullptr)
 	{
@@ -1878,21 +1906,25 @@ void CMFCSimulatorDlg::OnBnClickedButtonSave()
 		iNum++;
 	}
 
-	
 
+	// 存檔路徑
 	CString strSaveFilePath;
+
+	// 存檔檔案類型為 .ini 檔案
 	CFileDialog dlgSaveFile(TRUE, NULL, NULL, OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT,
 		_T("All Files(*.ini)|*.ini|所有文件(*.*)|*.*|"), NULL);
 
 	
 	if (dlgSaveFile.DoModal() == IDOK)
 	{
-
+		// 讀取選取的存檔路徑
 		strSaveFilePath = dlgSaveFile.GetPathName();
 
 		// 刪除之前的檔案並重新寫入
 		DeleteFile(strSaveFilePath);
 
+		////////////////////////////////////////////////////////////////////////////////////////////////////
+		// 記錄元件資訊
 		POSITION posiUnit = m_listUnitPointers.GetHeadPosition();
 		while (posiUnit != nullptr)
 		{
@@ -1916,9 +1948,9 @@ void CMFCSimulatorDlg::OnBnClickedButtonSave()
 
 			WritePrivateProfileString(strSaveNum, _T("LocationX"), strLocaX, strSaveFilePath);
 			WritePrivateProfileString(strSaveNum, _T("LocationY"), strLocaY, strSaveFilePath);
-
+			
+			////////////////////////////////////////////////////////////////////////////////////////////////
 			// 元件連接編號(左上、右上、下方)
-
 			if (ptUnit->m_vecPtsPreLeftUnit.empty() != TRUE)
 			{
 				CString strLeftTop;
@@ -1961,9 +1993,10 @@ void CMFCSimulatorDlg::OnBnClickedButtonSave()
 			{
 				WritePrivateProfileString(strSaveNum, _T("NextConnect"), _T(""), strSaveFilePath);
 			}
-			
+			////////////////////////////////////////////////////////////////////////////////////////////////
 		}
-
+		////////////////////////////////////////////////////////////////////////////////////////////////////
+		// 記錄線段資訊
 		int iLineNum = 0;
 		POSITION posiLineUnit = m_listUnitLines.GetHeadPosition();
 		while (posiLineUnit != nullptr)
@@ -2003,20 +2036,19 @@ void CMFCSimulatorDlg::OnBnClickedButtonSave()
 			iLineNum++;
 
 		}
-
-		// 紀錄生成元件個數
+		////////////////////////////////////////////////////////////////////////////////////////////////////
+		// 記錄生成元件個數
 		CString strUnitTotalNum;
 		int iUnitTotalNum = m_listUnitPointers.GetSize();
 		strUnitTotalNum.Format(_T("%d"), iUnitTotalNum);
 		WritePrivateProfileString(_T("TotalNum"), _T("Units"), strUnitTotalNum, strSaveFilePath);
 
+		// 記錄生成線段個數
 		CString strUnitLineTotalNum;
 		int iUnitLineTotalNum = m_listUnitLines.GetSize();
 		strUnitLineTotalNum.Format(_T("%d"), iUnitLineTotalNum);
 		WritePrivateProfileString(_T("TotalNum"), _T("Lines"), strUnitLineTotalNum, strSaveFilePath);
-
-
-
+		////////////////////////////////////////////////////////////////////////////////////////////////////
 		// 儲存背景資訊
 		// 是否更改背景圖片
 		CString strIsChangeBG = (g_bShowRegionBgImgChange ? _T("TRUE") : _T("FALSE"));
@@ -2033,8 +2065,7 @@ void CMFCSimulatorDlg::OnBnClickedButtonSave()
 		WritePrivateProfileString(_T("BackgroundInfo"), _T("BackgroundColorR"), strColorR, strSaveFilePath);
 		WritePrivateProfileString(_T("BackgroundInfo"), _T("BackgroundColorG"), strColorG, strSaveFilePath);
 		WritePrivateProfileString(_T("BackgroundInfo"), _T("BackgroundColorB"), strColorB, strSaveFilePath);
-
-
+		////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		AfxMessageBox(_T("Saved Successfully"));
 	}
@@ -2042,17 +2073,16 @@ void CMFCSimulatorDlg::OnBnClickedButtonSave()
 	{
 		AfxMessageBox(_T("Cancel"));
 	}
-	
-
 }
 
 
 // 讀檔
 void CMFCSimulatorDlg::OnBnClickedButtonOpen()
 {
-	
-
+	// 讀檔路徑
 	CString strLoadFilePath;
+	
+	// 讀檔檔案類型為 .ini 檔案
 	CFileDialog dlgLoadFile(TRUE, NULL, NULL, OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT,
 		_T("All Files(*.ini)|*.ini|所有文件(*.*)|*.*|"), NULL);
 
@@ -2072,22 +2102,22 @@ void CMFCSimulatorDlg::OnBnClickedButtonOpen()
 		// 得到操作視窗矩形
 		m_staticShowRegion.GetWindowRect(&rectShowRegion);
 
-
 		// 操作視窗長、寬
 		int iHeightShowRegion = rectShowRegion.Height();
 		int iWidthShowRegion = rectShowRegion.Width();
 
-
-
-
+		// 讀取選取的讀檔路徑
 		strLoadFilePath = dlgLoadFile.GetPathName();
 		
+		// 讀取生成元件個數
 		int iUnitTotalNum = GetPrivateProfileInt(_T("TotalNum"), _T("Units"), -1, strLoadFilePath);
 		
+		// 讀取生成線段個數
 		int iLineUnitTotalNNum = GetPrivateProfileInt(_T("TotalNum"), _T("Lines"), -1, strLoadFilePath);
 
 
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////
+		// 讀取元件
 		for (int i = 0; i < iUnitTotalNum; i++)
 		{
 			CString strNum;
@@ -2109,7 +2139,6 @@ void CMFCSimulatorDlg::OnBnClickedButtonOpen()
 			strBuff.ReleaseBuffer();
 			CString strFunOrOpera = strBuff.GetBuffer(0);
 			
-
 
 			if (strFlag == _T("IN"))
 			{
@@ -2259,10 +2288,8 @@ void CMFCSimulatorDlg::OnBnClickedButtonOpen()
 
 			}
 		}
-
-
-		// 處理指標連接
-
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////
+		// 處理元件指標連接
 		for (int i = 0; i < iUnitTotalNum; i++)
 		{
 
@@ -2305,12 +2332,10 @@ void CMFCSimulatorDlg::OnBnClickedButtonOpen()
 
 					}
 				}
-
-
 			}
 		}
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+		////////////////////////////////////////////////////////////////////////////////////////////////////
+		// 讀取線段
 		for (int i = 0; i < iLineUnitTotalNNum; i++)
 		{
 			CString strLineNum;
@@ -2351,6 +2376,7 @@ void CMFCSimulatorDlg::OnBnClickedButtonOpen()
 			}
 			
 			ptNewUnitLine->m_iConnectPrePtIndex = iStartIndex;
+
 			ptNewUnitLine->m_iConnectNextPtIndex = iEndIndex;
 
 			ptNewUnitLine->m_bIsConnect = TRUE;
@@ -2359,7 +2385,7 @@ void CMFCSimulatorDlg::OnBnClickedButtonOpen()
 
 		}
 
-		
+		////////////////////////////////////////////////////////////////////////////////////////////////////
 		// 讀取背景資訊
 		// 是否更改背景圖片
 		CString strBuff;
@@ -2385,15 +2411,24 @@ void CMFCSimulatorDlg::OnBnClickedButtonOpen()
 
 		m_colorShowRegionBg = RGB(iColorR, iColorG, iColorB);
 
-
+		////////////////////////////////////////////////////////////////////////////////////////////////////
 		// 更新操作視窗	
 		Invalidate();
 		UpdateWindow();
-
 	}
 	else
 	{
-
 		AfxMessageBox(_T("Cancel"));
 	}
 }
+
+
+void CMFCSimulatorDlg::OnDestroy()
+{
+
+
+	CDialogEx::OnDestroy();
+
+	// TODO: 在此加入您的訊息處理常式程式碼
+}
+

@@ -83,7 +83,7 @@ public:
 	afx_msg void OnTimer(UINT_PTR nIDEvent);									// 單位間隔時間發生的事件 
 	afx_msg void OnPaint();														// 繪圖
 	afx_msg void OnBnClickedButtonStart();										// 開始模擬的按鈕
-	afx_msg void OnBnClickedButtonStop();										//停止模擬的按鈕
+	afx_msg void OnBnClickedButtonStop();										// 停止模擬的按鈕
 	afx_msg void OnDestroy();													// 關閉視窗
 
 };

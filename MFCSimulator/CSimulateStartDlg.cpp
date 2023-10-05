@@ -106,8 +106,7 @@ HBRUSH CSimulateStartDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 //			經過每節點的數值
 //
 // Remark : 
-//			當遇到分母為 0 的運算式時，會將數值回傳為 0 ，
-//			並且更新 m_bIsNAN 為 TRUE ，讓系統發出警告並終止計算。
+//			當遇到分母為 0 的運算式時，會將數值回傳為 0，當遇到分母小於 1e+10 的情況( example :  sin(0.0) )時，也會將數值回傳為 0 ， 並且更新 m_bIsNAN 為 TRUE ，讓系統發出警告並終止計算。
 double CSimulateStartDlg::SetPostfixResult(CUnitBase* ptUnit, double dTimeValue)
 {
 
@@ -249,6 +248,11 @@ void CSimulateStartDlg::OnTimer(UINT_PTR nIDEvent)
 			m_dCurTime = dSeconds;
 
 
+			// 時間說明 : 
+			// 當經過每單位系統時間間隔後，累加模擬函數的自變數時間，
+			// 避免畫面因系統時間造成畫面有段點的錯誤。
+			// 這裡假設 : 
+			//		每經過 0.01 秒 系統時間，則累加自變數時間 2*PI / 2500 。
 			if (m_dSimTime >= 2*M_PI)
 			{
 				m_dSimTime = 0.0;
@@ -259,9 +263,8 @@ void CSimulateStartDlg::OnTimer(UINT_PTR nIDEvent)
 				m_dSimTime += (2*M_PI) / 250;
 			}
 		
+			// 更新計算結果
 			UpdateSimulate();
-
-
 
 
 			CWnd* pSimShowRegion = GetDlgItem(IDC_STATIC_RESULT_SHOW);
@@ -271,7 +274,9 @@ void CSimulateStartDlg::OnTimer(UINT_PTR nIDEvent)
 
 			// 將計算結果儲存於佇列中
 			if (m_queueResultValue.size() > rectSimShowRegion.Width())
-			{
+			{	// 檢查佇列長度是否超過模擬畫面寬度
+				// 要是超過，就將舊資料刪除
+
 				m_queueResultValue.pop_front();
 				m_queueResultValue.push_back(m_dResultValue);
 			}
@@ -286,6 +291,7 @@ void CSimulateStartDlg::OnTimer(UINT_PTR nIDEvent)
 
 
 	CDialogEx::OnTimer(m_nTimerID);
+
 }
 
 
@@ -325,6 +331,7 @@ void CSimulateStartDlg::OnPaint()
 }
 
 
+// 繪製模擬畫面中的網格線
 void CSimulateStartDlg::DrawGrid(CDC* pDC)
 {
 	// 取得操作視窗矩形資訊
@@ -362,7 +369,7 @@ void CSimulateStartDlg::DrawGrid(CDC* pDC)
 }
 
 
-// 繪製波曲線
+// 繪製模擬的波型線
 void CSimulateStartDlg::DrawWave(CDC* pDC)
 {
 	
@@ -374,7 +381,7 @@ void CSimulateStartDlg::DrawWave(CDC* pDC)
 	int iWidthSimShowRegion = rectSimShowRegion.Width();
 	int iHeightSimShowRegion = rectSimShowRegion.Height();
 
-
+	////////////////////////////////////////////////////////////////////////////
 	// 設置 y = 0 的線
 	CPen penY0(PS_SOLID, 4, RGB(255, 255, 0));
 	CPen* pOldPenY0 = pDC->SelectObject(&penY0);
@@ -392,7 +399,7 @@ void CSimulateStartDlg::DrawWave(CDC* pDC)
 	pDC->SetTextColor(RGB(255, 255, 0));
 	pDC->TextOut(5, rectSimShowRegion.CenterPoint().y, _T("y=0"));
 
-
+	////////////////////////////////////////////////////////////////////////////
 	// 設置 y = 1 的線
 	CPen penY1(PS_SOLID, 4, RGB(0, 200, 255));
 	CPen* pOldPenY1 = pDC->SelectObject(&penY1);
@@ -410,7 +417,7 @@ void CSimulateStartDlg::DrawWave(CDC* pDC)
 	pDC->SetTextColor(RGB(0, 200, 255));
 	pDC->TextOut(5, rectSimShowRegion.CenterPoint().y - 100, _T("y=1"));
 
-
+	////////////////////////////////////////////////////////////////////////////
 	// 設置 y = -1 的線
 	CPen penYNeg1(PS_SOLID, 4, RGB(0, 200, 255));
 	CPen* pOldPenYNeg1 = pDC->SelectObject(&penYNeg1);
@@ -428,7 +435,7 @@ void CSimulateStartDlg::DrawWave(CDC* pDC)
 	pDC->SetTextColor(RGB(0, 200, 255));
 	pDC->TextOut(5, rectSimShowRegion.CenterPoint().y + 100, _T("y=-1"));
 
-
+	////////////////////////////////////////////////////////////////////////////
 	// 設置 y = 2 的線
 	CPen penY2(PS_SOLID, 4, RGB(0, 200, 255));
 	CPen* pOldPenY2 = pDC->SelectObject(&penY2);
@@ -446,7 +453,7 @@ void CSimulateStartDlg::DrawWave(CDC* pDC)
 	pDC->SetTextColor(RGB(0, 200, 255));
 	pDC->TextOut(5, rectSimShowRegion.CenterPoint().y - 200, _T("y=2"));
 
-
+	////////////////////////////////////////////////////////////////////////////
 	// 設置 y = -2 的線
 	CPen penYNeg2(PS_SOLID, 4, RGB(0, 200, 255));
 	CPen* pOldPenYNeg2 = pDC->SelectObject(&penYNeg2);
@@ -464,9 +471,7 @@ void CSimulateStartDlg::DrawWave(CDC* pDC)
 	pDC->SetTextColor(RGB(0, 200, 255));
 	pDC->TextOut(5, rectSimShowRegion.CenterPoint().y + 200, _T("y=-2"));
 
-
-
-
+	////////////////////////////////////////////////////////////////////////////
 	// 設置波線
 	CPen penWave(PS_SOLID, 8, RGB(255, 0, 0));
 	CPen* pOldPenWave = pDC->SelectObject(&penWave);
@@ -475,25 +480,26 @@ void CSimulateStartDlg::DrawWave(CDC* pDC)
 	int iNumberPoints = rectSimShowRegion.Width();      // 一個周期內點的數量與顯示區域的寬對應
 
 
-
 	for (int i = 1; i < m_queueResultValue.size(); i++)
-	{
+	{	// 將儲存於佇列中的所有舊的波型資料繪出
+		
+		// 畫線的前一個點
 		double dY = 1 * m_queueResultValue[i-1];
 
 		// 將波形點映射到屏幕
-		int iScreenX = i-1;  // 一個單位對應 1 個像素
+		// 調整實際自變數與應變數值在螢幕中像素點的大小對應
+		int iScreenX = i-1;  
 		int iScreenY = rectSimShowRegion.CenterPoint().y - static_cast<int>(dY * 100 + 0.5);
-
 		pDC->MoveTo(CPoint(iScreenX, iScreenY));
 
-		if (m_queueResultValue.size() >= 2)
-		{
-			double dY2 = 1 * m_queueResultValue[i];
+		// 畫線的後一個點
+		double dY2 = 1 * m_queueResultValue[i];
 
-			int iScreenX2 = i;									 // 一個單位對應 1 個像素
-			int iScreenY2 = rectSimShowRegion.CenterPoint().y - static_cast<int>(dY2 * 100 + 0.5);
-			pDC->LineTo(CPoint(iScreenX2, iScreenY2));
-		}
+		// 將波形點映射到屏幕
+		// 調整實際自變數與應變數值在螢幕中像素點的大小對應
+		int iScreenX2 = i;									 
+		int iScreenY2 = rectSimShowRegion.CenterPoint().y - static_cast<int>(dY2 * 100 + 0.5);
+		pDC->LineTo(CPoint(iScreenX2, iScreenY2));
 
 	}
 
@@ -502,6 +508,7 @@ void CSimulateStartDlg::DrawWave(CDC* pDC)
 }
 
 
+// 雙緩衝繪圖
 void CSimulateStartDlg::DrawToBuffer(CDC* pDC)
 {
 
@@ -510,58 +517,66 @@ void CSimulateStartDlg::DrawToBuffer(CDC* pDC)
 	CRect rectSimShowRegion;
 
 	pSimShowRegion->GetClientRect(&rectSimShowRegion);
+
 	int iWidthSimShowRegion = rectSimShowRegion.Width();
 	int iHeightSimShowRegion = rectSimShowRegion.Height();
-
 
 	CBrush brushSimShowRegion;
 	CBrush* pOldBrushSimShowRegion = pDC->SelectObject(&brushSimShowRegion);
 
 	brushSimShowRegion.CreateSolidBrush(m_colorSimShowRegion);
+
 	pDC->Rectangle(rectSimShowRegion);
 	pDC->FillRect(&rectSimShowRegion, &brushSimShowRegion);
 	pDC->SelectObject(pOldBrushSimShowRegion);
 
-	// 繪製網格
+	// 繪製背景網格
 	DrawGrid(pDC);
 
-
+	// 繪製模擬波型
 	DrawWave(pDC);
 
-
 }
 
 
-// 模擬開始
+// 開始模擬的按鈕
 void CSimulateStartDlg::OnBnClickedButtonStart()
 {
+	// 記錄開始時間
 	m_dwStartTime = timeGetTime();
+
+	// 每 0.01 秒更新模擬資料
 	SetTimer(m_nTimerID, 10, nullptr);
+
 }
 
 
-// 模擬停止
+// 停止模擬的按鈕
 void CSimulateStartDlg::OnBnClickedButtonStop()
 {
-	// TODO: 在此加入控制項告知處理常式程式碼
 
 	if (m_bIsNAN == TRUE)
-	{
+	{	// 重新初始化分母是否為 0 的判斷 
+
 		m_bIsNAN = FALSE;
 	}
 
-	int iTotalQueueSize = m_queueResultValue.size();
-
+	// 重新初始化模擬函數的自變數時間
 	m_dSimTime = 0.0;
 
+	// 停止 Timer
 	KillTimer(m_nTimerID);
+
+	// 取得停止時的佇列長度
+	int iTotalQueueSize = m_queueResultValue.size();
+
+	// 清空佇列
 	if (m_queueResultValue.empty() != TRUE)
 	{
 		for (int i = 0; i < iTotalQueueSize; i++)
 		{
 			m_queueResultValue.pop_front();
 		}
-
 	}
 
 	CRect rectSimShowRegion;
@@ -572,12 +587,9 @@ void CSimulateStartDlg::OnBnClickedButtonStop()
 }
 
 
-
-
-
+// 退出視窗
 void CSimulateStartDlg::OnDestroy()
 {
 	CDialogEx::OnDestroy();
-
-	// TODO: 在此加入您的訊息處理常式程式碼
 }
+

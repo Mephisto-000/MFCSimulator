@@ -1,22 +1,16 @@
 #pragma once
 #include "CUnitBase.h"
+
+
+
 class CUnitOUT : public CUnitBase
 {
 public:
 
     CUnitOUT(CRect rectShowRegion, CRect rectButton);
 
+    // 根據元件類型和拖曳後的位移，更新連接點與其外切矩形的位置
     virtual void SetConnectPtAndRect(int iOffsetX, int iOffsetY) override;
-
-    // 元件之間插入元件
-    virtual void InsertUnit(CUnitBase* ptNewUnit) override;
-
-    // 記錄線段點資料
-    virtual void UpdateDotData(CPoint pointNewLocation) override;
-
-    // 輸出元件的結果
-    virtual void Result(double dTimeValue) override;
-
 
 };
 

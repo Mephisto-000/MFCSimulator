@@ -5,9 +5,7 @@
 #include "MFCSimulator.h"
 #include "afxdialogex.h"
 #include "CUnitFunDlg.h"
-
 #include "MFCSimulatorDlg.h"
-
 
 // UnitFunDlg 對話方塊
 
@@ -16,9 +14,8 @@ IMPLEMENT_DYNAMIC(CUnitFunDlg, CDialogEx)
 CUnitFunDlg::CUnitFunDlg(CWnd* pParent /*=nullptr*/)
 	: CDialogEx(IDD_DIALOG_UNIT_FUN, pParent)
 {
-	m_strOperaChoose = _T("請輸入");
-	m_fontChooseText.CreatePointFont(100, _T("Calibri"));
-
+	m_strOperaChoose = _T("+");  // 初始為加法
+	m_fontChooseText.CreatePointFont(90, _T("Calibri"));
 }
 
 CUnitFunDlg::~CUnitFunDlg()
@@ -41,6 +38,7 @@ BEGIN_MESSAGE_MAP(CUnitFunDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_BUTTON_FUN_DIVISION, &CUnitFunDlg::OnBnClickedButtonFunDivision)
 	ON_BN_CLICKED(IDOK, &CUnitFunDlg::OnBnClickedOk)
 	ON_BN_CLICKED(IDCANCEL, &CUnitFunDlg::OnBnClickedCancel)
+	ON_WM_DESTROY()
 END_MESSAGE_MAP()
 
 
@@ -70,14 +68,12 @@ HBRUSH CUnitFunDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 		pDC->SelectObject(&m_fontChooseText);
 	}
 
-
-
 	// TODO:  如果預設值並非想要的，則傳回不同的筆刷
 	return hbr;
 }
 
 
-
+// 選擇加法運算元按鈕
 void CUnitFunDlg::OnBnClickedButtonFunPlus()
 {
 
@@ -88,6 +84,7 @@ void CUnitFunDlg::OnBnClickedButtonFunPlus()
 }
 
 
+// 選擇減法運算元按鈕
 void CUnitFunDlg::OnBnClickedButtonFunMinus()
 {
 
@@ -98,6 +95,7 @@ void CUnitFunDlg::OnBnClickedButtonFunMinus()
 }
 
 
+// 選擇乘法運算元按鈕
 void CUnitFunDlg::OnBnClickedButtonFunMultiply()
 {
 
@@ -108,6 +106,7 @@ void CUnitFunDlg::OnBnClickedButtonFunMultiply()
 }
 
 
+// 選擇除法運算元按鈕
 void CUnitFunDlg::OnBnClickedButtonFunDivision()
 {
 
@@ -118,6 +117,7 @@ void CUnitFunDlg::OnBnClickedButtonFunDivision()
 }
 
 
+// 確認選擇的運算元
 void CUnitFunDlg::OnBnClickedOk()
 {
 
@@ -126,11 +126,29 @@ void CUnitFunDlg::OnBnClickedOk()
 	parentDlg->m_strFunOrOperChoose = m_strOperaChoose;
 
 	CDialogEx::OnOK();
+
 }
 
-
+// 取消選擇運算元，使用預設的加法運算元
 void CUnitFunDlg::OnBnClickedCancel()
 {
 
+	// 將預設的函式傳入父視窗
+	CMFCSimulatorDlg* parentDlg = (CMFCSimulatorDlg*)GetParent();
+	parentDlg->m_strFunOrOperChoose = m_strOperaChoose;
+
 	CDialogEx::OnCancel();
 }
+
+
+// 沒有按下確認按鈕，直接關閉視窗的話，用預設的加法運算元
+void CUnitFunDlg::OnDestroy()
+{
+	CDialogEx::OnDestroy();
+
+	// 將預設的函式傳入父視窗
+	CMFCSimulatorDlg* parentDlg = (CMFCSimulatorDlg*)GetParent();
+	parentDlg->m_strFunOrOperChoose = m_strOperaChoose;
+
+}
+

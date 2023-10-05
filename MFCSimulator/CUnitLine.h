@@ -22,16 +22,6 @@ public:
 
     ~CUnitLine();
 
-    // 元件之間插入元件
-    virtual void InsertUnit(CUnitBase* ptNewUnit) override {};
-
-    // 記錄線段點資料
-    virtual void UpdateDotData(CPoint pointNewLocation) override {};
-
-    // 輸出元件的結果
-    virtual void Result(double dTimeValue) override {};
-
-
 
 };
 

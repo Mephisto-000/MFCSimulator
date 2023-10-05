@@ -3,7 +3,6 @@
 
 
 
-
 // UnitBase 建構子
 CUnitBase::CUnitBase(CRect rectShowRegion, CRect rectButton)
 {
@@ -29,17 +28,14 @@ CUnitBase::CUnitBase(CRect rectShowRegion, CRect rectButton)
 	// 連接點半徑為 14 
 	m_iConnectPtRadius = 14;
 
-	// 輸出值為 0.0
+
 	m_dOutValue = 0.0;
 
 	m_iConnectPtAmount = 0;
+
 	m_iConnectPtRectAmount = 0;
-	m_iPreLeftPt = 0;
-	m_iPreRightPt = 0;
-	m_iNextPt = 0;
 
 	m_iUnitSaveNum = 0;
-
 
 }
 
@@ -49,12 +45,6 @@ CUnitBase::~CUnitBase()
 {
 	if (m_vecPtsPreLeftUnit.empty() != TRUE)
 	{
-		//// 釋放陣列內的指標記憶體
-		//for (int i = 0; i < m_vecPtsPreLeftUnit.size(); i++)
-		//{
-		//	UnitBase* ptTemp = m_vecPtsPreLeftUnit[i];
-		//	delete ptTemp;
-		//}
 
 		// 清空陣列元素，再宣告一個空陣列與其做交換釋放記憶體
 		m_vecPtsPreLeftUnit.clear();
@@ -65,12 +55,6 @@ CUnitBase::~CUnitBase()
 
 	if (m_vecPtsPreRightUnit.empty() != TRUE)
 	{
-		//// 釋放陣列內的指標記憶體
-		//for (int i = 0; i < m_vecPtsPreRightUnit.size(); i++)
-		//{
-		//	UnitBase* ptTemp = m_vecPtsPreRightUnit[i];
-		//	delete ptTemp;
-		//}
 
 		// 清空陣列元素，再宣告一個空陣列與其做交換釋放記憶體
 		m_vecPtsPreRightUnit.clear();
@@ -86,6 +70,7 @@ CUnitBase::~CUnitBase()
 		// 清空陣列元素，再宣告一個空陣列與其做交換釋放記憶體
 		m_vecPtsNextUnit.clear();
 		std::vector<CUnitBase*>().swap(m_vecPtsNextUnit);
+
 	}
 
 }

@@ -124,6 +124,7 @@ void CMFCSimulatorDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_BUTTON_FUN, m_buttonFUN);
 	DDX_Control(pDX, IDC_STATIC_LINE_MODE_STATE, m_staticLineState);
 	DDX_Control(pDX, IDC_STATIC_LINE_MODE_TEXT, m_staticLineModeText);
+	DDX_Control(pDX, IDC_BUTTON_LINE, m_buttonLINE);
 }
 
 BEGIN_MESSAGE_MAP(CMFCSimulatorDlg, CDialogEx)
@@ -1023,6 +1024,29 @@ void CMFCSimulatorDlg::OnBnClickedButtonLine()
 
 		m_staticLineState.SetWindowText(_T("Line"));
 
+
+		CButton* ptButtonIN = (CButton*)GetDlgItem(IDC_BUTTON_IN);
+		ptButtonIN->EnableWindow(FALSE);
+		CButton* ptButtonOUT = (CButton*)GetDlgItem(IDC_BUTTON_OUT);
+		ptButtonOUT->EnableWindow(FALSE);
+		CButton* ptButtonAND = (CButton*)GetDlgItem(IDC_BUTTON_AND);
+		ptButtonAND->EnableWindow(FALSE);
+		CButton* ptButtonOR = (CButton*)GetDlgItem(IDC_BUTTON_OR);
+		ptButtonOR->EnableWindow(FALSE);
+		CButton* ptButtonNOT = (CButton*)GetDlgItem(IDC_BUTTON_NOT);
+		ptButtonNOT->EnableWindow(FALSE);
+		CButton* ptButtonFUN = (CButton*)GetDlgItem(IDC_BUTTON_FUN);
+		ptButtonFUN->EnableWindow(FALSE);
+		CButton* ptButtonSIM = (CButton*)GetDlgItem(IDC_BUTTON_SIMULATE);
+		ptButtonSIM->EnableWindow(FALSE);
+		CButton* ptButtonDEL = (CButton*)GetDlgItem(IDC_BUTTON_DELETE);
+		ptButtonDEL->EnableWindow(FALSE);
+		CButton* ptButtonSAVE = (CButton*)GetDlgItem(IDC_BUTTON_SAVE);
+		ptButtonSAVE->EnableWindow(FALSE);
+		CButton* ptButtonOPEN = (CButton*)GetDlgItem(IDC_BUTTON_OPEN);
+		ptButtonOPEN->EnableWindow(FALSE);
+
+
 	}
 	else
 	{
@@ -1030,6 +1054,26 @@ void CMFCSimulatorDlg::OnBnClickedButtonLine()
 
 		m_staticLineState.SetWindowText(_T("Normal"));
 
+		CButton* ptButtonIN = (CButton*)GetDlgItem(IDC_BUTTON_IN);
+		ptButtonIN->EnableWindow(TRUE);
+		CButton* ptButtonOUT = (CButton*)GetDlgItem(IDC_BUTTON_OUT);
+		ptButtonOUT->EnableWindow(TRUE);
+		CButton* ptButtonAND = (CButton*)GetDlgItem(IDC_BUTTON_AND);
+		ptButtonAND->EnableWindow(TRUE);
+		CButton* ptButtonOR = (CButton*)GetDlgItem(IDC_BUTTON_OR);
+		ptButtonOR->EnableWindow(TRUE);
+		CButton* ptButtonNOT = (CButton*)GetDlgItem(IDC_BUTTON_NOT);
+		ptButtonNOT->EnableWindow(TRUE);
+		CButton* ptButtonFUN = (CButton*)GetDlgItem(IDC_BUTTON_FUN);
+		ptButtonFUN->EnableWindow(TRUE);
+		CButton* ptButtonSIM = (CButton*)GetDlgItem(IDC_BUTTON_SIMULATE);
+		ptButtonSIM->EnableWindow(TRUE);
+		CButton* ptButtonDEL = (CButton*)GetDlgItem(IDC_BUTTON_DELETE);
+		ptButtonDEL->EnableWindow(TRUE);
+		CButton* ptButtonSAVE = (CButton*)GetDlgItem(IDC_BUTTON_SAVE);
+		ptButtonSAVE->EnableWindow(TRUE);
+		CButton* ptButtonOPEN = (CButton*)GetDlgItem(IDC_BUTTON_OPEN);
+		ptButtonOPEN->EnableWindow(TRUE);
 	}
 
 }

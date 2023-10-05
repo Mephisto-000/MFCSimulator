@@ -105,6 +105,7 @@ public:
 	CButton m_buttonOR;
 	CButton m_buttonNOT;
 	CButton m_buttonFUN;
+	CButton m_buttonLINE;
 	
 
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);

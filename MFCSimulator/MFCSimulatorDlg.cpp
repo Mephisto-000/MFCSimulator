@@ -1257,6 +1257,7 @@ void CMFCSimulatorDlg::OnBnClickedButtonDelete()
 			// 清除在記錄已創建元件的 CList 中被選取的元件
 			m_listUnitPointers.RemoveAt(posiCur);
 
+			delete ptCurUnit;
 		}
 	}
 
@@ -1320,6 +1321,7 @@ void CMFCSimulatorDlg::OnBnClickedButtonDelete()
 			// 刪除被選取的線段
 			m_listUnitLines.RemoveAt(posiLineCur);
 
+			delete ptCurLineUnit;
 		}
 	}
 

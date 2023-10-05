@@ -72,4 +72,6 @@ public:
 	afx_msg void OnBnClickedButtonStop();
 
 	CStatic m_staticResultShowRegion;
+
+	double SetPostfixResult(UnitBase* ptUnit, double dTimeValue);
 };

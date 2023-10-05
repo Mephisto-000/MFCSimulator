@@ -96,6 +96,89 @@ HBRUSH SimulateStartDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 }
 
 
+
+// 後序走訪
+double SimulateStartDlg::SetPostfixResult(UnitBase* ptUnit, double dTimeValue)
+{
+
+	double dLeftResult = 0.0;
+
+	double dRightResult = 0.0;
+
+	if (ptUnit->m_vecPtsPreLeftUnit.size() != 0)
+	{
+		dLeftResult = SetPostfixResult(ptUnit->m_vecPtsPreLeftUnit[0], dTimeValue);
+	}
+
+	if (ptUnit->m_vecPtsPreRightUnit.size() != 0)
+	{
+		dRightResult = SetPostfixResult(ptUnit->m_vecPtsPreRightUnit[0], dTimeValue);
+	}
+
+
+	if (ptUnit->m_strFuncOrOpera == "+")
+	{
+		return dLeftResult + dRightResult;
+	}
+	else if (ptUnit->m_strFuncOrOpera == "-")
+	{
+		return dLeftResult - dRightResult;
+	}
+	else if (ptUnit->m_strFuncOrOpera == "X")
+	{
+		return dLeftResult * dRightResult;
+	}
+	else if (ptUnit->m_strFuncOrOpera == "/")
+	{
+		if (dRightResult == 0)
+		{
+			return 0;
+		}
+		else
+		{
+			return dLeftResult / dRightResult;
+		}
+	}
+	else if (ptUnit->m_strFuncOrOpera == "AND")
+	{
+		return (dLeftResult && dRightResult);
+	}
+	else if (ptUnit->m_strFuncOrOpera == "OR")
+	{
+		return (dLeftResult || dRightResult);
+	}
+	else if (ptUnit->m_strFuncOrOpera == "NOT")
+	{
+		return !(dLeftResult);
+	}
+	else if (ptUnit->m_strFuncOrOpera == "sin(t)")
+	{
+		return sin(dTimeValue);
+	}
+	else if (ptUnit->m_strFuncOrOpera == "cos(t)")
+	{
+		return cos(dTimeValue);
+	}
+	else if (ptUnit->m_strFuncOrOpera == "true")
+	{
+		return 1.0;
+	}
+	else if (ptUnit->m_strFuncOrOpera == "false")
+	{
+		return 0.0;
+	}
+	else
+	{
+		return dLeftResult;
+	}
+
+}
+
+
+
+
+
+
 // 更新數值計算結果
 void SimulateStartDlg::UpdateSimulate()
 {
@@ -104,9 +187,7 @@ void SimulateStartDlg::UpdateSimulate()
 	strTimeValue.Format(_T("%.3f"), m_dCurTime);
 	m_staticTimeShow.SetWindowText(strTimeValue);
 
-	CMFCSimulatorDlg dlgMain;
-	/*m_dResultValue = dlgMain.SetPostfixResult(m_ptOutUnit, m_dCurTime);*/
-	m_dResultValue = dlgMain.SetPostfixResult(m_ptOutUnit, m_dSimTime);
+	m_dResultValue = SetPostfixResult(m_ptOutUnit, m_dSimTime);
 
 	CString strResult;
 	strResult.Format(_T("%.4f"), m_dResultValue);

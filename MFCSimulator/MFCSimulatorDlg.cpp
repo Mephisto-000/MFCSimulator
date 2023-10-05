@@ -103,13 +103,6 @@ CMFCSimulatorDlg::~CMFCSimulatorDlg()
 
 	m_listUnitLines.RemoveAll();
 
-
-	//delete m_ptPreMovingUnit;
-	//delete m_ptMovingUnit;
-	//delete m_ptMovingLine;
-	//delete m_ptPreUnit;
-	//delete m_ptNextUnit;
-
 }
 
 void CMFCSimulatorDlg::DoDataExchange(CDataExchange* pDX)
@@ -436,75 +429,6 @@ CString CMFCSimulatorDlg::GetCurrentDir()
 }
 
 
-// 後序走訪
-double CMFCSimulatorDlg::SetPostfixResult(UnitBase* ptUnit, double dTimeValue)
-{
-
-	double dLeftResult = 0.0;
-	
-	double dRightResult = 0.0;
-
-	if (ptUnit->m_vecPtsPreLeftUnit.size() != 0)
-	{
-		dLeftResult = SetPostfixResult(ptUnit->m_vecPtsPreLeftUnit[0], dTimeValue);
-	}
-
-	if (ptUnit->m_vecPtsPreRightUnit.size() != 0)
-	{
-		dRightResult = SetPostfixResult(ptUnit->m_vecPtsPreRightUnit[0], dTimeValue);
-	}
-
-
-	if (ptUnit->m_strFuncOrOpera == "+")
-	{
-		return dLeftResult + dRightResult;
-	}
-	else if (ptUnit->m_strFuncOrOpera == "-")
-	{
-		return dLeftResult - dRightResult;
-	}
-	else if (ptUnit->m_strFuncOrOpera == "X")
-	{
-		return dLeftResult * dRightResult;
-	}
-	else if (ptUnit->m_strFuncOrOpera == "/")
-	{
-		return dLeftResult / dRightResult;
-	}
-	else if (ptUnit->m_strFuncOrOpera == "AND")
-	{
-		return (dLeftResult && dRightResult);
-	}
-	else if (ptUnit->m_strFuncOrOpera == "OR")
-	{
-		return (dLeftResult || dRightResult);
-	}
-	else if (ptUnit->m_strFuncOrOpera == "NOT")
-	{
-		return !(dLeftResult);
-	}
-	else if (ptUnit->m_strFuncOrOpera == "sin(t)")
-	{
-		return sin(dTimeValue);
-	}
-	else if (ptUnit->m_strFuncOrOpera == "cos(t)")
-	{
-		return cos(dTimeValue);
-	}
-	else if (ptUnit->m_strFuncOrOpera == "true")
-	{
-		return 1.0;
-	}
-	else if (ptUnit->m_strFuncOrOpera == "false")
-	{
-		return 0.0;
-	}
-	else
-	{
-		return dLeftResult;
-	}
-
-}
 
 
 
@@ -1885,28 +1809,6 @@ void CMFCSimulatorDlg::OnLButtonUp(UINT nFlags, CPoint point)
 }
 
 
-
-// 根據排序計算結果
-double CMFCSimulatorDlg::GetCalculateResult(double dTimeValue)
-{
-
-	POSITION posiUnit = m_listUnitPointers.GetTailPosition();
-	while (posiUnit != nullptr)
-	{
-		UnitBase* ptUnit = m_listUnitPointers.GetPrev(posiUnit);
-
-		if (ptUnit->m_strUnitID == "OUT")
-		{
-
-			double dTest3 = 0.0;
-			dTest3 = SetPostfixResult(ptUnit, dTimeValue);
-
-			int it5 = 7;
-
-			return dTest3;
-		}
-	}
-}
 
 // 開始模擬
 void CMFCSimulatorDlg::OnBnClickedButtonSimulate()

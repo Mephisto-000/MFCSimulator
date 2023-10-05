@@ -120,17 +120,6 @@ public:
 
 
 
-	//BOOL IsOperator(CString strOperator);                   // 判斷是否為運算元
-	//int GetOperatorPriority(CString strOperator);           // 判斷運算元優先等級
-	//double EvaluateOutValue(UnitBase* ptUnit, double dTimeValue);  // 計算 OUT 輸出結果
-
-
-	double SetPostfixResult(UnitBase* ptUnit, double dTimeValue);             // 得到後序走訪結果
-
-	double GetCalculateResult(double dTimeValue);           // 根據排序計算結果
-
-
-
 	afx_msg void OnBnClickedButtonIn();						// 新增 IN 元件按鈕
 	afx_msg void OnBnClickedButtonOut();                    // 新增 OUT 元件按鈕
 	afx_msg void OnBnClickedButtonAnd();                    // 新增 AND 元件按鈕

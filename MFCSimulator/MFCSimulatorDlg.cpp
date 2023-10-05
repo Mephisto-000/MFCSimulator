@@ -2411,9 +2411,32 @@ void CMFCSimulatorDlg::OnBnClickedButtonOpen()
 
 		}
 
+		
+		// 讀取背景資訊
+		// 是否更改背景圖片
+		CString strBuff;
+		GetPrivateProfileString(_T("BackgroundInfo"), _T("IsChange"), _T("NULL"), strBuff.GetBuffer(MAX_PATH), MAX_PATH, strLoadFilePath);
+		strBuff.ReleaseBuffer();
+		CString strIsChaneBG = strBuff.GetBuffer(0);
+		BOOL bIsChangeBG = (strIsChaneBG.CompareNoCase(_T("TRUE")) == 0);
+		g_bShowRegionBgImgChange = bIsChangeBG;
 
+		// 讀取背景圖片位址
+		GetPrivateProfileString(_T("BackgroundInfo"), _T("BackgroundPath"), _T("NULL"), strBuff.GetBuffer(MAX_PATH), MAX_PATH, strLoadFilePath);
+		strBuff.ReleaseBuffer();
+		CString strPathBG = strBuff.GetBuffer(0);
+		if (strPathBG != _T("NULL"))
+		{
+			m_strShowRegionImgBgPath = strPathBG;
+		}
 
-	
+		// 讀取背景顏色設置
+		int iColorR = GetPrivateProfileInt(_T("BackgroundInfo"), _T("BackgroundColorR"), -1, strLoadFilePath);
+		int iColorG = GetPrivateProfileInt(_T("BackgroundInfo"), _T("BackgroundColorG"), -1, strLoadFilePath);
+		int iColorB = GetPrivateProfileInt(_T("BackgroundInfo"), _T("BackgroundColorB"), -1, strLoadFilePath);
+
+		m_colorShowRegionBg = RGB(iColorR, iColorG, iColorB);
+
 
 		// 更新操作視窗	
 		Invalidate();

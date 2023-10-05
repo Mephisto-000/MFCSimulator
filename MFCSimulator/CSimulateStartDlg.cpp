@@ -54,6 +54,7 @@ BEGIN_MESSAGE_MAP(CSimulateStartDlg, CDialogEx)
 	ON_WM_PAINT()
 	ON_BN_CLICKED(IDC_BUTTON_START, &CSimulateStartDlg::OnBnClickedButtonStart)
 	ON_BN_CLICKED(IDC_BUTTON_STOP, &CSimulateStartDlg::OnBnClickedButtonStop)
+	ON_WM_DESTROY()
 END_MESSAGE_MAP()
 
 
@@ -191,7 +192,6 @@ void CSimulateStartDlg::UpdateSimulate()
 
 	if (m_bIsNAN == FALSE)
 	{
-		/*m_dResultValue = SetPostfixResult(m_ptOutUnit, m_dSimTime);*/
 
 		CString strTimeValue;
 		strTimeValue.Format(_T("%.3f"), m_dCurTime);
@@ -203,8 +203,9 @@ void CSimulateStartDlg::UpdateSimulate()
 	}
 	else
 	{
-		AfxMessageBox(_T("Division by 0 error!"));
+		AfxMessageBox(_T("Error of division by 0 !"));
 		KillTimer(m_nTimerID);
+		EndDialog(0);
 	}
 }
 
@@ -551,3 +552,11 @@ void CSimulateStartDlg::OnBnClickedButtonStop()
 
 
 
+
+
+void CSimulateStartDlg::OnDestroy()
+{
+	CDialogEx::OnDestroy();
+
+	// TODO: 在此加入您的訊息處理常式程式碼
+}

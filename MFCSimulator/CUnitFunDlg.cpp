@@ -144,6 +144,7 @@ void CUnitFunDlg::OnBnClickedCancel()
 // 沒有按下確認按鈕，直接關閉視窗的話，用預設的加法運算元
 void CUnitFunDlg::OnDestroy()
 {
+
 	CDialogEx::OnDestroy();
 
 	// 將預設的函式傳入父視窗

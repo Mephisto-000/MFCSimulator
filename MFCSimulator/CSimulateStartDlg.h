@@ -76,4 +76,5 @@ public:
 	double SetPostfixResult(CUnitBase* ptUnit, double dTimeValue);
 	BOOL m_bIsNAN;  // 判斷分母是否為 0 
 
+	afx_msg void OnDestroy();
 };

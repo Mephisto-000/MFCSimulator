@@ -5,7 +5,6 @@
 #include "MFCSimulator.h"
 #include "afxdialogex.h"
 #include "CUnitInDlg.h"
-
 #include "CUnitIn.h"
 #include "MFCSimulatorDlg.h"
 
@@ -16,13 +15,15 @@ IMPLEMENT_DYNAMIC(CUnitInDlg, CDialogEx)
 CUnitInDlg::CUnitInDlg(CWnd* pParent /*=nullptr*/)
 	: CDialogEx(IDD_DIALOG_UNIT_IN, pParent)
 {
-	m_strFunChoose = _T("請選擇輸入");
+	m_strFunChoose = _T("true");
 	m_fontChooseText.CreatePointFont(100, _T("Calibri"));
 }
+
 
 CUnitInDlg::~CUnitInDlg()
 {
 }
+
 
 void CUnitInDlg::DoDataExchange(CDataExchange* pDX)
 {
@@ -40,6 +41,7 @@ BEGIN_MESSAGE_MAP(CUnitInDlg, CDialogEx)
 	ON_WM_CTLCOLOR()
 	ON_BN_CLICKED(IDOK, &CUnitInDlg::OnBnClickedOk)
 	ON_BN_CLICKED(IDCANCEL, &CUnitInDlg::OnBnClickedCancel)
+	ON_WM_DESTROY()
 END_MESSAGE_MAP()
 
 
@@ -57,8 +59,6 @@ BOOL CUnitInDlg::OnInitDialog()
 }
 
 
-
-
 HBRUSH CUnitInDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 {
 	HBRUSH hbr = CDialogEx::OnCtlColor(pDC, pWnd, nCtlColor);
@@ -71,15 +71,12 @@ HBRUSH CUnitInDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 		pDC->SelectObject(&m_fontChooseText);
 	}
 
-
-
 	// TODO:  如果預設值並非想要的，則傳回不同的筆刷
 	return hbr;
 }
 
 
-
-// Sine 函式按鈕
+// 選擇 sin(t) 函式按鈕
 void CUnitInDlg::OnBnClickedButtonInSin()
 {
 	
@@ -90,7 +87,7 @@ void CUnitInDlg::OnBnClickedButtonInSin()
 }
 
 
-// Cosine 函式按鈕
+// 選擇 cos(t) 函式按鈕
 void CUnitInDlg::OnBnClickedButtonInCos()
 {
 
@@ -100,7 +97,7 @@ void CUnitInDlg::OnBnClickedButtonInCos()
 }
 
 
-// True 按鈕
+// 選擇 true(1) 按鈕
 void CUnitInDlg::OnBnClickedButtonInTrue()
 {
 
@@ -120,26 +117,41 @@ void CUnitInDlg::OnBnClickedButtonInFalse()
 }
 
 
-
+// 確認選擇的函式或是數值
 void CUnitInDlg::OnBnClickedOk()
 {
-	// TODO: 在此加入控制項告知處理常式程式碼
 
 	// 將選擇的函式傳入父視窗
 	CMFCSimulatorDlg* parentDlg = (CMFCSimulatorDlg*)GetParent();
 	parentDlg->m_strFunOrOperChoose = m_strFunChoose;
-
-
+	
 	CDialogEx::OnOK();
+
 }
 
 
+// 取消選擇運算元，使用預設的 true(1) 數值
 void CUnitInDlg::OnBnClickedCancel()
 {
-	// TODO: 在此加入控制項告知處理常式程式碼
 
-
-
+	// 將預設的函式傳入父視窗
+	CMFCSimulatorDlg* parentDlg = (CMFCSimulatorDlg*)GetParent();
+	parentDlg->m_strFunOrOperChoose = m_strFunChoose;
 
 	CDialogEx::OnCancel();
+
 }
+
+
+// 沒有按下確認按鈕，直接關閉視窗的話，用預設的 true(1) 數值
+void CUnitInDlg::OnDestroy()
+{
+	
+	CDialogEx::OnDestroy();
+
+	// 將預設的函式傳入父視窗
+	CMFCSimulatorDlg* parentDlg = (CMFCSimulatorDlg*)GetParent();
+	parentDlg->m_strFunOrOperChoose = m_strFunChoose;
+
+}
+

@@ -10,7 +10,6 @@
 #include "CUnitInDlg.h"
 #include "CUnitFunDlg.h"
 #include "CSimulateStartDlg.h"
-
 #include "CUnitIN.h"
 #include "CUnitOUT.h"
 #include "CUnitAND.h"

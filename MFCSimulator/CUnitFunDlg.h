@@ -23,7 +23,8 @@ protected:
 public:
 	virtual BOOL OnInitDialog();
 
-	CEdit m_editOperaChoose;													// 上方顯示選擇的運算元控件
+
+	CEdit m_editOperaChoose;													// 上方顯示選擇的運算元的控件
 	CString m_strOperaChoose;													// 選擇的運算元
 	CFont m_fontChooseText;														// 字型與字型大小調整
 
@@ -36,5 +37,6 @@ public:
 	afx_msg void OnBnClickedOk();
 	afx_msg void OnBnClickedCancel();
 	afx_msg void OnDestroy();
+
 };
 

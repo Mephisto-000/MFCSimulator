@@ -2068,6 +2068,26 @@ void CMFCSimulatorDlg::OnBnClickedButtonSave()
 		WritePrivateProfileString(_T("TotalNum"), _T("Lines"), strUnitLineTotalNum, strSaveFilePath);
 
 
+
+		// 儲存背景資訊
+		// 是否更改背景圖片
+		CString strIsChangeBG = (g_bShowRegionBgImgChange ? _T("TRUE") : _T("FALSE"));
+		WritePrivateProfileString(_T("BackgroundInfo"), _T("IsChange"), strIsChangeBG, strSaveFilePath);
+		WritePrivateProfileString(_T("BackgroundInfo"), _T("BackgroundPath"), m_strShowRegionImgBgPath, strSaveFilePath);
+
+		// 背景顏色
+		CString strColorR;
+		CString strColorG;
+		CString strColorB;
+		strColorR.Format(_T("%d"), GetRValue(m_colorShowRegionBg));
+		strColorG.Format(_T("%d"), GetGValue(m_colorShowRegionBg));
+		strColorB.Format(_T("%d"), GetBValue(m_colorShowRegionBg));
+		WritePrivateProfileString(_T("BackgroundInfo"), _T("BackgroundColorR"), strColorR, strSaveFilePath);
+		WritePrivateProfileString(_T("BackgroundInfo"), _T("BackgroundColorG"), strColorG, strSaveFilePath);
+		WritePrivateProfileString(_T("BackgroundInfo"), _T("BackgroundColorB"), strColorB, strSaveFilePath);
+
+
+
 		AfxMessageBox(_T("Saved Successfully"));
 	}
 	else

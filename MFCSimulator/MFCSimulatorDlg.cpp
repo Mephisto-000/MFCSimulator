@@ -1852,31 +1852,10 @@ void CMFCSimulatorDlg::OnBnClickedButtonSimulate()
 
 	m_bIsLineMode = FALSE;
 
+	BOOL bIsChooseOUT = FALSE;
+
 	m_staticLineState.SetWindowText(_T("Simulation"));
 
-
-	//POSITION posiUnit = m_listUnitPointers.GetTailPosition();
-	//while (posiUnit != nullptr)
-	//{
-	//	UnitBase* ptUnit = m_listUnitPointers.GetPrev(posiUnit);
-
-	//	if (ptUnit->m_strUnitID == "OUT")
-	//	{
-	//		UnitBase* ptUnitResultOut = ptUnit;
-
-
-
-	//		//AfxMessageBox(strTest);
-
-	//		SimulateStartDlg dlgResult;
-	//		//dlgResult.m_dwStartTime = m_dwStartTime;
-	//		dlgResult.m_ptOutUnit = ptUnitResultOut;
-	//		dlgResult.DoModal();
-
-
-
-	//	}
-	//}
 
 	UnitBase* ptUnitResultOut = NULL;
 	POSITION posiUnit = m_listUnitPointers.GetTailPosition();
@@ -1884,17 +1863,23 @@ void CMFCSimulatorDlg::OnBnClickedButtonSimulate()
 	{
 		UnitBase* ptUnit = m_listUnitPointers.GetPrev(posiUnit);
 
-		if (ptUnit->m_strUnitID == "OUT")
+		if ((ptUnit->m_strUnitID == "OUT") && (ptUnit->m_bFocusState == TRUE))
 		{
 			ptUnitResultOut = ptUnit;
+			bIsChooseOUT = TRUE;
 		}
 	}
 
-
-	SimulateStartDlg dlgResult;
-	dlgResult.m_ptOutUnit = ptUnitResultOut;
-	dlgResult.DoModal();
-
+	if (bIsChooseOUT == TRUE)
+	{
+		SimulateStartDlg dlgResult;
+		dlgResult.m_ptOutUnit = ptUnitResultOut;
+		dlgResult.DoModal();
+	}
+	else
+	{
+		AfxMessageBox(_T("Please choose and click an OUT unit."));
+	}
 
 	m_staticLineState.SetWindowText(_T("Normal"));
 

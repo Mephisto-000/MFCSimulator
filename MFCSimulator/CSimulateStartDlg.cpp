@@ -532,8 +532,6 @@ void CSimulateStartDlg::DrawToBuffer(CDC* pDC)
 }
 
 
-
-
 // 模擬開始
 void CSimulateStartDlg::OnBnClickedButtonStart()
 {

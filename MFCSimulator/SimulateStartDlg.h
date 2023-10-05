@@ -74,4 +74,6 @@ public:
 	CStatic m_staticResultShowRegion;
 
 	double SetPostfixResult(UnitBase* ptUnit, double dTimeValue);
+	BOOL m_bIsNAN;  // 判斷分母是否為 0 
+
 };

@@ -27,6 +27,8 @@ SimulateStartDlg::SimulateStartDlg(CWnd* pParent /*=nullptr*/)
 
 	m_colorSimShowRegion = RGB(0, 0, 0);
 
+	m_bIsNAN = FALSE;
+
 }
 
 SimulateStartDlg::~SimulateStartDlg()
@@ -105,6 +107,7 @@ double SimulateStartDlg::SetPostfixResult(UnitBase* ptUnit, double dTimeValue)
 
 	double dRightResult = 0.0;
 
+
 	if (ptUnit->m_vecPtsPreLeftUnit.size() != 0)
 	{
 		dLeftResult = SetPostfixResult(ptUnit->m_vecPtsPreLeftUnit[0], dTimeValue);
@@ -132,6 +135,7 @@ double SimulateStartDlg::SetPostfixResult(UnitBase* ptUnit, double dTimeValue)
 	{
 		if (dRightResult == 0)
 		{
+			m_bIsNAN = TRUE;
 			return 0;
 		}
 		else
@@ -183,15 +187,25 @@ double SimulateStartDlg::SetPostfixResult(UnitBase* ptUnit, double dTimeValue)
 void SimulateStartDlg::UpdateSimulate()
 {
 
-	CString strTimeValue;
-	strTimeValue.Format(_T("%.3f"), m_dCurTime);
-	m_staticTimeShow.SetWindowText(strTimeValue);
-
 	m_dResultValue = SetPostfixResult(m_ptOutUnit, m_dSimTime);
 
-	CString strResult;
-	strResult.Format(_T("%.4f"), m_dResultValue);
-	m_staticResultShow.SetWindowText(strResult);
+	if (m_bIsNAN == FALSE)
+	{
+		/*m_dResultValue = SetPostfixResult(m_ptOutUnit, m_dSimTime);*/
+
+		CString strTimeValue;
+		strTimeValue.Format(_T("%.3f"), m_dCurTime);
+		m_staticTimeShow.SetWindowText(strTimeValue);
+
+		CString strResult;
+		strResult.Format(_T("%.4f"), m_dResultValue);
+		m_staticResultShow.SetWindowText(strResult);
+	}
+	else
+	{
+		AfxMessageBox(_T("Division by 0 error!"));
+		KillTimer(m_nTimerID);
+	}
 }
 
 
@@ -203,47 +217,47 @@ void SimulateStartDlg::OnTimer(UINT_PTR nIDEvent)
 
 	if (nIDEvent == m_nTimerID)
 	{
-
-		DWORD dwElapsedTime = dwRecordTime - m_dwStartTime;
-		double dSeconds = static_cast<double>(dwElapsedTime) / 1000.0;
-
-		m_dCurTime = dSeconds;
-
-
-		if (m_dSimTime >= 2*M_PI)
+		if (m_bIsNAN == FALSE)
 		{
-			m_dSimTime = 0.0;
-			m_dSimTime += (2*M_PI) / 100;
-		}
-		else 
-		{
-			m_dSimTime += (2*M_PI) / 100;
-		}
+			DWORD dwElapsedTime = dwRecordTime - m_dwStartTime;
+			double dSeconds = static_cast<double>(dwElapsedTime) / 1000.0;
+
+			m_dCurTime = dSeconds;
+
+
+			if (m_dSimTime >= 2*M_PI)
+			{
+				m_dSimTime = 0.0;
+				m_dSimTime += (2*M_PI) / 100;
+			}
+			else 
+			{
+				m_dSimTime += (2*M_PI) / 100;
+			}
 		
-		//m_dSimTime = round(dSeconds * 100) / 100;  // 四捨五入到小數點後1位
-		UpdateSimulate();
+			UpdateSimulate();
 
 
 
 
-		CWnd* pSimShowRegion = GetDlgItem(IDC_STATIC_RESULT_SHOW);
-		CRect rectSimShowRegion;
+			CWnd* pSimShowRegion = GetDlgItem(IDC_STATIC_RESULT_SHOW);
+			CRect rectSimShowRegion;
 
-		pSimShowRegion->GetClientRect(&rectSimShowRegion);
+			pSimShowRegion->GetClientRect(&rectSimShowRegion);
 
-		// 將計算結果儲存於佇列中
-		if (m_queueResultValue.size() > rectSimShowRegion.Width())
-		{
-			m_queueResultValue.pop_front();
-			m_queueResultValue.push_back(m_dResultValue);
+			// 將計算結果儲存於佇列中
+			if (m_queueResultValue.size() > rectSimShowRegion.Width())
+			{
+				m_queueResultValue.pop_front();
+				m_queueResultValue.push_back(m_dResultValue);
+			}
+			else
+			{
+				m_queueResultValue.push_back(m_dResultValue);
+			}
+
+			OnPaint();
 		}
-		else
-		{
-			m_queueResultValue.push_back(m_dResultValue);
-		}
-		
-		OnPaint();
-
 	}
 
 
@@ -499,10 +513,8 @@ void SimulateStartDlg::DrawToBuffer(CDC* pDC)
 // 模擬開始
 void SimulateStartDlg::OnBnClickedButtonStart()
 {
-
 	m_dwStartTime = timeGetTime();
 	SetTimer(m_nTimerID, 10, nullptr);
-
 }
 
 
@@ -511,6 +523,10 @@ void SimulateStartDlg::OnBnClickedButtonStop()
 {
 	// TODO: 在此加入控制項告知處理常式程式碼
 
+	if (m_bIsNAN == TRUE)
+	{
+		m_bIsNAN = FALSE;
+	}
 
 	int iTotalQueueSize = m_queueResultValue.size();
 

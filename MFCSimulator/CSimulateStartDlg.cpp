@@ -252,11 +252,11 @@ void CSimulateStartDlg::OnTimer(UINT_PTR nIDEvent)
 			if (m_dSimTime >= 2*M_PI)
 			{
 				m_dSimTime = 0.0;
-				m_dSimTime += (2*M_PI) / 200;
+				m_dSimTime += (2*M_PI) / 250;
 			}
 			else 
 			{
-				m_dSimTime += (2*M_PI) / 200;
+				m_dSimTime += (2*M_PI) / 250;
 			}
 		
 			UpdateSimulate();

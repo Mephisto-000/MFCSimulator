@@ -184,27 +184,27 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="framework.h" />
-    <ClInclude Include="SimulateStartDlg.h" />
-    <ClInclude Include="UnitFunDlg.h" />
-    <ClInclude Include="UnitIN.h" />
+    <ClInclude Include="CSimulateStartDlg.h" />
+    <ClInclude Include="CUnitFunDlg.h" />
+    <ClInclude Include="CUnitIN.h" />
     <ClInclude Include="MFCSimulator.h" />
     <ClInclude Include="MFCSimulatorDlg.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="targetver.h" />
-    <ClInclude Include="UnitAND.h" />
-    <ClInclude Include="UnitBase.h" />
-    <ClInclude Include="UnitFUN.h" />
-    <ClInclude Include="UnitInDlg.h" />
-    <ClInclude Include="UnitLine.h" />
-    <ClInclude Include="UnitNOT.h" />
-    <ClInclude Include="UnitOR.h" />
-    <ClInclude Include="UnitOUT.h" />
+    <ClInclude Include="CUnitAND.h" />
+    <ClInclude Include="CUnitBase.h" />
+    <ClInclude Include="CUnitFUN.h" />
+    <ClInclude Include="CUnitInDlg.h" />
+    <ClInclude Include="CUnitLine.h" />
+    <ClInclude Include="CUnitNOT.h" />
+    <ClInclude Include="CUnitOR.h" />
+    <ClInclude Include="CUnitOUT.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="SimulateStartDlg.cpp" />
-    <ClCompile Include="UnitFunDlg.cpp" />
-    <ClCompile Include="UnitIN.cpp" />
+    <ClCompile Include="CSimulateStartDlg.cpp" />
+    <ClCompile Include="CUnitFunDlg.cpp" />
+    <ClCompile Include="CUnitIN.cpp" />
     <ClCompile Include="MFCSimulator.cpp" />
     <ClCompile Include="MFCSimulatorDlg.cpp" />
     <ClCompile Include="pch.cpp">
@@ -213,14 +213,14 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="UnitAND.cpp" />
-    <ClCompile Include="UnitBase.cpp" />
-    <ClCompile Include="UnitFUN.cpp" />
-    <ClCompile Include="UnitInDlg.cpp" />
-    <ClCompile Include="UnitLine.cpp" />
-    <ClCompile Include="UnitNOT.cpp" />
-    <ClCompile Include="UnitOR.cpp" />
-    <ClCompile Include="UnitOUT.cpp" />
+    <ClCompile Include="CUnitAND.cpp" />
+    <ClCompile Include="CUnitBase.cpp" />
+    <ClCompile Include="CUnitFUN.cpp" />
+    <ClCompile Include="CUnitInDlg.cpp" />
+    <ClCompile Include="CUnitLine.cpp" />
+    <ClCompile Include="CUnitNOT.cpp" />
+    <ClCompile Include="CUnitOR.cpp" />
+    <ClCompile Include="CUnitOUT.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="MFCSimulator.rc" />

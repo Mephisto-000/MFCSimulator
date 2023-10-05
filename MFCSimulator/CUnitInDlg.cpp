@@ -4,27 +4,27 @@
 #include "pch.h"
 #include "MFCSimulator.h"
 #include "afxdialogex.h"
-#include "UnitInDlg.h"
+#include "CUnitInDlg.h"
 
-#include "UnitIn.h"
+#include "CUnitIn.h"
 #include "MFCSimulatorDlg.h"
 
 // UnitInDlg 對話方塊
 
-IMPLEMENT_DYNAMIC(UnitInDlg, CDialogEx)
+IMPLEMENT_DYNAMIC(CUnitInDlg, CDialogEx)
 
-UnitInDlg::UnitInDlg(CWnd* pParent /*=nullptr*/)
+CUnitInDlg::CUnitInDlg(CWnd* pParent /*=nullptr*/)
 	: CDialogEx(IDD_DIALOG_UNIT_IN, pParent)
 {
 	m_strFunChoose = _T("請選擇輸入");
 	m_fontChooseText.CreatePointFont(100, _T("Calibri"));
 }
 
-UnitInDlg::~UnitInDlg()
+CUnitInDlg::~CUnitInDlg()
 {
 }
 
-void UnitInDlg::DoDataExchange(CDataExchange* pDX)
+void CUnitInDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_EDIT_SHOW_CHOOSE, m_editShowChoose);
@@ -32,21 +32,21 @@ void UnitInDlg::DoDataExchange(CDataExchange* pDX)
 }
 
 
-BEGIN_MESSAGE_MAP(UnitInDlg, CDialogEx)
-	ON_BN_CLICKED(IDC_BUTTON_IN_FALSE, &UnitInDlg::OnBnClickedButtonInFalse)
-	ON_BN_CLICKED(IDC_BUTTON_IN_TRUE, &UnitInDlg::OnBnClickedButtonInTrue)
-	ON_BN_CLICKED(IDC_BUTTON_IN_SIN, &UnitInDlg::OnBnClickedButtonInSin)
-	ON_BN_CLICKED(IDC_BUTTON_IN_COS, &UnitInDlg::OnBnClickedButtonInCos)
+BEGIN_MESSAGE_MAP(CUnitInDlg, CDialogEx)
+	ON_BN_CLICKED(IDC_BUTTON_IN_FALSE, &CUnitInDlg::OnBnClickedButtonInFalse)
+	ON_BN_CLICKED(IDC_BUTTON_IN_TRUE, &CUnitInDlg::OnBnClickedButtonInTrue)
+	ON_BN_CLICKED(IDC_BUTTON_IN_SIN, &CUnitInDlg::OnBnClickedButtonInSin)
+	ON_BN_CLICKED(IDC_BUTTON_IN_COS, &CUnitInDlg::OnBnClickedButtonInCos)
 	ON_WM_CTLCOLOR()
-	ON_BN_CLICKED(IDOK, &UnitInDlg::OnBnClickedOk)
-	ON_BN_CLICKED(IDCANCEL, &UnitInDlg::OnBnClickedCancel)
+	ON_BN_CLICKED(IDOK, &CUnitInDlg::OnBnClickedOk)
+	ON_BN_CLICKED(IDCANCEL, &CUnitInDlg::OnBnClickedCancel)
 END_MESSAGE_MAP()
 
 
 // UnitInDlg 訊息處理常式
 
 
-BOOL UnitInDlg::OnInitDialog()
+BOOL CUnitInDlg::OnInitDialog()
 {
 	CDialogEx::OnInitDialog();
 
@@ -59,7 +59,7 @@ BOOL UnitInDlg::OnInitDialog()
 
 
 
-HBRUSH UnitInDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
+HBRUSH CUnitInDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 {
 	HBRUSH hbr = CDialogEx::OnCtlColor(pDC, pWnd, nCtlColor);
 
@@ -80,7 +80,7 @@ HBRUSH UnitInDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 
 
 // Sine 函式按鈕
-void UnitInDlg::OnBnClickedButtonInSin()
+void CUnitInDlg::OnBnClickedButtonInSin()
 {
 	
 	// 更新選擇的函式值
@@ -91,7 +91,7 @@ void UnitInDlg::OnBnClickedButtonInSin()
 
 
 // Cosine 函式按鈕
-void UnitInDlg::OnBnClickedButtonInCos()
+void CUnitInDlg::OnBnClickedButtonInCos()
 {
 
 	m_strFunChoose = _T("cos(t)");
@@ -101,7 +101,7 @@ void UnitInDlg::OnBnClickedButtonInCos()
 
 
 // True 按鈕
-void UnitInDlg::OnBnClickedButtonInTrue()
+void CUnitInDlg::OnBnClickedButtonInTrue()
 {
 
 	m_strFunChoose = _T("true");
@@ -111,7 +111,7 @@ void UnitInDlg::OnBnClickedButtonInTrue()
 
 
 // False 按鈕
-void UnitInDlg::OnBnClickedButtonInFalse()
+void CUnitInDlg::OnBnClickedButtonInFalse()
 {
 
 	m_strFunChoose = _T("false");
@@ -121,7 +121,7 @@ void UnitInDlg::OnBnClickedButtonInFalse()
 
 
 
-void UnitInDlg::OnBnClickedOk()
+void CUnitInDlg::OnBnClickedOk()
 {
 	// TODO: 在此加入控制項告知處理常式程式碼
 
@@ -134,7 +134,7 @@ void UnitInDlg::OnBnClickedOk()
 }
 
 
-void UnitInDlg::OnBnClickedCancel()
+void CUnitInDlg::OnBnClickedCancel()
 {
 	// TODO: 在此加入控制項告知處理常式程式碼
 

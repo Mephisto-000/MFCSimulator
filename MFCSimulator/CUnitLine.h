@@ -1,9 +1,9 @@
 #pragma once
 
-#include "UnitBase.h"
+#include "CUnitBase.h"
 #include <vector>
 
-class UnitLine : public UnitBase
+class CUnitLine : public CUnitBase
 {
 public:
 
@@ -18,12 +18,12 @@ public:
     // 移動中的線終點
     CPoint m_pointMovingLinePos;
 
-	UnitLine(CRect rectShowRegion, CRect rectButton);
+	CUnitLine(CRect rectShowRegion, CRect rectButton);
 
-    ~UnitLine();
+    ~CUnitLine();
 
     // 元件之間插入元件
-    virtual void InsertUnit(UnitBase* ptNewUnit) override {};
+    virtual void InsertUnit(CUnitBase* ptNewUnit) override {};
 
     // 記錄線段點資料
     virtual void UpdateDotData(CPoint pointNewLocation) override {};

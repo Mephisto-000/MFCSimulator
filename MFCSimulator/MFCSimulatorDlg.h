@@ -15,8 +15,8 @@
 // "winmm.lib" 是 Windows Multimedia API
 #pragma comment(lib, "winmm.lib ")
 
-#include "UnitBase.h"
-#include "UnitLine.h"
+#include "CUnitBase.h"
+#include "CUnitLine.h"
 
 // CMFCSimulatorDlg 對話方塊
 class CMFCSimulatorDlg : public CDialogEx
@@ -55,18 +55,18 @@ public:
 
 
 
-	CList<UnitBase*, UnitBase*> m_listUnitPointers;         // 紀錄已生成的元件
-	CList<UnitLine*, UnitLine*> m_listUnitLines;            // 紀錄連接線
+	CList<CUnitBase*, CUnitBase*> m_listUnitPointers;         // 紀錄已生成的元件
+	CList<CUnitLine*, CUnitLine*> m_listUnitLines;            // 紀錄連接線
 	int m_iListUnitAmount;                                  // 紀錄已生成元件數量
 	int m_iListUnitLineAmount;                              // 紀錄連接線數量
 
-	UnitBase* m_ptPreMovingUnit;							// 紀錄前一個點選的指標
-	UnitBase* m_ptMovingUnit;                               // 紀錄正在被滑鼠拖曳的指標，拖曳控件的情況
-	UnitLine* m_ptMovingLine;								// 紀錄正在被滑鼠拖曳的指標，拖曳連接線的情況
+	CUnitBase* m_ptPreMovingUnit;							// 紀錄前一個點選的指標
+	CUnitBase* m_ptMovingUnit;                               // 紀錄正在被滑鼠拖曳的指標，拖曳控件的情況
+	CUnitLine* m_ptMovingLine;								// 紀錄正在被滑鼠拖曳的指標，拖曳連接線的情況
 
 	// 連線狀態中，元件指標連接用:
-	UnitBase* m_ptPreUnit;                                  // 紀錄連接的起點元件指標
-	UnitBase* m_ptNextUnit;									// 紀錄連接的終點元件指標
+	CUnitBase* m_ptPreUnit;                                  // 紀錄連接的起點元件指標
+	CUnitBase* m_ptNextUnit;									// 紀錄連接的終點元件指標
 
 
 	double TwoPtsDistance(CPoint pointStart, CPoint pointEnd);                           // 計算兩點距離
@@ -92,7 +92,7 @@ public:
 
 	CRect GetUnitRect(CPoint ptLeftTop);                    // 經由左上角點定位，得到元件矩形
 	
-	std::vector<CRect> GetConnectRects(UnitBase* ptUnit);   // 經由左上角點定位，得到元件接點外接矩形
+	std::vector<CRect> GetConnectRects(CUnitBase* ptUnit);   // 經由左上角點定位，得到元件接點外接矩形
 
 
 	CStatic m_staticShowRegion;								// 顯示區成員控件

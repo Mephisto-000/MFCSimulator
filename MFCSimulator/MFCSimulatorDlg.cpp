@@ -7,17 +7,17 @@
 #include "MFCSimulator.h"
 #include "MFCSimulatorDlg.h"
 #include "afxdialogex.h"
-#include "UnitInDlg.h"
-#include "UnitFunDlg.h"
-#include "SimulateStartDlg.h"
+#include "CUnitInDlg.h"
+#include "CUnitFunDlg.h"
+#include "CSimulateStartDlg.h"
 
-#include "UnitIN.h"
-#include "UnitOUT.h"
-#include "UnitAND.h"
-#include "UnitOR.h"
-#include "UnitNOT.h"
-#include "UnitFUN.h"
-#include "UnitLine.h"
+#include "CUnitIN.h"
+#include "CUnitOUT.h"
+#include "CUnitAND.h"
+#include "CUnitOR.h"
+#include "CUnitNOT.h"
+#include "CUnitFUN.h"
+#include "CUnitLine.h"
 
 
 #ifdef _DEBUG
@@ -87,7 +87,7 @@ CMFCSimulatorDlg::~CMFCSimulatorDlg()
 	POSITION posiUnit = m_listUnitPointers.GetTailPosition();
 	while (posiUnit != nullptr)
 	{
-		UnitBase* ptUnit = m_listUnitPointers.GetPrev(posiUnit);
+		CUnitBase* ptUnit = m_listUnitPointers.GetPrev(posiUnit);
 		delete ptUnit;
 	}
 	
@@ -97,7 +97,7 @@ CMFCSimulatorDlg::~CMFCSimulatorDlg()
 	POSITION posiLineUnit = m_listUnitLines.GetTailPosition();
 	while (posiLineUnit != nullptr)
 	{
-		UnitLine* ptLineUnit = m_listUnitLines.GetPrev(posiLineUnit);
+		CUnitLine* ptLineUnit = m_listUnitLines.GetPrev(posiLineUnit);
 		delete ptLineUnit;
 	}
 
@@ -265,7 +265,7 @@ CRect CMFCSimulatorDlg::GetUnitRect(CPoint ptLeftTop)
 
 
 // 從元件左上角位置來得到元件連接點外接矩形
-std::vector<CRect> CMFCSimulatorDlg::GetConnectRects(UnitBase* ptUnit)
+std::vector<CRect> CMFCSimulatorDlg::GetConnectRects(CUnitBase* ptUnit)
 {
 	int iUnitW = ptUnit->m_iUnitWidth;
 	int iUnitH = ptUnit->m_iUnitHeight;
@@ -553,7 +553,7 @@ void CMFCSimulatorDlg::DrawToBuffer(CDC* pDC)
 
 	while (posiLineUnit != nullptr)
 	{
-		UnitLine* ptLineUnit = m_listUnitLines.GetPrev(posiLineUnit);
+		CUnitLine* ptLineUnit = m_listUnitLines.GetPrev(posiLineUnit);
 
 		if (ptLineUnit->m_bIsConnect == TRUE)
 		{	// 已連接並且未選取的現以藍色實線畫出表示
@@ -609,7 +609,7 @@ void CMFCSimulatorDlg::DrawToBuffer(CDC* pDC)
 	while (posiUnit != nullptr)
 	{
 		
-		UnitBase* ptUnit = m_listUnitPointers.GetPrev(posiUnit);
+		CUnitBase* ptUnit = m_listUnitPointers.GetPrev(posiUnit);
 
 		std::vector<CRect> vecConnectPtRect = GetConnectRects(ptUnit);
 
@@ -751,7 +751,7 @@ void CMFCSimulatorDlg::OnBnClickedButtonIn()
 	int iHeightUnit = rectUnit.Height();
 
 	// 新建一個新 IN 元件
-	UnitIN* ptNewUnitIN = new UnitIN(rectShowRegion, rectUnit);
+	CUnitIN* ptNewUnitIN = new CUnitIN(rectShowRegion, rectUnit);
 
 	// 放進紀錄 Pointer 的串列結構
 	m_listUnitPointers.AddTail(ptNewUnitIN);
@@ -787,7 +787,7 @@ void CMFCSimulatorDlg::OnBnClickedButtonOut()
 	int iHeightUnit = rectUnit.Height();
 
 	// 新建一個新元件
-	UnitOUT* ptNewUnitOUT = new UnitOUT(rectShowRegion, rectUnit);
+	CUnitOUT* ptNewUnitOUT = new CUnitOUT(rectShowRegion, rectUnit);
 
 	// 放進紀錄 Pointer 的串列結構
 	m_listUnitPointers.AddTail(ptNewUnitOUT);
@@ -822,7 +822,7 @@ void CMFCSimulatorDlg::OnBnClickedButtonAnd()
 	int iHeightUnit = rectUnit.Height();
 
 	// 新建一個新元件
-	UnitAND* ptNewUnitAND = new UnitAND(rectShowRegion, rectUnit);
+	CUnitAND* ptNewUnitAND = new CUnitAND(rectShowRegion, rectUnit);
 
 	// 放進紀錄 Pointer 的串列結構
 	m_listUnitPointers.AddTail(ptNewUnitAND);
@@ -857,7 +857,7 @@ void CMFCSimulatorDlg::OnBnClickedButtonOr()
 	int iHeightUnit = rectUnit.Height();
 
 	// 新建一個新元件
-	UnitOR* ptNewUnitOR = new UnitOR(rectShowRegion, rectUnit);
+	CUnitOR* ptNewUnitOR = new CUnitOR(rectShowRegion, rectUnit);
 
 	// 放進紀錄 Pointer 的串列結構
 	m_listUnitPointers.AddTail(ptNewUnitOR);
@@ -892,7 +892,7 @@ void CMFCSimulatorDlg::OnBnClickedButtonNot()
 	int iHeightUnit = rectUnit.Height();
 
 	// 新建一個新元件
-	UnitNOT* ptNewUnitNOT = new UnitNOT(rectShowRegion, rectUnit);
+	CUnitNOT* ptNewUnitNOT = new CUnitNOT(rectShowRegion, rectUnit);
 
 	// 放進紀錄 Pointer 的串列結構
 	m_listUnitPointers.AddTail(ptNewUnitNOT);
@@ -927,7 +927,7 @@ void CMFCSimulatorDlg::OnBnClickedButtonFun()
 	int iHeightUnit = rectUnit.Height();
 
 	// 新建一個新元件
-	UnitFUN* ptNewUnitFUN = new UnitFUN(rectShowRegion, rectUnit);
+	CUnitFUN* ptNewUnitFUN = new CUnitFUN(rectShowRegion, rectUnit);
 
 	// 放進紀錄 Pointer 的串列結構
 	m_listUnitPointers.AddTail(ptNewUnitFUN);
@@ -1012,7 +1012,7 @@ void CMFCSimulatorDlg::OnBnClickedButtonDelete()
 	{	// 遍歷所有元件
 
 		POSITION posiCur = posiUnit;
-		UnitBase* ptCurUnit = m_listUnitPointers.GetPrev(posiUnit);
+		CUnitBase* ptCurUnit = m_listUnitPointers.GetPrev(posiUnit);
 
 		if (ptCurUnit->m_bFocusState == TRUE)
 		{	// 確認元件是否為被選取狀態
@@ -1028,7 +1028,7 @@ void CMFCSimulatorDlg::OnBnClickedButtonDelete()
 				{	// 遍歷指標陣列，找出指向被選取元件的指標
 
 					// 前一個元件指向下一個元件的指標陣列
-					std::vector<UnitBase*>vecPreToCur = ptCurUnit->m_vecPtsPreLeftUnit[i]->m_vecPtsNextUnit;
+					std::vector<CUnitBase*>vecPreToCur = ptCurUnit->m_vecPtsPreLeftUnit[i]->m_vecPtsNextUnit;
 
 					// 記錄被選取的元件指標位於指標陣列中的位置
 					int iCurPtIndex;
@@ -1062,7 +1062,7 @@ void CMFCSimulatorDlg::OnBnClickedButtonDelete()
 				{	// 遍歷指標陣列，找出指向被選取元件的指標
 
 					// 前一個元件指向下一個元件的指標陣列
-					std::vector<UnitBase*>vecPreToCur = ptCurUnit->m_vecPtsPreRightUnit[i]->m_vecPtsNextUnit;
+					std::vector<CUnitBase*>vecPreToCur = ptCurUnit->m_vecPtsPreRightUnit[i]->m_vecPtsNextUnit;
 
 					// 記錄被選取的元件指標位於指標陣列中的位置
 					int iCurPtIndex;
@@ -1094,8 +1094,8 @@ void CMFCSimulatorDlg::OnBnClickedButtonDelete()
 				{	// 遍歷指標陣列，找出指向被選取元件的指標
 
 					// 後一個元件指向前一個元件的指標陣列
-					std::vector<UnitBase*>vecNextLeftToCur = ptCurUnit->m_vecPtsNextUnit[i]->m_vecPtsPreLeftUnit;
-					std::vector<UnitBase*>vecNextRightToCur = ptCurUnit->m_vecPtsNextUnit[i]->m_vecPtsPreRightUnit;
+					std::vector<CUnitBase*>vecNextLeftToCur = ptCurUnit->m_vecPtsNextUnit[i]->m_vecPtsPreLeftUnit;
+					std::vector<CUnitBase*>vecNextRightToCur = ptCurUnit->m_vecPtsNextUnit[i]->m_vecPtsPreRightUnit;
 
 					// 記錄被選取的元件指標位於指標陣列中的位置
 					int iCurPtIndex;
@@ -1148,13 +1148,13 @@ void CMFCSimulatorDlg::OnBnClickedButtonDelete()
 			while (posiLineUnit != nullptr)
 			{
 				POSITION posiLineCur = posiLineUnit;
-				UnitLine* ptUnitLine = m_listUnitLines.GetPrev(posiLineUnit);
+				CUnitLine* ptUnitLine = m_listUnitLines.GetPrev(posiLineUnit);
 
 				// 指向前一個線段連接元件的指標陣列
-				std::vector<UnitBase*> vecPreToLine = ptUnitLine->m_vecPtsPreLeftUnit;
+				std::vector<CUnitBase*> vecPreToLine = ptUnitLine->m_vecPtsPreLeftUnit;
 
 				// 指向後一個線段連接元件的指標陣列
-				std::vector<UnitBase*> vecNextToLine = ptUnitLine->m_vecPtsNextUnit;
+				std::vector<CUnitBase*> vecNextToLine = ptUnitLine->m_vecPtsNextUnit;
 
 
 				for (int i = 0; i < vecPreToLine.size(); i++)
@@ -1192,19 +1192,19 @@ void CMFCSimulatorDlg::OnBnClickedButtonDelete()
 	{
 
 		POSITION posiLineCur = posiLineUnit;
-		UnitBase* ptCurLineUnit = m_listUnitLines.GetPrev(posiLineUnit);
+		CUnitBase* ptCurLineUnit = m_listUnitLines.GetPrev(posiLineUnit);
 
 		if (ptCurLineUnit->m_bFocusState == TRUE)
 		{	// 確認是否為被選取的線段
 
 			// 線段起點連接的元件指標 
-			UnitBase* ptPreUnit = ptCurLineUnit->m_vecPtsPreLeftUnit[0];
+			CUnitBase* ptPreUnit = ptCurLineUnit->m_vecPtsPreLeftUnit[0];
 
 			// 線段終點連接的元件指標
-			UnitBase* ptNextUnit = ptCurLineUnit->m_vecPtsNextUnit[0];
+			CUnitBase* ptNextUnit = ptCurLineUnit->m_vecPtsNextUnit[0];
 
 			// 取得線段起點連接的元件指向下一個元件的指標陣列 
-			std::vector<UnitBase*> vecPreUnitToLine = ptPreUnit->m_vecPtsNextUnit;
+			std::vector<CUnitBase*> vecPreUnitToLine = ptPreUnit->m_vecPtsNextUnit;
 
 			for (int i = 0; i < vecPreUnitToLine.size(); i++)
 			{
@@ -1217,8 +1217,8 @@ void CMFCSimulatorDlg::OnBnClickedButtonDelete()
 			}
 
 			// 取得線段終點連接的元件指向前一個元件的指標陣列 
-			std::vector<UnitBase*> vecNextLeftUnitToLine = ptNextUnit->m_vecPtsPreLeftUnit;
-			std::vector<UnitBase*> vecNextRightUnitToLine = ptNextUnit->m_vecPtsPreRightUnit;
+			std::vector<CUnitBase*> vecNextLeftUnitToLine = ptNextUnit->m_vecPtsPreLeftUnit;
+			std::vector<CUnitBase*> vecNextRightUnitToLine = ptNextUnit->m_vecPtsPreRightUnit;
 
 
 			for (int i = 0; i < vecNextLeftUnitToLine.size(); i++)
@@ -1281,7 +1281,7 @@ void CMFCSimulatorDlg::OnLButtonDown(UINT nFlags, CPoint point)
 	while (posiUnit != nullptr)
 	{	// 走訪 CList 內的所有元素
 
-		UnitBase* ptUnit = m_listUnitPointers.GetNext(posiUnit);
+		CUnitBase* ptUnit = m_listUnitPointers.GetNext(posiUnit);
 
 		// 得到元件的矩形
 		CRect rectUnit = GetUnitRect(ptUnit->m_pointUnitLocation);
@@ -1336,7 +1336,7 @@ void CMFCSimulatorDlg::OnLButtonDown(UINT nFlags, CPoint point)
 					m_bIsDragging = TRUE;
 
 					// 新增連線線段物件
-					UnitLine* ptNewUnitLine = new UnitLine(rectShowRegion, rectUnit);
+					CUnitLine* ptNewUnitLine = new CUnitLine(rectShowRegion, rectUnit);
 
 					// 更新線段狀態，設為正在拖曳中
 					ptNewUnitLine->m_bMoveState = TRUE;
@@ -1376,7 +1376,7 @@ void CMFCSimulatorDlg::OnLButtonDown(UINT nFlags, CPoint point)
 	POSITION posiUnitCheck = m_listUnitPointers.GetTailPosition();
 	while ((posiUnitCheck != nullptr) && (m_bIsLineMode == FALSE))
 	{
-		UnitBase* ptUnit = m_listUnitPointers.GetPrev(posiUnitCheck);
+		CUnitBase* ptUnit = m_listUnitPointers.GetPrev(posiUnitCheck);
 
 		// 得到元件的矩形
 		CRect rectUnit = GetUnitRect(ptUnit->m_pointUnitLocation);
@@ -1396,7 +1396,7 @@ void CMFCSimulatorDlg::OnLButtonDown(UINT nFlags, CPoint point)
 	while ((posiLineUnitCheck != nullptr) && (m_bIsLineMode == FALSE))
 	{
 		POSITION posiCur = posiLineUnitCheck;
-		UnitLine* ptLineUnit = m_listUnitLines.GetPrev(posiLineUnitCheck);
+		CUnitLine* ptLineUnit = m_listUnitLines.GetPrev(posiLineUnitCheck);
 
 		ptLineUnit->m_bFocusState = FALSE;
 
@@ -1446,7 +1446,7 @@ void CMFCSimulatorDlg::OnLButtonDblClk(UINT nFlags, CPoint point)
 	while (posiUnit != nullptr)
 	{	// 走訪 CList 內的所有元素
 
-		UnitBase* ptUnit = m_listUnitPointers.GetNext(posiUnit);
+		CUnitBase* ptUnit = m_listUnitPointers.GetNext(posiUnit);
 
 		// 得到元件的矩形
 		CRect rectUnit = GetUnitRect(ptUnit->m_pointUnitLocation);
@@ -1458,7 +1458,7 @@ void CMFCSimulatorDlg::OnLButtonDblClk(UINT nFlags, CPoint point)
 			if (ptUnit->m_strUnitID == "IN")
 			{
 
-				UnitInDlg dlgUnitInChoose;
+				CUnitInDlg dlgUnitInChoose;
 				dlgUnitInChoose.DoModal();
 				
 
@@ -1469,7 +1469,7 @@ void CMFCSimulatorDlg::OnLButtonDblClk(UINT nFlags, CPoint point)
 			else if (ptUnit->m_strUnitID == "FUN")
 			{
 
-				UnitFunDlg dlgUnitFun;
+				CUnitFunDlg dlgUnitFun;
 				dlgUnitFun.DoModal();
 
 				// 將從子視窗選擇的函式更新到元件內
@@ -1586,7 +1586,7 @@ void CMFCSimulatorDlg::OnLButtonUp(UINT nFlags, CPoint point)
 		while (posiUnit != nullptr)
 		{	// 走訪 CList 內的所有元件
 
-			UnitBase* ptUnit = m_listUnitPointers.GetPrev(posiUnit);
+			CUnitBase* ptUnit = m_listUnitPointers.GetPrev(posiUnit);
 
 			// 得到連接點外切矩形
 			std::vector<CRect> rectConnectPts = ptUnit->m_vecConnectPtRect;
@@ -1611,7 +1611,7 @@ void CMFCSimulatorDlg::OnLButtonUp(UINT nFlags, CPoint point)
 					if (rectConnectPts[i].PtInRect(point))
 					{	// 當拖曳的後釋放滑鼠左鍵時，在外切矩形內
 
-						UnitLine* ptLineUnit = m_listUnitLines.GetPrev(posiLineUnit);
+						CUnitLine* ptLineUnit = m_listUnitLines.GetPrev(posiLineUnit);
 
 						// 更新線段拖曳狀態
 						ptLineUnit->m_bMoveState = FALSE;
@@ -1785,7 +1785,7 @@ void CMFCSimulatorDlg::OnLButtonUp(UINT nFlags, CPoint point)
 	while (posiLineUnitCheck != nullptr)
 	{
 		POSITION posiCur = posiLineUnitCheck;
-		UnitLine* ptLineUnit = m_listUnitLines.GetPrev(posiLineUnitCheck);
+		CUnitLine* ptLineUnit = m_listUnitLines.GetPrev(posiLineUnitCheck);
 		
 		if (ptLineUnit->m_bIsConnect == FALSE)
 		{
@@ -1821,11 +1821,11 @@ void CMFCSimulatorDlg::OnBnClickedButtonSimulate()
 	m_staticLineState.SetWindowText(_T("Simulation"));
 
 
-	UnitBase* ptUnitResultOut = NULL;
+	CUnitBase* ptUnitResultOut = NULL;
 	POSITION posiUnit = m_listUnitPointers.GetTailPosition();
 	while (posiUnit != nullptr)
 	{
-		UnitBase* ptUnit = m_listUnitPointers.GetPrev(posiUnit);
+		CUnitBase* ptUnit = m_listUnitPointers.GetPrev(posiUnit);
 
 		if ((ptUnit->m_strUnitID == "OUT") && (ptUnit->m_bFocusState == TRUE))
 		{
@@ -1836,7 +1836,7 @@ void CMFCSimulatorDlg::OnBnClickedButtonSimulate()
 
 	if (bIsChooseOUT == TRUE)
 	{
-		SimulateStartDlg dlgResult;
+		CSimulateStartDlg dlgResult;
 		dlgResult.m_ptOutUnit = ptUnitResultOut;
 		dlgResult.DoModal();
 	}
@@ -1873,7 +1873,7 @@ void CMFCSimulatorDlg::OnBnClickedButtonSave()
 	POSITION posiAllUnit = m_listUnitPointers.GetHeadPosition();
 	while (posiAllUnit != nullptr)
 	{
-		UnitBase* ptUnit = m_listUnitPointers.GetNext(posiAllUnit);
+		CUnitBase* ptUnit = m_listUnitPointers.GetNext(posiAllUnit);
 		ptUnit->m_iUnitSaveNum = iNum;
 
 		iNum++;
@@ -1897,7 +1897,7 @@ void CMFCSimulatorDlg::OnBnClickedButtonSave()
 		POSITION posiUnit = m_listUnitPointers.GetHeadPosition();
 		while (posiUnit != nullptr)
 		{
-			UnitBase* ptUnit = m_listUnitPointers.GetNext(posiUnit);
+			CUnitBase* ptUnit = m_listUnitPointers.GetNext(posiUnit);
 			
 			CString strSaveNum;
 			strSaveNum.Format(_T("%d"), ptUnit->m_iUnitSaveNum);
@@ -1969,7 +1969,7 @@ void CMFCSimulatorDlg::OnBnClickedButtonSave()
 		POSITION posiLineUnit = m_listUnitLines.GetHeadPosition();
 		while (posiLineUnit != nullptr)
 		{
-			UnitLine* ptLineUnit = m_listUnitLines.GetNext(posiLineUnit);
+			CUnitLine* ptLineUnit = m_listUnitLines.GetNext(posiLineUnit);
 
 			// 線段編號
 			CString strLineNum;
@@ -2122,7 +2122,7 @@ void CMFCSimulatorDlg::OnBnClickedButtonOpen()
 				int iHeightUnit = rectUnit.Height();
 
 				// 新建一個新 IN 元件
-				UnitIN* ptNewUnitIN = new UnitIN(rectShowRegion, rectUnit);
+				CUnitIN* ptNewUnitIN = new CUnitIN(rectShowRegion, rectUnit);
 
 				ptNewUnitIN->m_pointUnitLocation = CPoint(iLOcationX, iLOcationY);
 
@@ -2146,7 +2146,7 @@ void CMFCSimulatorDlg::OnBnClickedButtonOpen()
 				int iHeightUnit = rectUnit.Height();
 
 				// 新建一個新元件
-				UnitOUT* ptNewUnitOUT = new UnitOUT(rectShowRegion, rectUnit);
+				CUnitOUT* ptNewUnitOUT = new CUnitOUT(rectShowRegion, rectUnit);
 
 
 				ptNewUnitOUT->m_pointUnitLocation = CPoint(iLOcationX, iLOcationY);
@@ -2171,7 +2171,7 @@ void CMFCSimulatorDlg::OnBnClickedButtonOpen()
 				int iHeightUnit = rectUnit.Height();
 
 				// 新建一個新元件
-				UnitAND* ptNewUnitAND = new UnitAND(rectShowRegion, rectUnit);
+				CUnitAND* ptNewUnitAND = new CUnitAND(rectShowRegion, rectUnit);
 
 				ptNewUnitAND->m_pointUnitLocation = CPoint(iLOcationX, iLOcationY);
 
@@ -2195,7 +2195,7 @@ void CMFCSimulatorDlg::OnBnClickedButtonOpen()
 				int iHeightUnit = rectUnit.Height();
 
 				// 新建一個新元件
-				UnitOR* ptNewUnitOR = new UnitOR(rectShowRegion, rectUnit);
+				CUnitOR* ptNewUnitOR = new CUnitOR(rectShowRegion, rectUnit);
 
 				ptNewUnitOR->m_pointUnitLocation = CPoint(iLOcationX, iLOcationY);
 
@@ -2220,7 +2220,7 @@ void CMFCSimulatorDlg::OnBnClickedButtonOpen()
 				int iHeightUnit = rectUnit.Height();
 
 				// 新建一個新元件
-				UnitNOT* ptNewUnitNOT = new UnitNOT(rectShowRegion, rectUnit);
+				CUnitNOT* ptNewUnitNOT = new CUnitNOT(rectShowRegion, rectUnit);
 
 				ptNewUnitNOT->m_pointUnitLocation = CPoint(iLOcationX, iLOcationY);
 
@@ -2245,7 +2245,7 @@ void CMFCSimulatorDlg::OnBnClickedButtonOpen()
 				int iHeightUnit = rectUnit.Height();
 
 				// 新建一個新元件
-				UnitFUN* ptNewUnitFUN = new UnitFUN(rectShowRegion, rectUnit);
+				CUnitFUN* ptNewUnitFUN = new CUnitFUN(rectShowRegion, rectUnit);
 
 				ptNewUnitFUN->m_pointUnitLocation = CPoint(iLOcationX, iLOcationY);
 
@@ -2284,13 +2284,13 @@ void CMFCSimulatorDlg::OnBnClickedButtonOpen()
 			POSITION posiUnit = m_listUnitPointers.GetHeadPosition();
 			while (posiUnit != nullptr)
 			{
-				UnitBase* ptUnit = m_listUnitPointers.GetNext(posiUnit);
+				CUnitBase* ptUnit = m_listUnitPointers.GetNext(posiUnit);
 				if (ptUnit->m_iUnitSaveNum == i)
 				{
 					POSITION posiConnect = m_listUnitPointers.GetHeadPosition();
 					while (posiConnect != nullptr)
 					{
-						UnitBase* ptConnectUnit = m_listUnitPointers.GetNext(posiConnect);
+						CUnitBase* ptConnectUnit = m_listUnitPointers.GetNext(posiConnect);
 						if (ptConnectUnit->m_iUnitSaveNum == iLeftTopPt)
 						{
 							ptUnit->m_vecPtsPreLeftUnit.push_back(ptConnectUnit);
@@ -2333,12 +2333,12 @@ void CMFCSimulatorDlg::OnBnClickedButtonOpen()
 
 
 			// 新增連線線段物件
-			UnitLine* ptNewUnitLine = new UnitLine(rectShowRegion, rectUnit);
+			CUnitLine* ptNewUnitLine = new CUnitLine(rectShowRegion, rectUnit);
 
 			POSITION posiUnit = m_listUnitPointers.GetHeadPosition();
 			while (posiUnit != nullptr)
 			{
-				UnitBase* ptUnit = m_listUnitPointers.GetNext(posiUnit);
+				CUnitBase* ptUnit = m_listUnitPointers.GetNext(posiUnit);
 
 				// 存取起點的元件指標
 				if (ptUnit->m_iUnitSaveNum == iStartUnit)

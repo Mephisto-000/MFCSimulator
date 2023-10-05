@@ -1,10 +1,10 @@
 #include "pch.h"
-#include "UnitIn.h"
+#include "CUnitIn.h"
 
 
 
 
-UnitIN::UnitIN(CRect rectShowRegion, CRect rectButton) : UnitBase (rectShowRegion, rectButton)
+CUnitIN::CUnitIN(CRect rectShowRegion, CRect rectButton) : CUnitBase (rectShowRegion, rectButton)
 {
 	m_strUnitID = _T("IN");
 
@@ -19,7 +19,7 @@ UnitIN::UnitIN(CRect rectShowRegion, CRect rectButton) : UnitBase (rectShowRegio
 
 
 // 更新連接點的座標
-void UnitIN::SetConnectPtAndRect(int iOffsetX, int iOffsetY)
+void CUnitIN::SetConnectPtAndRect(int iOffsetX, int iOffsetY)
 {	// 元件 IN 只底部單一連接點
 
 	
@@ -58,7 +58,7 @@ void UnitIN::SetConnectPtAndRect(int iOffsetX, int iOffsetY)
 
 
 // 將要連接 FUN 或 OUT 元件的指標存入陣列
-void UnitIN::InsertUnit(UnitBase* ptNewUnit)
+void CUnitIN::InsertUnit(CUnitBase* ptNewUnit)
 {
 	
 	if (ptNewUnit->m_strUnitID == "FUN")
@@ -73,7 +73,7 @@ void UnitIN::InsertUnit(UnitBase* ptNewUnit)
 }
 
 
-void UnitIN::UpdateDotData(CPoint pointNewLocation)
+void CUnitIN::UpdateDotData(CPoint pointNewLocation)
 {
 	
 
@@ -86,7 +86,7 @@ void UnitIN::UpdateDotData(CPoint pointNewLocation)
 }
 
 
-void UnitIN::Result(double dTimeValue)
+void CUnitIN::Result(double dTimeValue)
 {
 
 

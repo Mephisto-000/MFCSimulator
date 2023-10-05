@@ -4,13 +4,13 @@
 
 // UnitFunDlg 對話方塊
 
-class UnitFunDlg : public CDialogEx
+class CUnitFunDlg : public CDialogEx
 {
-	DECLARE_DYNAMIC(UnitFunDlg)
+	DECLARE_DYNAMIC(CUnitFunDlg)
 
 public:
-	UnitFunDlg(CWnd* pParent = nullptr);   // 標準建構函式
-	virtual ~UnitFunDlg();
+	CUnitFunDlg(CWnd* pParent = nullptr);   // 標準建構函式
+	virtual ~CUnitFunDlg();
 
 // 對話方塊資料
 #ifdef AFX_DESIGN_TIME

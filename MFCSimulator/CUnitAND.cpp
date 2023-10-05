@@ -1,13 +1,11 @@
 #include "pch.h"
-#include "UnitOR.h"
+#include "CUnitAND.h"
 
-
-UnitOR::UnitOR(CRect rectShowRegion, CRect rectButton) : UnitBase(rectShowRegion, rectButton)
+CUnitAND::CUnitAND(CRect rectShowRegion, CRect rectButton) : CUnitBase(rectShowRegion, rectButton)
 {
-	m_strUnitID = _T("OR");
+	m_strUnitID = _T("AND");
 
-	m_strFuncOrOpera = _T("OR");
-
+	m_strFuncOrOpera = _T("AND");
 
 	// 初始化連接點位置
 	m_pointConnectLeftTop = CPoint(0, 0);
@@ -21,14 +19,11 @@ UnitOR::UnitOR(CRect rectShowRegion, CRect rectButton) : UnitBase(rectShowRegion
 	m_rectConnectBottom.SetRect(m_pointConnectBottom.x - m_iConnectPtRadius, m_pointConnectBottom.y - m_iConnectPtRadius,
 								m_pointConnectBottom.x + m_iConnectPtRadius, m_pointConnectBottom.y + m_iConnectPtRadius);
 
-
 }
 
 
-void UnitOR::SetConnectPtAndRect(int iOffsetX, int iOffsetY)
+void CUnitAND::SetConnectPtAndRect(int iOffsetX, int iOffsetY)
 {
-
-
 
 	m_pointConnectLeftTop.Offset(iOffsetX, iOffsetY);
 	m_pointConnectRightTop.Offset(iOffsetX, iOffsetY);
@@ -84,7 +79,7 @@ void UnitOR::SetConnectPtAndRect(int iOffsetX, int iOffsetY)
 			m_vecConnectPt[i].Offset(iOffsetX, iOffsetY);
 
 			CRect rectConnect(CPoint(m_vecConnectPt[i].x - m_iConnectPtRadius, m_vecConnectPt[i].y - m_iConnectPtRadius),     // Left, Top
-							  CPoint(m_vecConnectPt[i].x + m_iConnectPtRadius, m_vecConnectPt[i].y + m_iConnectPtRadius));    // Right, Bottom
+				CPoint(m_vecConnectPt[i].x + m_iConnectPtRadius, m_vecConnectPt[i].y + m_iConnectPtRadius));    // Right, Bottom
 
 			m_vecConnectPtRect.push_back(rectConnect);
 		}
@@ -93,7 +88,7 @@ void UnitOR::SetConnectPtAndRect(int iOffsetX, int iOffsetY)
 
 
 // 將要連接 FUN 或 OUT 元件的指標存入陣列
-void UnitOR::InsertUnit(UnitBase* ptNewUnit)
+void CUnitAND::InsertUnit(CUnitBase* ptNewUnit)
 {
 
 
@@ -101,14 +96,13 @@ void UnitOR::InsertUnit(UnitBase* ptNewUnit)
 }
 
 
-void UnitOR::UpdateDotData(CPoint pointNewLocation)
+void CUnitAND::UpdateDotData(CPoint pointNewLocation)
 {
 
 }
 
 
-void UnitOR::Result(double dTimeValue)
+void CUnitAND::Result(double dTimeValue)
 {
 
 }
-

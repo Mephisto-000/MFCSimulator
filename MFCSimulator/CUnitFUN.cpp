@@ -1,8 +1,8 @@
 #include "pch.h"
-#include "UnitFUN.h"
+#include "CUnitFUN.h"
 
 
-UnitFUN::UnitFUN(CRect rectShowRegion, CRect rectButton) : UnitBase(rectShowRegion, rectButton)
+CUnitFUN::CUnitFUN(CRect rectShowRegion, CRect rectButton) : CUnitBase(rectShowRegion, rectButton)
 {
 	m_strUnitID = _T("FUN");
 
@@ -22,7 +22,7 @@ UnitFUN::UnitFUN(CRect rectShowRegion, CRect rectButton) : UnitBase(rectShowRegi
 
 }
 
-void UnitFUN::SetConnectPtAndRect(int iOffsetX, int iOffsetY)
+void CUnitFUN::SetConnectPtAndRect(int iOffsetX, int iOffsetY)
 {
 
 	m_pointConnectLeftTop.Offset(iOffsetX, iOffsetY);
@@ -91,7 +91,7 @@ void UnitFUN::SetConnectPtAndRect(int iOffsetX, int iOffsetY)
 
 
 // 將要連接 FUN 或 OUT 元件的指標存入陣列
-void UnitFUN::InsertUnit(UnitBase* ptNewUnit)
+void CUnitFUN::InsertUnit(CUnitBase* ptNewUnit)
 {
 
 	//if (ptNewUnit->m_strUnitID == "FUN")
@@ -106,13 +106,13 @@ void UnitFUN::InsertUnit(UnitBase* ptNewUnit)
 }
 
 
-void UnitFUN::UpdateDotData(CPoint pointNewLocation)
+void CUnitFUN::UpdateDotData(CPoint pointNewLocation)
 {
 	//m_vecConnectPt.push_back(pointNewLocation);
 }
 
 
-void UnitFUN::Result(double dTimeValue)
+void CUnitFUN::Result(double dTimeValue)
 {
 
 

@@ -1,9 +1,9 @@
 #include "pch.h"
-#include "UnitOUT.h"
+#include "CUnitOUT.h"
 
 
 
-UnitOUT::UnitOUT(CRect rectShowRegion, CRect rectButton) : UnitBase(rectShowRegion, rectButton)
+CUnitOUT::CUnitOUT(CRect rectShowRegion, CRect rectButton) : CUnitBase(rectShowRegion, rectButton)
 {
 	m_strUnitID = _T("OUT");
 
@@ -14,7 +14,7 @@ UnitOUT::UnitOUT(CRect rectShowRegion, CRect rectButton) : UnitBase(rectShowRegi
 
 }
 
-void UnitOUT::SetConnectPtAndRect(int iOffsetX, int iOffsetY)
+void CUnitOUT::SetConnectPtAndRect(int iOffsetX, int iOffsetY)
 {	// 元件 OUT 只頂部單一連接點
 
 	m_pointConnectLeftTop.Offset(iOffsetX, iOffsetY);
@@ -53,20 +53,20 @@ void UnitOUT::SetConnectPtAndRect(int iOffsetX, int iOffsetY)
 
 
 // 將要連接 FUN 或 OUT 元件的指標存入陣列
-void UnitOUT::InsertUnit(UnitBase* ptNewUnit)
+void CUnitOUT::InsertUnit(CUnitBase* ptNewUnit)
 {
 
 
 }
 
 
-void UnitOUT::UpdateDotData(CPoint pointNewLocation)
+void CUnitOUT::UpdateDotData(CPoint pointNewLocation)
 {
 	//m_vecConnectPt.push_back(pointNewLocation);
 }
 
 
-void UnitOUT::Result(double dTimeValue)
+void CUnitOUT::Result(double dTimeValue)
 {
 
 

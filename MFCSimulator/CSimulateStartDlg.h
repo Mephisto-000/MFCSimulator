@@ -1,7 +1,7 @@
 ﻿#pragma once
 #include "afxdialogex.h"
 
-#include "UnitBase.h"
+#include "CUnitBase.h"
 #include <cmath>
 #include <deque>
 
@@ -10,13 +10,13 @@
 
 // SimulateStartDlg 對話方塊
 
-class SimulateStartDlg : public CDialogEx
+class CSimulateStartDlg : public CDialogEx
 {
-	DECLARE_DYNAMIC(SimulateStartDlg)
+	DECLARE_DYNAMIC(CSimulateStartDlg)
 
 public:
-	SimulateStartDlg(CWnd* pParent = nullptr);   // 標準建構函式
-	virtual ~SimulateStartDlg();
+	CSimulateStartDlg(CWnd* pParent = nullptr);   // 標準建構函式
+	virtual ~CSimulateStartDlg();
 
 // 對話方塊資料
 #ifdef AFX_DESIGN_TIME
@@ -59,7 +59,7 @@ public:
 	std::deque<double> m_queueResultValue;                    // 繪圖用計算結果佇列
 
 
-	UnitBase* m_ptOutUnit;
+	CUnitBase* m_ptOutUnit;
 
 
 	COLORREF m_colorSimShowRegion;
@@ -73,7 +73,7 @@ public:
 
 	CStatic m_staticResultShowRegion;
 
-	double SetPostfixResult(UnitBase* ptUnit, double dTimeValue);
+	double SetPostfixResult(CUnitBase* ptUnit, double dTimeValue);
 	BOOL m_bIsNAN;  // 判斷分母是否為 0 
 
 };

@@ -4,16 +4,16 @@
 #include "pch.h"
 #include "MFCSimulator.h"
 #include "afxdialogex.h"
-#include "UnitFunDlg.h"
+#include "CUnitFunDlg.h"
 
 #include "MFCSimulatorDlg.h"
 
 
 // UnitFunDlg 對話方塊
 
-IMPLEMENT_DYNAMIC(UnitFunDlg, CDialogEx)
+IMPLEMENT_DYNAMIC(CUnitFunDlg, CDialogEx)
 
-UnitFunDlg::UnitFunDlg(CWnd* pParent /*=nullptr*/)
+CUnitFunDlg::CUnitFunDlg(CWnd* pParent /*=nullptr*/)
 	: CDialogEx(IDD_DIALOG_UNIT_FUN, pParent)
 {
 	m_strOperaChoose = _T("請輸入");
@@ -21,11 +21,11 @@ UnitFunDlg::UnitFunDlg(CWnd* pParent /*=nullptr*/)
 
 }
 
-UnitFunDlg::~UnitFunDlg()
+CUnitFunDlg::~CUnitFunDlg()
 {
 }
 
-void UnitFunDlg::DoDataExchange(CDataExchange* pDX)
+void CUnitFunDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_EDIT_OPERA_CHOOSE, m_editOperaChoose);
@@ -33,21 +33,21 @@ void UnitFunDlg::DoDataExchange(CDataExchange* pDX)
 }
 
 
-BEGIN_MESSAGE_MAP(UnitFunDlg, CDialogEx)
+BEGIN_MESSAGE_MAP(CUnitFunDlg, CDialogEx)
 	ON_WM_CTLCOLOR()
-	ON_BN_CLICKED(IDC_BUTTON_FUN_PLUS, &UnitFunDlg::OnBnClickedButtonFunPlus)
-	ON_BN_CLICKED(IDC_BUTTON_FUN_MINUS, &UnitFunDlg::OnBnClickedButtonFunMinus)
-	ON_BN_CLICKED(IDC_BUTTON_FUN_MULTIPLY, &UnitFunDlg::OnBnClickedButtonFunMultiply)
-	ON_BN_CLICKED(IDC_BUTTON_FUN_DIVISION, &UnitFunDlg::OnBnClickedButtonFunDivision)
-	ON_BN_CLICKED(IDOK, &UnitFunDlg::OnBnClickedOk)
-	ON_BN_CLICKED(IDCANCEL, &UnitFunDlg::OnBnClickedCancel)
+	ON_BN_CLICKED(IDC_BUTTON_FUN_PLUS, &CUnitFunDlg::OnBnClickedButtonFunPlus)
+	ON_BN_CLICKED(IDC_BUTTON_FUN_MINUS, &CUnitFunDlg::OnBnClickedButtonFunMinus)
+	ON_BN_CLICKED(IDC_BUTTON_FUN_MULTIPLY, &CUnitFunDlg::OnBnClickedButtonFunMultiply)
+	ON_BN_CLICKED(IDC_BUTTON_FUN_DIVISION, &CUnitFunDlg::OnBnClickedButtonFunDivision)
+	ON_BN_CLICKED(IDOK, &CUnitFunDlg::OnBnClickedOk)
+	ON_BN_CLICKED(IDCANCEL, &CUnitFunDlg::OnBnClickedCancel)
 END_MESSAGE_MAP()
 
 
 // UnitFunDlg 訊息處理常式
 
 
-BOOL UnitFunDlg::OnInitDialog()
+BOOL CUnitFunDlg::OnInitDialog()
 {
 	CDialogEx::OnInitDialog();
 
@@ -58,7 +58,7 @@ BOOL UnitFunDlg::OnInitDialog()
 }
 
 
-HBRUSH UnitFunDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
+HBRUSH CUnitFunDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 {
 	HBRUSH hbr = CDialogEx::OnCtlColor(pDC, pWnd, nCtlColor);
 
@@ -78,7 +78,7 @@ HBRUSH UnitFunDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 
 
 
-void UnitFunDlg::OnBnClickedButtonFunPlus()
+void CUnitFunDlg::OnBnClickedButtonFunPlus()
 {
 
 	// 更新選擇的函式值
@@ -88,7 +88,7 @@ void UnitFunDlg::OnBnClickedButtonFunPlus()
 }
 
 
-void UnitFunDlg::OnBnClickedButtonFunMinus()
+void CUnitFunDlg::OnBnClickedButtonFunMinus()
 {
 
 	// 更新選擇的函式值
@@ -98,7 +98,7 @@ void UnitFunDlg::OnBnClickedButtonFunMinus()
 }
 
 
-void UnitFunDlg::OnBnClickedButtonFunMultiply()
+void CUnitFunDlg::OnBnClickedButtonFunMultiply()
 {
 
 	// 更新選擇的函式值
@@ -108,7 +108,7 @@ void UnitFunDlg::OnBnClickedButtonFunMultiply()
 }
 
 
-void UnitFunDlg::OnBnClickedButtonFunDivision()
+void CUnitFunDlg::OnBnClickedButtonFunDivision()
 {
 
 	// 更新選擇的函式值
@@ -118,7 +118,7 @@ void UnitFunDlg::OnBnClickedButtonFunDivision()
 }
 
 
-void UnitFunDlg::OnBnClickedOk()
+void CUnitFunDlg::OnBnClickedOk()
 {
 
 	// 將選擇的函式傳入父視窗
@@ -129,7 +129,7 @@ void UnitFunDlg::OnBnClickedOk()
 }
 
 
-void UnitFunDlg::OnBnClickedCancel()
+void CUnitFunDlg::OnBnClickedCancel()
 {
 
 	CDialogEx::OnCancel();

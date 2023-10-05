@@ -1,8 +1,8 @@
 #include "pch.h"
-#include "UnitNOT.h"
+#include "CUnitNOT.h"
 
 
-UnitNOT::UnitNOT(CRect rectShowRegion, CRect rectButton) : UnitBase(rectShowRegion, rectButton)
+CUnitNOT::CUnitNOT(CRect rectShowRegion, CRect rectButton) : CUnitBase(rectShowRegion, rectButton)
 {
 	m_strUnitID = _T("NOT");
 
@@ -24,7 +24,7 @@ UnitNOT::UnitNOT(CRect rectShowRegion, CRect rectButton) : UnitBase(rectShowRegi
 }
 
 
-void UnitNOT::SetConnectPtAndRect(int iOffsetX, int iOffsetY)
+void CUnitNOT::SetConnectPtAndRect(int iOffsetX, int iOffsetY)
 {	// 元件 NOT 只頂部單一連接點和底部單一連接點
 
 	m_pointConnectLeftTop.Offset(iOffsetX, iOffsetY);
@@ -79,7 +79,7 @@ void UnitNOT::SetConnectPtAndRect(int iOffsetX, int iOffsetY)
 
 
 // 將要連接 FUN 或 OUT 元件的指標存入陣列
-void UnitNOT::InsertUnit(UnitBase* ptNewUnit)
+void CUnitNOT::InsertUnit(CUnitBase* ptNewUnit)
 {
 
 
@@ -87,13 +87,13 @@ void UnitNOT::InsertUnit(UnitBase* ptNewUnit)
 }
 
 
-void UnitNOT::UpdateDotData(CPoint pointNewLocation)
+void CUnitNOT::UpdateDotData(CPoint pointNewLocation)
 {
 
 }
 
 
-void UnitNOT::Result(double dTimeValue)
+void CUnitNOT::Result(double dTimeValue)
 {
 
 }

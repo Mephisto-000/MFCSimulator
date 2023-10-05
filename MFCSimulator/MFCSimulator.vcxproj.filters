@@ -33,37 +33,37 @@
     <ClInclude Include="pch.h">
       <Filter>標頭檔</Filter>
     </ClInclude>
-    <ClInclude Include="UnitBase.h">
+    <ClInclude Include="CUnitBase.h">
       <Filter>標頭檔</Filter>
     </ClInclude>
-    <ClInclude Include="UnitIN.h">
+    <ClInclude Include="CUnitIN.h">
       <Filter>標頭檔</Filter>
     </ClInclude>
-    <ClInclude Include="UnitFUN.h">
+    <ClInclude Include="CUnitFUN.h">
       <Filter>標頭檔</Filter>
     </ClInclude>
-    <ClInclude Include="UnitAND.h">
+    <ClInclude Include="CUnitAND.h">
       <Filter>標頭檔</Filter>
     </ClInclude>
-    <ClInclude Include="UnitOR.h">
+    <ClInclude Include="CUnitOR.h">
       <Filter>標頭檔</Filter>
     </ClInclude>
-    <ClInclude Include="UnitNOT.h">
+    <ClInclude Include="CUnitNOT.h">
       <Filter>標頭檔</Filter>
     </ClInclude>
-    <ClInclude Include="UnitOUT.h">
+    <ClInclude Include="CUnitOUT.h">
       <Filter>標頭檔</Filter>
     </ClInclude>
-    <ClInclude Include="UnitInDlg.h">
+    <ClInclude Include="CUnitInDlg.h">
       <Filter>標頭檔</Filter>
     </ClInclude>
-    <ClInclude Include="UnitFunDlg.h">
+    <ClInclude Include="CUnitFunDlg.h">
       <Filter>標頭檔</Filter>
     </ClInclude>
-    <ClInclude Include="UnitLine.h">
+    <ClInclude Include="CUnitLine.h">
       <Filter>標頭檔</Filter>
     </ClInclude>
-    <ClInclude Include="SimulateStartDlg.h">
+    <ClInclude Include="CSimulateStartDlg.h">
       <Filter>標頭檔</Filter>
     </ClInclude>
   </ItemGroup>
@@ -77,37 +77,37 @@
     <ClCompile Include="pch.cpp">
       <Filter>來源檔案</Filter>
     </ClCompile>
-    <ClCompile Include="UnitBase.cpp">
+    <ClCompile Include="CUnitBase.cpp">
       <Filter>來源檔案</Filter>
     </ClCompile>
-    <ClCompile Include="UnitIN.cpp">
+    <ClCompile Include="CUnitIN.cpp">
       <Filter>來源檔案</Filter>
     </ClCompile>
-    <ClCompile Include="UnitFUN.cpp">
+    <ClCompile Include="CUnitFUN.cpp">
       <Filter>來源檔案</Filter>
     </ClCompile>
-    <ClCompile Include="UnitAND.cpp">
+    <ClCompile Include="CUnitAND.cpp">
       <Filter>來源檔案</Filter>
     </ClCompile>
-    <ClCompile Include="UnitOR.cpp">
+    <ClCompile Include="CUnitOR.cpp">
       <Filter>來源檔案</Filter>
     </ClCompile>
-    <ClCompile Include="UnitNOT.cpp">
+    <ClCompile Include="CUnitNOT.cpp">
       <Filter>來源檔案</Filter>
     </ClCompile>
-    <ClCompile Include="UnitOUT.cpp">
+    <ClCompile Include="CUnitOUT.cpp">
       <Filter>來源檔案</Filter>
     </ClCompile>
-    <ClCompile Include="UnitInDlg.cpp">
+    <ClCompile Include="CUnitInDlg.cpp">
       <Filter>來源檔案</Filter>
     </ClCompile>
-    <ClCompile Include="UnitFunDlg.cpp">
+    <ClCompile Include="CUnitFunDlg.cpp">
       <Filter>來源檔案</Filter>
     </ClCompile>
-    <ClCompile Include="UnitLine.cpp">
+    <ClCompile Include="CUnitLine.cpp">
       <Filter>來源檔案</Filter>
     </ClCompile>
-    <ClCompile Include="SimulateStartDlg.cpp">
+    <ClCompile Include="CSimulateStartDlg.cpp">
       <Filter>來源檔案</Filter>
     </ClCompile>
   </ItemGroup>

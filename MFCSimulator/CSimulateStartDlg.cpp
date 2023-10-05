@@ -4,16 +4,16 @@
 #include "pch.h"
 #include "MFCSimulator.h"
 #include "afxdialogex.h"
-#include "SimulateStartDlg.h"
+#include "CSimulateStartDlg.h"
 
 #include "MFCSimulatorDlg.h"
 
 
 // SimulateStartDlg 對話方塊
 
-IMPLEMENT_DYNAMIC(SimulateStartDlg, CDialogEx)
+IMPLEMENT_DYNAMIC(CSimulateStartDlg, CDialogEx)
 
-SimulateStartDlg::SimulateStartDlg(CWnd* pParent /*=nullptr*/)
+CSimulateStartDlg::CSimulateStartDlg(CWnd* pParent /*=nullptr*/)
 	: CDialogEx(IDD_DIALOG_SIMULATE_START, pParent)
 {
 	m_fontTimeAndResult.CreatePointFont(200, _T("Arial Black"));
@@ -31,11 +31,11 @@ SimulateStartDlg::SimulateStartDlg(CWnd* pParent /*=nullptr*/)
 
 }
 
-SimulateStartDlg::~SimulateStartDlg()
+CSimulateStartDlg::~CSimulateStartDlg()
 {
 }
 
-void SimulateStartDlg::DoDataExchange(CDataExchange* pDX)
+void CSimulateStartDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_STATIC_TIME, m_staticTimeShow);
@@ -48,19 +48,19 @@ void SimulateStartDlg::DoDataExchange(CDataExchange* pDX)
 }
 
 
-BEGIN_MESSAGE_MAP(SimulateStartDlg, CDialogEx)
+BEGIN_MESSAGE_MAP(CSimulateStartDlg, CDialogEx)
 	ON_WM_CTLCOLOR()
 	ON_WM_TIMER()
 	ON_WM_PAINT()
-	ON_BN_CLICKED(IDC_BUTTON_START, &SimulateStartDlg::OnBnClickedButtonStart)
-	ON_BN_CLICKED(IDC_BUTTON_STOP, &SimulateStartDlg::OnBnClickedButtonStop)
+	ON_BN_CLICKED(IDC_BUTTON_START, &CSimulateStartDlg::OnBnClickedButtonStart)
+	ON_BN_CLICKED(IDC_BUTTON_STOP, &CSimulateStartDlg::OnBnClickedButtonStop)
 END_MESSAGE_MAP()
 
 
 // SimulateStartDlg 訊息處理常式
 
 
-BOOL SimulateStartDlg::OnInitDialog()
+BOOL CSimulateStartDlg::OnInitDialog()
 {
 	CDialogEx::OnInitDialog();
 
@@ -71,7 +71,7 @@ BOOL SimulateStartDlg::OnInitDialog()
 }
 
 
-HBRUSH SimulateStartDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
+HBRUSH CSimulateStartDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 {
 	HBRUSH hbr = CDialogEx::OnCtlColor(pDC, pWnd, nCtlColor);
 
@@ -100,7 +100,7 @@ HBRUSH SimulateStartDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 
 
 // 後序走訪
-double SimulateStartDlg::SetPostfixResult(UnitBase* ptUnit, double dTimeValue)
+double CSimulateStartDlg::SetPostfixResult(CUnitBase* ptUnit, double dTimeValue)
 {
 
 	double dLeftResult = 0.0;
@@ -184,7 +184,7 @@ double SimulateStartDlg::SetPostfixResult(UnitBase* ptUnit, double dTimeValue)
 
 
 // 更新數值計算結果
-void SimulateStartDlg::UpdateSimulate()
+void CSimulateStartDlg::UpdateSimulate()
 {
 
 	m_dResultValue = SetPostfixResult(m_ptOutUnit, m_dSimTime);
@@ -209,7 +209,7 @@ void SimulateStartDlg::UpdateSimulate()
 }
 
 
-void SimulateStartDlg::OnTimer(UINT_PTR nIDEvent)
+void CSimulateStartDlg::OnTimer(UINT_PTR nIDEvent)
 {
 	
 	DWORD dwRecordTime = timeGetTime();
@@ -265,7 +265,7 @@ void SimulateStartDlg::OnTimer(UINT_PTR nIDEvent)
 }
 
 
-void SimulateStartDlg::OnPaint()
+void CSimulateStartDlg::OnPaint()
 {
 	CPaintDC dc(this);
 	// TODO: 在此加入您的訊息處理常式程式碼
@@ -301,7 +301,7 @@ void SimulateStartDlg::OnPaint()
 }
 
 
-void SimulateStartDlg::DrawGrid(CDC* pDC)
+void CSimulateStartDlg::DrawGrid(CDC* pDC)
 {
 	// 取得操作視窗矩形資訊
 	CWnd* pSimShowRegion = GetDlgItem(IDC_STATIC_RESULT_SHOW);
@@ -339,7 +339,7 @@ void SimulateStartDlg::DrawGrid(CDC* pDC)
 
 
 // 繪製波曲線
-void SimulateStartDlg::DrawWave(CDC* pDC)
+void CSimulateStartDlg::DrawWave(CDC* pDC)
 {
 	
 	// 取得操作視窗矩形資訊
@@ -478,7 +478,7 @@ void SimulateStartDlg::DrawWave(CDC* pDC)
 }
 
 
-void SimulateStartDlg::DrawToBuffer(CDC* pDC)
+void CSimulateStartDlg::DrawToBuffer(CDC* pDC)
 {
 
 	// 取得操作視窗矩形資訊
@@ -511,7 +511,7 @@ void SimulateStartDlg::DrawToBuffer(CDC* pDC)
 
 
 // 模擬開始
-void SimulateStartDlg::OnBnClickedButtonStart()
+void CSimulateStartDlg::OnBnClickedButtonStart()
 {
 	m_dwStartTime = timeGetTime();
 	SetTimer(m_nTimerID, 10, nullptr);
@@ -519,7 +519,7 @@ void SimulateStartDlg::OnBnClickedButtonStart()
 
 
 // 模擬停止
-void SimulateStartDlg::OnBnClickedButtonStop()
+void CSimulateStartDlg::OnBnClickedButtonStop()
 {
 	// TODO: 在此加入控制項告知處理常式程式碼
 

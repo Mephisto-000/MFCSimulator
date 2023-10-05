@@ -1,11 +1,13 @@
 #include "pch.h"
-#include "UnitAND.h"
+#include "CUnitOR.h"
 
-UnitAND::UnitAND(CRect rectShowRegion, CRect rectButton) : UnitBase(rectShowRegion, rectButton)
+
+CUnitOR::CUnitOR(CRect rectShowRegion, CRect rectButton) : CUnitBase(rectShowRegion, rectButton)
 {
-	m_strUnitID = _T("AND");
+	m_strUnitID = _T("OR");
 
-	m_strFuncOrOpera = _T("AND");
+	m_strFuncOrOpera = _T("OR");
+
 
 	// 初始化連接點位置
 	m_pointConnectLeftTop = CPoint(0, 0);
@@ -19,11 +21,14 @@ UnitAND::UnitAND(CRect rectShowRegion, CRect rectButton) : UnitBase(rectShowRegi
 	m_rectConnectBottom.SetRect(m_pointConnectBottom.x - m_iConnectPtRadius, m_pointConnectBottom.y - m_iConnectPtRadius,
 								m_pointConnectBottom.x + m_iConnectPtRadius, m_pointConnectBottom.y + m_iConnectPtRadius);
 
+
 }
 
 
-void UnitAND::SetConnectPtAndRect(int iOffsetX, int iOffsetY)
+void CUnitOR::SetConnectPtAndRect(int iOffsetX, int iOffsetY)
 {
+
+
 
 	m_pointConnectLeftTop.Offset(iOffsetX, iOffsetY);
 	m_pointConnectRightTop.Offset(iOffsetX, iOffsetY);
@@ -79,7 +84,7 @@ void UnitAND::SetConnectPtAndRect(int iOffsetX, int iOffsetY)
 			m_vecConnectPt[i].Offset(iOffsetX, iOffsetY);
 
 			CRect rectConnect(CPoint(m_vecConnectPt[i].x - m_iConnectPtRadius, m_vecConnectPt[i].y - m_iConnectPtRadius),     // Left, Top
-				CPoint(m_vecConnectPt[i].x + m_iConnectPtRadius, m_vecConnectPt[i].y + m_iConnectPtRadius));    // Right, Bottom
+							  CPoint(m_vecConnectPt[i].x + m_iConnectPtRadius, m_vecConnectPt[i].y + m_iConnectPtRadius));    // Right, Bottom
 
 			m_vecConnectPtRect.push_back(rectConnect);
 		}
@@ -88,7 +93,7 @@ void UnitAND::SetConnectPtAndRect(int iOffsetX, int iOffsetY)
 
 
 // 將要連接 FUN 或 OUT 元件的指標存入陣列
-void UnitAND::InsertUnit(UnitBase* ptNewUnit)
+void CUnitOR::InsertUnit(CUnitBase* ptNewUnit)
 {
 
 
@@ -96,13 +101,14 @@ void UnitAND::InsertUnit(UnitBase* ptNewUnit)
 }
 
 
-void UnitAND::UpdateDotData(CPoint pointNewLocation)
+void CUnitOR::UpdateDotData(CPoint pointNewLocation)
 {
 
 }
 
 
-void UnitAND::Result(double dTimeValue)
+void CUnitOR::Result(double dTimeValue)
 {
 
 }
+

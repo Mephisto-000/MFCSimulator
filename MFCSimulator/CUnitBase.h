@@ -3,16 +3,16 @@
 #include "math.h"
 #include <vector>
 
-class UnitBase
+class CUnitBase
 {
 
 																												  
 public:			
 
 	// TODO 分辨左右
-	std::vector<UnitBase*> m_vecPtsPreLeftUnit;			  // 指向前一個左邊分支元件的指標陣列，或是只有單一指向前一個分支元件的指標陣列
-	std::vector<UnitBase*>  m_vecPtsPreRightUnit;		  // 指向前一個右邊分支元件的指標陣列	
-	std::vector<UnitBase*> m_vecPtsNextUnit;              // 指向下一個元件的指標陣列
+	std::vector<CUnitBase*> m_vecPtsPreLeftUnit;			  // 指向前一個左邊分支元件的指標陣列，或是只有單一指向前一個分支元件的指標陣列
+	std::vector<CUnitBase*>  m_vecPtsPreRightUnit;		  // 指向前一個右邊分支元件的指標陣列	
+	std::vector<CUnitBase*> m_vecPtsNextUnit;              // 指向下一個元件的指標陣列
 
 	int m_iPreLeftPt;									  // 左邊指向前分支連接的元件數量
 	int m_iPreRightPt;									  // 右邊指向前分支連接的元件數量
@@ -58,18 +58,18 @@ public:
 
 
 	// 建構子
-	UnitBase (CRect rectShowRegion, CRect rectButton);
+	CUnitBase (CRect rectShowRegion, CRect rectButton);
 
 
 	// 解構子
-	~UnitBase ();
+	~CUnitBase ();
 
 	// 根據元件類型和拖曳後的位移，更新連接點與其外切矩形的位置
 	virtual void SetConnectPtAndRect (int iOffsetX, int iOffsetY) {};
 
 
 	// 更新連接的元件
-	virtual void InsertUnit (UnitBase* ptNewUnit) {};
+	virtual void InsertUnit (CUnitBase* ptNewUnit) {};
 
 	
 	// 根據拖曳位置更新線段點資料
@@ -79,9 +79,6 @@ public:
 	// 輸出元件的結果
 	virtual void Result (double dTimeValue) {};
 
-
-	//// 序列化函數，用於儲存和讀取
-	//virtual void Serialize(CArchive& ar);
 
 };
 

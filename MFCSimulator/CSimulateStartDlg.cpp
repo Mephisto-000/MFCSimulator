@@ -5,7 +5,6 @@
 #include "MFCSimulator.h"
 #include "afxdialogex.h"
 #include "CSimulateStartDlg.h"
-
 #include "MFCSimulatorDlg.h"
 
 
@@ -16,17 +15,15 @@ IMPLEMENT_DYNAMIC(CSimulateStartDlg, CDialogEx)
 CSimulateStartDlg::CSimulateStartDlg(CWnd* pParent /*=nullptr*/)
 	: CDialogEx(IDD_DIALOG_SIMULATE_START, pParent)
 {
+
 	m_fontTimeAndResult.CreatePointFont(200, _T("Arial Black"));
 	m_fontTimeAndResultText.CreatePointFont(150, _T("Arial Black"));
-
 	m_dwStartTime = 0;
 	m_dCurTime = 0.0;
 	m_dSimTime = 0.0;
 	m_nTimerID = 1;
 	m_dResultValue = 0.0;
-
 	m_colorSimShowRegion = RGB(0, 0, 0);
-
 	m_bIsNAN = FALSE;
 
 }
@@ -80,7 +77,7 @@ HBRUSH CSimulateStartDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 
 
 	if ((pWnd->GetDlgCtrlID() == IDC_STATIC_TIME) || (pWnd->GetDlgCtrlID() == IDC_STATIC_RESULT))
-	{
+	{	
 		pDC->SetTextColor(RGB(255, 0, 0));
 		pDC->SelectObject(&m_fontTimeAndResult);
 	}
@@ -92,34 +89,49 @@ HBRUSH CSimulateStartDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 		pDC->SelectObject(&m_fontTimeAndResultText);
 	}
 
-
-
 	// TODO:  如果預設值並非想要的，則傳回不同的筆刷
 	return hbr;
 }
 
 
 
-// 後序走訪
+// 計算連線元件的函式結果
+// 使用二元樹的後序走訪方法，計算結果數值
+//
+// Input : 
+//			ptUnit :      生成元件的指標
+//			dTimeValue :  經過的單位間隔累加時間
+//
+// Output : 
+//			經過每節點的數值
+//
+// Remark : 
+//			當遇到分母為 0 的運算式時，會將數值回傳為 0 ，
+//			並且更新 m_bIsNAN 為 TRUE ，讓系統發出警告並終止計算。
 double CSimulateStartDlg::SetPostfixResult(CUnitBase* ptUnit, double dTimeValue)
 {
 
+	// 左子樹傳遞的值
 	double dLeftResult = 0.0;
 
+	// 右子樹傳遞的值
 	double dRightResult = 0.0;
 
 
 	if (ptUnit->m_vecPtsPreLeftUnit.size() != 0)
-	{
+	{	// 檢查儲存左子樹指標的陣列大小，存在的話，更新左子樹傳遞的值
+
 		dLeftResult = SetPostfixResult(ptUnit->m_vecPtsPreLeftUnit[0], dTimeValue);
 	}
 
 	if (ptUnit->m_vecPtsPreRightUnit.size() != 0)
-	{
+	{	// 檢查儲存右子樹指標的陣列大小，存在的話，更新右子樹傳遞的值
+
 		dRightResult = SetPostfixResult(ptUnit->m_vecPtsPreRightUnit[0], dTimeValue);
 	}
 
 
+	// 根據左右子樹指標中記錄的運算元、函式、數值來回傳計算結果
 	if (ptUnit->m_strFuncOrOpera == "+")
 	{
 		return dLeftResult + dRightResult;
@@ -135,6 +147,11 @@ double CSimulateStartDlg::SetPostfixResult(CUnitBase* ptUnit, double dTimeValue)
 	else if (ptUnit->m_strFuncOrOpera == "/")
 	{
 		if (dRightResult == 0)
+		{
+			m_bIsNAN = TRUE;
+			return 0;
+		}
+		else if (dRightResult < 1e+10)
 		{
 			m_bIsNAN = TRUE;
 			return 0;
@@ -176,40 +193,46 @@ double CSimulateStartDlg::SetPostfixResult(CUnitBase* ptUnit, double dTimeValue)
 	{
 		return dLeftResult;
 	}
-
 }
-
-
-
 
 
 
 // 更新數值計算結果
 void CSimulateStartDlg::UpdateSimulate()
 {
-
+	// 計算連線數值結果
 	m_dResultValue = SetPostfixResult(m_ptOutUnit, m_dSimTime);
 
+	// 判斷在計算中是否有分母為 0 的計算情況
 	if (m_bIsNAN == FALSE)
-	{
+	{	// 分母不為 0 
 
+		// 更新畫面中顯示的當下經過時間
 		CString strTimeValue;
 		strTimeValue.Format(_T("%.3f"), m_dCurTime);
 		m_staticTimeShow.SetWindowText(strTimeValue);
 
+		// 更新當下計算的數值結果
 		CString strResult;
 		strResult.Format(_T("%.4f"), m_dResultValue);
 		m_staticResultShow.SetWindowText(strResult);
+
 	}
 	else
-	{
+	{	// 分母為 0 
+
+		// 跳出錯誤警訊
 		AfxMessageBox(_T("Error of division by 0 !"));
+		// 停止計時
 		KillTimer(m_nTimerID);
+		// 關閉模擬視窗
 		EndDialog(0);
+
 	}
 }
 
 
+// 單位間隔時間發生的事件 
 void CSimulateStartDlg::OnTimer(UINT_PTR nIDEvent)
 {
 	
@@ -229,11 +252,11 @@ void CSimulateStartDlg::OnTimer(UINT_PTR nIDEvent)
 			if (m_dSimTime >= 2*M_PI)
 			{
 				m_dSimTime = 0.0;
-				m_dSimTime += (2*M_PI) / 100;
+				m_dSimTime += (2*M_PI) / 200;
 			}
 			else 
 			{
-				m_dSimTime += (2*M_PI) / 100;
+				m_dSimTime += (2*M_PI) / 200;
 			}
 		
 			UpdateSimulate();

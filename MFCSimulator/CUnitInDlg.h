@@ -24,8 +24,9 @@ public:
 	virtual BOOL OnInitDialog();
 
 
-	CEdit m_editShowChoose;														// 上方顯示選擇的函式或數值的控件
+	CEdit m_editShowChoose;														// 上方顯示選擇的函式或數值的控件	
 	CString m_strFunChoose;													    // 選擇的函數或數值
+	CString m_strFunFinalChoose;												// 最終確認的函數值
 	CFont m_fontChooseText;														// 字型與字型大小調整
 
 

@@ -1502,22 +1502,54 @@ void CMFCSimulatorDlg::OnLButtonDblClk(UINT nFlags, CPoint point)
 			if (ptUnit->m_strUnitID == "IN")
 			{	// 點取 IN 元件
 
-				CUnitInDlg dlgUnitInChoose;
-				dlgUnitInChoose.DoModal();
-				
-				// 將從子視窗選擇的函式更新到元件內
-				ptUnit->m_strFuncOrOpera = m_strFunOrOperChoose;
+				if (ptUnit->m_strFuncOrOpera == _T(""))
+				{	// 還未選擇函式或是值的情況
 
+					CUnitInDlg dlgUnitInChoose;
+
+					dlgUnitInChoose.DoModal();
+
+					// 將從子視窗選擇的函式更新到元件內
+					ptUnit->m_strFuncOrOpera = m_strFunOrOperChoose;
+				}
+				else
+				{	// 已有選擇函式或是值的情況
+
+					CUnitInDlg dlgUnitInChoose;
+
+					dlgUnitInChoose.m_strFunChoose = ptUnit->m_strFuncOrOpera;
+
+					dlgUnitInChoose.DoModal();
+
+					// 將從子視窗選擇的函式更新到元件內
+					ptUnit->m_strFuncOrOpera = m_strFunOrOperChoose;
+				}
 			}
 			else if (ptUnit->m_strUnitID == "FUN")
 			{	// 點取 FUN 元件
 
-				CUnitFunDlg dlgUnitFun;
-				dlgUnitFun.DoModal();
+				if (ptUnit->m_strFuncOrOpera == _T(""))
+				{	// 還未選擇運算元的情況
 
-				// 將從子視窗選擇的函式更新到元件內
-				ptUnit->m_strFuncOrOpera = m_strFunOrOperChoose;
+					CUnitFunDlg dlgUnitFun;
 
+					dlgUnitFun.DoModal();
+
+					// 將從子視窗選擇的函式更新到元件內
+					ptUnit->m_strFuncOrOpera = m_strFunOrOperChoose;
+				}
+				else
+				{	// 已有選擇運算元的情況
+
+					CUnitFunDlg dlgUnitFun;
+
+					dlgUnitFun.m_strOperaChoose = ptUnit->m_strFuncOrOpera;
+
+					dlgUnitFun.DoModal();
+
+					// 將從子視窗選擇的函式更新到元件內
+					ptUnit->m_strFuncOrOpera = m_strFunOrOperChoose;
+				}
 			}
 
 			break;
@@ -1922,10 +1954,10 @@ void CMFCSimulatorDlg::OnBnClickedButtonSave()
 	CString strSaveFilePath;
 
 	// 存檔檔案類型為 .ini 檔案
-	CFileDialog dlgSaveFile(TRUE, NULL, NULL, OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT,
+	CFileDialog dlgSaveFile(FALSE, NULL, NULL, OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT,
 		_T("All Files(*.ini)|*.ini|所有文件(*.*)|*.*|"), NULL);
 
-	
+
 	if (dlgSaveFile.DoModal() == IDOK)
 	{
 		// 讀取選取的存檔路徑

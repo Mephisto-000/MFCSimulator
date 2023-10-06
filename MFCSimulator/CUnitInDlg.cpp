@@ -15,7 +15,6 @@ IMPLEMENT_DYNAMIC(CUnitInDlg, CDialogEx)
 CUnitInDlg::CUnitInDlg(CWnd* pParent /*=nullptr*/)
 	: CDialogEx(IDD_DIALOG_UNIT_IN, pParent)
 {
-	m_strFunChoose = _T("true");
 	m_fontChooseText.CreatePointFont(100, _T("Calibri"));
 }
 
@@ -53,6 +52,10 @@ BOOL CUnitInDlg::OnInitDialog()
 	CDialogEx::OnInitDialog();
 
 	// TODO:  在此加入額外的初始化
+
+	m_strFunFinalChoose = m_strFunChoose;
+
+	m_editShowChoose.SetWindowText(m_strFunChoose);
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 	// EXCEPTION: OCX 屬性頁應傳回 FALSE
@@ -121,9 +124,11 @@ void CUnitInDlg::OnBnClickedButtonInFalse()
 void CUnitInDlg::OnBnClickedOk()
 {
 
+	m_strFunFinalChoose = m_strFunChoose;
+
 	// 將選擇的函式傳入父視窗
 	CMFCSimulatorDlg* parentDlg = (CMFCSimulatorDlg*)GetParent();
-	parentDlg->m_strFunOrOperChoose = m_strFunChoose;
+	parentDlg->m_strFunOrOperChoose = m_strFunFinalChoose;
 	
 	CDialogEx::OnOK();
 
@@ -136,7 +141,7 @@ void CUnitInDlg::OnBnClickedCancel()
 
 	// 將預設的函式傳入父視窗
 	CMFCSimulatorDlg* parentDlg = (CMFCSimulatorDlg*)GetParent();
-	parentDlg->m_strFunOrOperChoose = m_strFunChoose;
+	parentDlg->m_strFunOrOperChoose = m_strFunFinalChoose;
 
 	CDialogEx::OnCancel();
 
@@ -151,7 +156,7 @@ void CUnitInDlg::OnDestroy()
 
 	// 將預設的函式傳入父視窗
 	CMFCSimulatorDlg* parentDlg = (CMFCSimulatorDlg*)GetParent();
-	parentDlg->m_strFunOrOperChoose = m_strFunChoose;
+	parentDlg->m_strFunOrOperChoose = m_strFunFinalChoose;
 
 }
 

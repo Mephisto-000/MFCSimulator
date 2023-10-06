@@ -26,6 +26,7 @@ public:
 
 	CEdit m_editOperaChoose;													// 上方顯示選擇的運算元的控件
 	CString m_strOperaChoose;													// 選擇的運算元
+	CString m_strOperaFinalChoose;												// 最終確認的運算元
 	CFont m_fontChooseText;														// 字型與字型大小調整
 
 

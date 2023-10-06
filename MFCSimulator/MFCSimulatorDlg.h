@@ -85,6 +85,8 @@ public:
 
 	BOOL m_bIsDragging;															// 記錄元件是否被拖動
 	BOOL m_bIsLineMode;															// 記錄是否開啟連線模式
+	BOOL m_bShowRegionBgImgChange;												// 記錄是否更改背景圖片
+	BOOL m_bShowRegionBgRGBChange;												// 記錄是否更改背景顏色
 
 
 	std::vector<CRect> GetConnectRects(CUnitBase* ptUnit);						// 經由左上角點定位，得到元件接點外接矩形
@@ -105,6 +107,7 @@ public:
 	
 
 	CString GetCurrentDir();													// 取得 MFCSimulatorDlg.cpp 的絕對路徑
+	CString m_strInitSettingPath;                                               // 背景設定檔案
 	CString m_strFunOrOperChoose;												// 暫時儲存選擇的函式或是四則運算子
 	CString m_strShowRegionImgBgPath;											// 顯示區背景圖片路徑
 

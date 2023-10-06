@@ -23,7 +23,6 @@
 #define new DEBUG_NEW
 #endif
 
-BOOL g_bShowRegionBgImgChange = FALSE;                   // 操作視窗是否更換背景圖片狀態
 
 // 對 App About 使用 CAboutDlg 對話方塊
 
@@ -72,6 +71,7 @@ CMFCSimulatorDlg::CMFCSimulatorDlg(CWnd* pParent /*=nullptr*/)
 	m_strShowRegionImgBgPath = _T("");              // 背景圖片路徑
 	m_bIsDragging = FALSE;                          // 元件是否被拖曳
 	m_bIsLineMode = FALSE;                          // 連線模式是否被開啟
+	m_bShowRegionBgImgChange = FALSE;               // 是否更改背景
 	m_iOffsetX = 0;
 	m_iOffsetY = 0;
 	m_fontLineModeState.CreatePointFont(125, _T("Calibri"));
@@ -191,7 +191,57 @@ BOOL CMFCSimulatorDlg::OnInitDialog()
 
 	// 獲取初始操作畫面的位圖路徑
 	CString strCurrentPath = GetCurrentDir();
-	m_strShowRegionImgBgPath = strCurrentPath + _T("\\res\\test0.bmp");
+	//m_strShowRegionImgBgPath = strCurrentPath + _T("\\res\\test0.bmp");
+	
+	m_strInitSettingPath = strCurrentPath + _T("\\res\\settingBG.ini");
+	CString strBuff;
+	
+	GetPrivateProfileString(_T("BackgroundPath"), _T("InitialPath"), _T("NULL"), strBuff.GetBuffer(MAX_PATH), MAX_PATH, m_strInitSettingPath);
+	strBuff.ReleaseBuffer();
+	CString strInitialPathBG = strBuff.GetBuffer(0);
+	
+	GetPrivateProfileString(_T("BackgroundPath"), _T("ChangedPath"), _T("NULL"), strBuff.GetBuffer(MAX_PATH), MAX_PATH, m_strInitSettingPath);
+	strBuff.ReleaseBuffer();
+	CString strChangedPathBG = strBuff.GetBuffer(0);
+
+	GetPrivateProfileString(_T("BackgroundPath"), _T("ChangeState"), _T("NULL"), strBuff.GetBuffer(MAX_PATH), MAX_PATH, m_strInitSettingPath);
+	strBuff.ReleaseBuffer();
+	CString strChangedState = strBuff.GetBuffer(0);
+	m_bShowRegionBgImgChange = (strChangedState.CompareNoCase(_T("TRUE")) == 0);
+
+
+	if (m_bShowRegionBgImgChange == TRUE)
+	{
+		m_strShowRegionImgBgPath = strChangedPathBG;
+	}
+	else
+	{
+		m_strShowRegionImgBgPath = strCurrentPath + strInitialPathBG;
+	}
+
+
+
+	GetPrivateProfileString(_T("BackgroundRGB"), _T("ChangeState"), _T("NULL"), strBuff.GetBuffer(MAX_PATH), MAX_PATH, m_strInitSettingPath);
+	strBuff.ReleaseBuffer();
+	CString strChangedStateRGB = strBuff.GetBuffer(0);
+	m_bShowRegionBgRGBChange = (strChangedStateRGB.CompareNoCase(_T("TRUE")) == 0);
+
+	if (m_bShowRegionBgRGBChange == TRUE)
+	{
+		int iColorR = GetPrivateProfileInt(_T("BackgroundRGB"), _T("ChangedColorR"), -1, m_strInitSettingPath);
+		int iColorG = GetPrivateProfileInt(_T("BackgroundRGB"), _T("ChangedColorG"), -1, m_strInitSettingPath);
+		int iColorB = GetPrivateProfileInt(_T("BackgroundRGB"), _T("ChangedColorB"), -1, m_strInitSettingPath);
+
+		m_colorShowRegionBg = RGB(iColorR, iColorG, iColorB);
+	}
+	else
+	{
+		int iColorR = GetPrivateProfileInt(_T("BackgroundRGB"), _T("ColorR"), -1, m_strInitSettingPath);
+		int iColorG = GetPrivateProfileInt(_T("BackgroundRGB"), _T("ColorG"), -1, m_strInitSettingPath);
+		int iColorB = GetPrivateProfileInt(_T("BackgroundRGB"), _T("ColorB"), -1, m_strInitSettingPath);
+
+		m_colorShowRegionBg = RGB(iColorR, iColorG, iColorB);
+	}
 
 
 	return FALSE;  // 傳回 TRUE，除非您對控制項設定焦點
@@ -580,7 +630,8 @@ void CMFCSimulatorDlg::DrawToBuffer(CDC* pDC)
 	CBrush* pOldbrushShowRegion = pDC->SelectObject(&brushShowRegion);
 
 
-	if (g_bShowRegionBgImgChange == FALSE)
+	//if ((m_bShowRegionBgImgChange == FALSE) && (m_bShowRegionBgRGBChange == TRUE))
+	if (m_bShowRegionBgImgChange == FALSE)
 	{	// 沒有背景圖片更改的情況
 
 		// 操作視窗上色
@@ -729,7 +780,11 @@ void CMFCSimulatorDlg::OnBnClickedButtonBgImg()
 			rectShowRegion.Width(), rectShowRegion.Height(), LR_LOADFROMFILE);
 	
 		// 更新操作視窗是否更換背景圖片狀態
-		g_bShowRegionBgImgChange = TRUE;
+		m_bShowRegionBgImgChange = TRUE;
+
+		WritePrivateProfileString(_T("BackgroundPath"), _T("ChangeState"), _T("TRUE"), m_strInitSettingPath);
+
+		WritePrivateProfileString(_T("BackgroundPath"), _T("ChangedPath"), m_strShowRegionImgBgPath, m_strInitSettingPath);
 
 		// 更新操作視窗	
 		OnPaint();
@@ -761,7 +816,26 @@ void CMFCSimulatorDlg::OnBnClickedButtonBgColor()
 		m_colorShowRegionBg = colorSelect;
 
 		//更新操作視窗是否更換背景圖片狀態
-		g_bShowRegionBgImgChange = FALSE;
+		m_bShowRegionBgImgChange = FALSE;
+
+		WritePrivateProfileString(_T("BackgroundPath"), _T("ChangeState"), _T("FALSE"), m_strInitSettingPath);
+
+		WritePrivateProfileString(_T("BackgroundRGB"), _T("ChangeState"), _T("TRUE"), m_strInitSettingPath);
+
+		int iColorR = GetRValue(m_colorShowRegionBg);
+		int iColorG = GetGValue(m_colorShowRegionBg);
+		int iColorB = GetBValue(m_colorShowRegionBg);
+
+		CString strR, strG, strB;
+
+		strR.Format(_T("%d"), iColorR);
+		strG.Format(_T("%d"), iColorG);
+		strB.Format(_T("%d"), iColorB);
+
+		WritePrivateProfileString(_T("BackgroundRGB"), _T("ChangedColorR"), strR, m_strInitSettingPath);
+		WritePrivateProfileString(_T("BackgroundRGB"), _T("ChangedColorG"), strG, m_strInitSettingPath);
+		WritePrivateProfileString(_T("BackgroundRGB"), _T("ChangedColorB"), strB, m_strInitSettingPath);
+
 
 		// 更新操作視窗	
 		Invalidate();
@@ -2092,23 +2166,6 @@ void CMFCSimulatorDlg::OnBnClickedButtonSave()
 		strUnitLineTotalNum.Format(_T("%d"), iUnitLineTotalNum);
 		WritePrivateProfileString(_T("TotalNum"), _T("Lines"), strUnitLineTotalNum, strSaveFilePath);
 		////////////////////////////////////////////////////////////////////////////////////////////////////
-		// 儲存背景資訊
-		// 是否更改背景圖片
-		CString strIsChangeBG = (g_bShowRegionBgImgChange ? _T("TRUE") : _T("FALSE"));
-		WritePrivateProfileString(_T("BackgroundInfo"), _T("IsChange"), strIsChangeBG, strSaveFilePath);
-		WritePrivateProfileString(_T("BackgroundInfo"), _T("BackgroundPath"), m_strShowRegionImgBgPath, strSaveFilePath);
-
-		// 背景顏色
-		CString strColorR;
-		CString strColorG;
-		CString strColorB;
-		strColorR.Format(_T("%d"), GetRValue(m_colorShowRegionBg));
-		strColorG.Format(_T("%d"), GetGValue(m_colorShowRegionBg));
-		strColorB.Format(_T("%d"), GetBValue(m_colorShowRegionBg));
-		WritePrivateProfileString(_T("BackgroundInfo"), _T("BackgroundColorR"), strColorR, strSaveFilePath);
-		WritePrivateProfileString(_T("BackgroundInfo"), _T("BackgroundColorG"), strColorG, strSaveFilePath);
-		WritePrivateProfileString(_T("BackgroundInfo"), _T("BackgroundColorB"), strColorB, strSaveFilePath);
-		////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		AfxMessageBox(_T("Saved Successfully"));
 	}
@@ -2427,32 +2484,6 @@ void CMFCSimulatorDlg::OnBnClickedButtonOpen()
 			m_listUnitLines.AddTail(ptNewUnitLine);
 
 		}
-
-		////////////////////////////////////////////////////////////////////////////////////////////////////
-		// 讀取背景資訊
-		// 是否更改背景圖片
-		CString strBuff;
-		GetPrivateProfileString(_T("BackgroundInfo"), _T("IsChange"), _T("NULL"), strBuff.GetBuffer(MAX_PATH), MAX_PATH, strLoadFilePath);
-		strBuff.ReleaseBuffer();
-		CString strIsChaneBG = strBuff.GetBuffer(0);
-		BOOL bIsChangeBG = (strIsChaneBG.CompareNoCase(_T("TRUE")) == 0);
-		g_bShowRegionBgImgChange = bIsChangeBG;
-
-		// 讀取背景圖片位址
-		GetPrivateProfileString(_T("BackgroundInfo"), _T("BackgroundPath"), _T("NULL"), strBuff.GetBuffer(MAX_PATH), MAX_PATH, strLoadFilePath);
-		strBuff.ReleaseBuffer();
-		CString strPathBG = strBuff.GetBuffer(0);
-		if (strPathBG != _T("NULL"))
-		{
-			m_strShowRegionImgBgPath = strPathBG;
-		}
-
-		// 讀取背景顏色設置
-		int iColorR = GetPrivateProfileInt(_T("BackgroundInfo"), _T("BackgroundColorR"), -1, strLoadFilePath);
-		int iColorG = GetPrivateProfileInt(_T("BackgroundInfo"), _T("BackgroundColorG"), -1, strLoadFilePath);
-		int iColorB = GetPrivateProfileInt(_T("BackgroundInfo"), _T("BackgroundColorB"), -1, strLoadFilePath);
-
-		m_colorShowRegionBg = RGB(iColorR, iColorG, iColorB);
 
 		////////////////////////////////////////////////////////////////////////////////////////////////////
 		// 更新操作視窗	

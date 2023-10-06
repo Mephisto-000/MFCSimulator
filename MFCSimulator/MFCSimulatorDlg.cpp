@@ -1770,6 +1770,11 @@ void CMFCSimulatorDlg::OnLButtonUp(UINT nFlags, CPoint point)
 							AfxMessageBox(_T("連線錯誤"));
 							break;
 						}
+						else if ((m_ptPreUnit->m_rectConnectBottom.PtInRect(m_pointMouseInitialPos)) && (m_ptNextUnit->m_rectConnectBottom.PtInRect(point)))
+						{
+							AfxMessageBox(_T("連線錯誤"));
+							break;
+						}
 						/////////////////////////////////////////////////////////////////////////////////////////////
 						/////////////////////////////////////////////////////////////////////////////////////////////
 						// 兩連接元件紀錄彼此的指標

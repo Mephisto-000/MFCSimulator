@@ -2031,6 +2031,7 @@ void CMFCSimulatorDlg::OnBnClickedButtonSave()
 	CFileDialog dlgSaveFile(FALSE, NULL, NULL, OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT,
 		_T("All Files(*.ini)|*.ini|所有文件(*.*)|*.*|"), NULL);
 
+	dlgSaveFile.m_ofn.lpstrDefExt = _T("ini");
 
 	if (dlgSaveFile.DoModal() == IDOK)
 	{
@@ -2188,11 +2189,32 @@ void CMFCSimulatorDlg::OnBnClickedButtonOpen()
 
 	if (dlgLoadFile.DoModal() == IDOK)
 	{
-		
-		// 清空之前所記取的元件以及線段
-		m_listUnitPointers.RemoveAll();
-		m_listUnitLines.RemoveAll();
+		////////////////////////////////////////////////////////////////////////
+		// 刪除生成元件所配置的記憶體
+		POSITION posiUnit = m_listUnitPointers.GetTailPosition();
+		while (posiUnit != nullptr)
+		{
+			CUnitBase* ptUnit = m_listUnitPointers.GetPrev(posiUnit);
+			delete ptUnit;
+		}
 
+
+		// 清空記錄生成元件的 CList
+		m_listUnitPointers.RemoveAll();
+
+
+		// 刪除生成線段所配置的記憶體
+		POSITION posiLineUnit = m_listUnitLines.GetTailPosition();
+		while (posiLineUnit != nullptr)
+		{
+			CUnitLine* ptLineUnit = m_listUnitLines.GetPrev(posiLineUnit);
+			delete ptLineUnit;
+		}
+
+
+		// 清空記錄生成線段的 CList
+		m_listUnitLines.RemoveAll();
+		////////////////////////////////////////////////////////////////////////
 		// 操作視窗矩形
 		CRect rectShowRegion;
 

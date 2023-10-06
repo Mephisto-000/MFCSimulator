@@ -15,6 +15,8 @@ IMPLEMENT_DYNAMIC(CUnitInDlg, CDialogEx)
 CUnitInDlg::CUnitInDlg(CWnd* pParent /*=nullptr*/)
 	: CDialogEx(IDD_DIALOG_UNIT_IN, pParent)
 {
+	m_strFunChoose = _T("false");
+	m_strFunFinalChoose = _T("false");
 	m_fontChooseText.CreatePointFont(100, _T("Calibri"));
 }
 

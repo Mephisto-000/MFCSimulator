@@ -1,0 +1,102 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="CAboutDlg" Collapsed="true">
+    <Position X="16.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAEAAAAAAABAABAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>MFCSimulatorDlg.cpp</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CSimulateStartDlg" Collapsed="true">
+    <Position X="16.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>UIKBAAMQACCoAAAAAJIAFAIQABEgAAIAAAQIAQAQAEA=</HashCode>
+      <FileName>CSimulateStartDlg.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CUnitFunDlg" Collapsed="true">
+    <Position X="18.25" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAJDAEABAAAAIAAABAABAAAAACAAAAIAIAEABAAECA=</HashCode>
+      <FileName>CUnitFunDlg.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CUnitIN">
+    <Position X="11.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAA=</HashCode>
+      <FileName>CUnitIN.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CMFCSimulatorApp" Collapsed="true">
+    <Position X="18.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAQAAAAAAAAAAAAAAAAAQAAAAAAAAAAAA=</HashCode>
+      <FileName>MFCSimulator.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CMFCSimulatorDlg" Collapsed="true">
+    <Position X="20" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>E0CBUAEAFJYGoIIEApAATghUgVAFDBRAAkeRQhCTAAM=</HashCode>
+      <FileName>MFCSimulatorDlg.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CUnitAND">
+    <Position X="7.25" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>CUnitAND.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CUnitBase" Collapsed="true">
+    <Position X="7.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>KAAEgAAQEQlEAAQAgQIAEAACAAggAAAAAgAQgAAYCCA=</HashCode>
+      <FileName>CUnitBase.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CUnitFUN" Collapsed="true">
+    <Position X="0.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAA=</HashCode>
+      <FileName>CUnitFUN.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CUnitInDlg" Collapsed="true">
+    <Position X="20" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAJAAlABCQAACAEABABBAAAAQAAAAAAAAAEAAAAACA=</HashCode>
+      <FileName>CUnitInDlg.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CUnitLine">
+    <Position X="9.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EACAAAAAQAAAAAAAAAAAAAAAAAEAAAAAAAAABAAAAIA=</HashCode>
+      <FileName>CUnitLine.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CUnitNOT">
+    <Position X="14" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>CUnitNOT.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CUnitOR" Collapsed="true">
+    <Position X="2.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>CUnitOR.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CUnitOUT" Collapsed="true">
+    <Position X="5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>CUnitOUT.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Microsoft JhengHei UI" Size="9" />
+</ClassDiagram>

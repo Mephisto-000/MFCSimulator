@@ -226,6 +226,7 @@
     <ResourceCompile Include="MFCSimulator.rc" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="ClassDiagram.cd" />
     <None Include="res\MFCSimulator.rc2" />
   </ItemGroup>
   <ItemGroup>
